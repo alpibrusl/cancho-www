@@ -74,6 +74,9 @@ code { font-family: var(--mono); font-size: .9em; background: var(--soft); paddi
 .grid div, .grid a { background: var(--surface); padding: 1.1rem 1.2rem; color: inherit; text-decoration: none; display: block; }
 .grid a:hover { background: var(--soft); }
 .grid p { color: var(--muted); font-size: .93rem; margin: 0; }
+.syn { display: grid; gap: 1.2rem 1rem; grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr)); margin-top: 1.6rem; }
+.syn > div { min-width: 0; }
+.syn pre.code { margin-top: .6rem; }
 .note { color: var(--muted); font-size: .88rem; margin-top: .9rem; }
 
 pre.code { background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; font: .86rem/1.65 var(--mono); overflow-x: auto; margin: 1.4rem 0 0; }
@@ -94,7 +97,7 @@ footer a { color: var(--muted); }
 <header class="top"><div class="wrap">
   <a class="brand" href="#top">cancho</a>
   <nav aria-label="Sections">
-    <a href="#why" class="opt">Why</a><a href="#example" class="opt">Example</a><a href="#not-here" class="opt">Not here</a><a href="#ecosystem">Ecosystem</a>
+    <a href="#why" class="opt">Why</a><a href="#example" class="opt">Example</a><a href="#syntax" class="opt">Syntax</a><a href="#not-here" class="opt">Not here</a><a href="#ecosystem">Ecosystem</a>
     <a href="https://github.com/alpibrusl/cancho">GitHub</a>
   </nav>
 </div></header>
@@ -163,6 +166,65 @@ fn main(world: World) -&gt; [] int {
     release(io);
     return 0;
 }</pre>
+</section>
+
+<section id="syntax">
+  <h2>Syntax at a glance</h2>
+  <p class="sub">Familiar on the surface: <code>let</code>, <code>fn</code>, <code>struct</code>, <code>enum</code>, <code>match</code>. The signature carries what's unusual: an effect row between <code>-&gt;</code> and the return type, and a mode on every type. All snippets are from <a href="https://github.com/alpibrusl/cancho/blob/main/examples/tour.cho">examples/tour.cho</a> and the compiler's reject tests.</p>
+  <div class="syn">
+    <div><h3>Data and exhaustive <code>match</code></h3><pre class="code" tabindex="0">struct Vec2 {
+    x: int,
+    y: int,
+}
+
+enum Shape {
+    Empty,
+    Circle(int),
+    Rect(int, int),
+}
+
+fn area(s: Shape) -&gt; [] int {
+    match s {
+        Shape::Empty =&gt; { return 0; }
+        Shape::Circle(r) =&gt; { return 3 * r * r; }
+        Shape::Rect(w, h) =&gt; { return w * h; }
+    }
+}</pre><p class="note"><code>[]</code> means pure. <code>match</code> must cover every variant, and the compiler names the ones you forgot.</p></div>
+    <div><h3>Generics</h3><pre class="code" tabindex="0">enum Opt[T] {
+    None,
+    Some(T),
+}
+
+fn unwrap_or[T: val](o: Opt[T], fallback: T) -&gt; [] T {
+    match o {
+        Opt::None =&gt; { return fallback; }
+        Opt::Some(value) =&gt; { return value; }
+    }
+}</pre><p class="note">One definition, monomorphised per type it is used at. <code>val</code> is the unrestricted mode: copyable and discardable.</p></div>
+    <div><h3>Linear resources</h3><pre class="code" tabindex="0">res struct Ticket {
+    serial: int,
+}
+
+fn issue(serial: int) -&gt; [] Ticket {
+    return Ticket { serial: serial };
+}
+
+fn redeem(t: Ticket) -&gt; [] int {
+    let Ticket { serial } = t;
+    return serial;
+}</pre><p class="note"><code>res</code> is linear: exactly one use, no implicit copy, no implicit discard. There are no destructors; a resource is spent by taking it apart.</p></div>
+    <div><h3>What the compiler refuses</h3><pre class="code" tabindex="0">fn disagree(f: Ticket, flag: bool) -&gt; [] int {
+    if flag {
+        let fd = close(f);
+    }
+    return 0;
+}</pre><pre class="code" tabindex="0">$ cancho check branches_disagree.cho
+branches_disagree.cho:19:5: error: the branches disagree about `f`:
+one consumes it and another does not
+        if flag {
+        ^^^^^^^^^</pre><p class="note">Only one branch consumes <code>f</code>. Rust would insert a hidden runtime drop flag; cancho refuses instead.</p></div>
+  </div>
+  <p class="note">Effect rows are exact and transitive: declaring an effect you don't perform is as much an error as performing one you didn't declare. The full language is in the <a href="https://alpibrusl.github.io/cancho/">docs</a>.</p>
 </section>
 
 <section id="not-here">
