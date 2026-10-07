@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cancho</title>
+<meta name="description" content="A native systems language where resource ownership and authority are part of the type: a value is consumed exactly once, and reaching the outside world needs a capability, checked at compile time. Design stage.">
+<meta property="og:title" content="cancho: ownership and authority in the type">
+<meta property="og:description" content="A value is consumed exactly once, and reaching the outside world requires holding a capability for it. Checked at compile time.">
+<meta property="og:type" content="website">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+:root {
+  --bg: #fbfbfd; --fg: #14171c; --muted: #5b6573; --line: #e1e4ea; --surface: #ffffff; --soft: #f1f3f8;
+  --accent: #2f5de0; --accent-fg: #ffffff; --good: #0f7b5f; --warn: #92400e; --warn-bg: #fdf6e7; --warn-line: #e0b765; --bad: #d1362f;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1014; --fg: #e8eaee; --muted: #9ba5b3; --line: #232932; --surface: #141920; --soft: #181d25;
+    --accent: #7ea2ff; --accent-fg: #0b1020; --good: #4fd1a5; --warn: #f3c77a; --warn-bg: #1d1a12; --warn-line: #8a6a2a; --bad: #ff6b63; }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; scroll-padding-top: 4rem; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 1rem/1.6 var(--font); }
+a { color: var(--accent); text-underline-offset: .15em; }
+.wrap { width: 100%; max-width: 68rem; margin: 0 auto; padding: 0 20px; }
+.skip { position: absolute; left: 16px; top: -4rem; background: var(--accent); color: var(--accent-fg); padding: .5rem .8rem; border-radius: 6px; z-index: 9; }
+.skip:focus { top: 8px; }
+a:focus-visible, .btn:focus-visible, pre:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+header.top { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+header.top .wrap { display: flex; align-items: center; gap: 1.5rem; height: 3.4rem; }
+.brand { font: 700 1rem var(--mono); color: var(--fg); text-decoration: none; letter-spacing: -.01em; white-space: nowrap; }
+nav { display: flex; gap: 1.2rem; margin-left: auto; }
+nav a { color: var(--muted); text-decoration: none; font-size: .93rem; white-space: nowrap; }
+nav a:hover { color: var(--fg); }
+@media (max-width: 40rem) { nav a.opt { display: none; } }
+
+h1 { font-size: clamp(2.3rem, 6.2vw, 4rem); line-height: 1.04; letter-spacing: -.035em; margin: 0 0 1rem; font-weight: 750; }
+h2 { font-size: clamp(1.6rem, 3.4vw, 2.2rem); line-height: 1.15; letter-spacing: -.025em; margin: 0 0 .5rem; font-weight: 700; }
+h3 { font-size: 1.05rem; margin: 0 0 .25rem; }
+p { margin: 0 0 1rem; }
+section { padding: 4.5rem 0 0; }
+.lead { font-size: 1.2rem; color: var(--muted); max-width: 34rem; }
+.sub { color: var(--muted); max-width: 38rem; }
+code { font-family: var(--mono); font-size: .9em; background: var(--soft); padding: .1em .35em; border-radius: 5px; }
+
+.hero { padding: 4rem 0 0; display: grid; gap: 2.5rem; align-items: center; }
+@media (min-width: 58rem) { .hero { grid-template-columns: 1.05fr 1fr; } }
+.badge { display: inline-flex; gap: .5rem; align-items: center; font-size: .82rem; color: var(--warn); background: var(--warn-bg); border: 1px solid var(--warn-line); padding: .22rem .7rem; border-radius: 999px; margin-bottom: 1.2rem; text-decoration: none; }
+.badge i { width: .5rem; height: .5rem; border-radius: 50%; background: var(--warn-line); display: inline-block; }
+.cta { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.6rem; }
+.btn { display: inline-block; padding: .65rem 1.15rem; border-radius: 8px; font-weight: 600; text-decoration: none; border: 1px solid var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-fg); }
+.btn.ghost { color: var(--accent); }
+.btn.ghost:hover { background: var(--soft); }
+
+.term { background: #0d1117; color: #d6dde8; border: 1px solid #262c36; border-radius: 12px; font: .84rem/1.65 var(--mono); padding: 1rem 1.1rem 1.1rem; box-shadow: 0 18px 50px -24px rgba(20, 30, 70, .55); overflow-x: auto; }
+.term .bar { display: flex; gap: .35rem; margin-bottom: .8rem; }
+.term .bar i { width: .65rem; height: .65rem; border-radius: 50%; background: #2d3440; display: block; }
+.term .c { color: #7d8797; } .term .g { color: #5fd3a6; } .term .b { color: #8cb0ff; } .term .y { color: #e8c170; } .term .r { color: #ff8b82; }
+.term pre { margin: 0; white-space: pre; }
+
+.three { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); margin-top: 3.2rem; }
+.three div { border-top: 3px solid var(--accent); padding-top: .8rem; }
+.three p { color: var(--muted); margin: 0; font-size: .96rem; }
+
+.grid { display: grid; gap: 1px; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin-top: 2rem; }
+.grid div, .grid a { background: var(--surface); padding: 1.1rem 1.2rem; color: inherit; text-decoration: none; display: block; }
+.grid a:hover { background: var(--soft); }
+.grid p { color: var(--muted); font-size: .93rem; margin: 0; }
+.note { color: var(--muted); font-size: .88rem; margin-top: .9rem; }
+
+pre.code { background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; font: .86rem/1.65 var(--mono); overflow-x: auto; margin: 1.4rem 0 0; }
+.status { margin-top: 4.5rem; background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 14px; padding: 1.3rem 1.5rem; }
+.status h2 { font-size: 1.2rem; letter-spacing: -.01em; }
+.status ul { margin: .4rem 0 0; padding-left: 1.2rem; color: var(--muted); }
+footer { margin-top: 4rem; border-top: 1px solid var(--line); padding: 1.6rem 0 2.6rem; color: var(--muted); font-size: .9rem; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: .5rem 1.6rem; }
+footer a { color: var(--muted); }
+.cols { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); margin-top: 1.4rem; }
+.cols > div { border: 1px solid var(--line); border-radius: 14px; padding: 1.1rem 1.3rem; background: var(--surface); }
+.cols p { color: var(--muted); font-size: .93rem; margin: 0; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#top">cancho</a>
+  <nav aria-label="Sections">
+    <a href="#why" class="opt">Why</a><a href="#example" class="opt">Example</a><a href="#not-here" class="opt">Not here</a><a href="#ecosystem">Ecosystem</a>
+    <a href="https://github.com/alpibrusl/cancho">GitHub</a>
+  </nav>
+</div></header>
+
+<main id="main" class="wrap">
+
+<div class="hero" id="top">
+  <div>
+    <a class="badge" href="#status"><i></i>Design stage · not a usable language yet</a>
+    <h1>Ownership and authority, in the type.</h1>
+    <p class="lead">A native systems language where a value is consumed exactly once, and reaching the outside world (the console, a file, a foreign library) requires holding a capability for it. Checked at compile time.</p>
+    <div class="cta"><a class="btn primary" href="#example">See an example</a><a class="btn ghost" href="https://alpibrusl.github.io/cancho/">Read the docs</a></div>
+  </div>
+  <div class="term" role="img" aria-label="Running cancho authority on a program"><div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="c">$</span> cancho authority examples/tally.cho --std
+<span class="b">performs</span>
+    <span class="y">io_read</span>
+    <span class="y">io_write</span>
+<span class="b">never touches</span>
+    <span class="g">the filesystem</span>
+    <span class="g">the heap</span>
+    <span class="g">the command line</span>
+    <span class="g">foreign code</span>
+
+<span class="c">$ cancho authority … --output json</span>
+{"bounded": <span class="r">false</span>, "unbounded_by": [<span class="c">"scope:symbol", …</span>]}
+<span class="c"># fails closed when foreign code is reachable</span></pre>
+  </div>
+</div>
+
+<div class="three">
+  <div><h3>Authority is a value</h3><p><code>split(world)</code> is the only place a program gets authority from. A function nothing was handed cannot print, however much it wants to.</p></div>
+  <div><h3>Linear by default</h3><p>An unused capability is still a linear value: forgetting to <code>release</code> one does not compile.</p></div>
+  <div><h3>Content-addressed</h3><p>A canonical AST gives every declaration a stable hash. Dependencies pin to hashes, not version strings.</p></div>
+</div>
+
+<section id="why">
+  <h2>Why a language of its own</h2>
+  <p class="sub">Agents now write most of the code, and they pull in dependencies faster than anyone can read them. cancho is a bet that the answer is to own the stack (language, compiler, std, packages) and make what code may do a property of its type, so trust is checked by the compiler instead of assumed.</p>
+  <div class="cols">
+    <div><h3>Owned, not borrowed</h3><p>Dependencies are pinned to content hashes. Nothing changes under you because a maintainer published a new version.</p></div>
+    <div><h3>Bounded, not trusted</h3><p>Foreign code is allowed, but never hidden: <code>cancho authority</code> names exactly what is reachable, and says "unbounded" when it can't bound it.</p></div>
+    <div><h3>Agent-first tooling</h3><p>Diagnostics, the command tree and a SKILL.md all come out of the binary as data. See <a href="https://github.com/alpibrusl/cancho/blob/main/AGENTS.md">AGENTS.md</a>.</p></div>
+  </div>
+  <p class="note">It is a bet, not a result: cancho is at design stage, and owning everything only pays if agents make maintaining it cheap.</p>
+</section>
+
+<section id="example">
+  <h2>An example</h2>
+  <p class="sub"><code>greet</code> says <code>[io_write]</code> because it was handed a borrowed capability. <code>main</code>'s row is <code>[]</code> even though it prints, because it owns the capability rather than borrowing one.</p>
+<pre class="code" tabindex="0">import std.io;
+
+fn greet[&amp;i, &amp;r](io: &amp;!i Io, name: &amp;r [byte]) -&gt; [io_write] int {
+    io.write_all(io, "Hello, ");
+    return io.write_all(io, name);
+}
+
+fn main(world: World) -&gt; [] int {
+    let Split { io, ffi, fs, heap, args } = split(world);
+    release(ffi); release(fs); release(heap); release(args);
+
+    borrow mut io as &amp;!i in {
+        greet(i, "cancho");
+    }
+    release(io);
+    return 0;
+}</pre>
+</section>
+
+<section id="not-here">
+  <h2>What's deliberately not here</h2>
+  <div class="cols">
+    <div><h3>No garbage collector, destructors or exceptions</h3><p>A resource is destroyed by naming the function that knows how.</p></div>
+    <div><h3>No borrow checker</h3><p>Borrowing is lexical: a region is a block, so validity is read off the syntax.</p></div>
+    <div><h3>No implicit anything</h3><p>No implicit conversions, no ambient authority. <code>Io {}</code> does not compile.</p></div>
+    <div><h3>No textual or proc macros</h3><p>They break stable, content-addressable identity.</p></div>
+  </div>
+</section>
+
+<section id="ecosystem">
+  <h2>Ecosystem</h2>
+  <div class="grid">
+    <a href="https://alpibrusl.github.io/cancho-hooks/"><h3>cancho-hooks</h3><p>Webhook delivery service written in cancho. Alpha.</p></a>
+    <a href="https://github.com/alpibrusl/cancho/tree/main/packages"><h3>Packages</h3><p>net-sockets, net-connect, agent-wire, http-request, http-response, http-server, tls, x509.</p></a>
+    <a href="https://alpibrusl.github.io/cancho/ROADMAP.html"><h3>Roadmap</h3><p>What landed, what's next, and what each slice found out.</p></a>
+    <a href="https://github.com/alpibrusl/cancho/blob/main/AGENTS.md"><h3>For agents</h3><p>One page for writing cancho programs. <code>cancho introspect</code> and <code>cancho skill</code> emit the CLI as data.</p></a>
+  </div>
+</section>
+
+<section id="build">
+  <h2>Build it</h2>
+<pre class="code" tabindex="0">git clone https://github.com/alpibrusl/cancho
+cd cancho
+cargo test --workspace   # the whole gate: fmt, clippy, every test</pre>
+  <p class="note">Green on linux-x86_64 and darwin-aarch64. Codegen is LLVM via <code>clang</code> by default; <code>--backend cranelift</code> is faster to iterate on.</p>
+</section>
+
+<aside class="status" id="status">
+  <h2>Status: design stage</h2>
+  <ul>
+    <li>Dependencies resolve end to end, and a real TLS handshake compiles and runs.</li>
+    <li>There is no manifest-level version string: a hash is what you depend on.</li>
+    <li>Claims that turn out wrong are corrected in place in the docs, not quietly edited.</li>
+  </ul>
+</aside>
+
+</main>
+
+<footer><div class="wrap">
+  <span>cancho · <a href="https://alpibru.com">Alpibru</a> · EUPL-1.2</span>
+  <a href="https://github.com/alpibrusl/cancho">GitHub</a>
+  <a href="llms.txt">llms.txt</a>
+</div></footer>
+</body>
+</html>

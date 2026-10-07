@@ -1,0 +1,11 @@
+# cancho
+
+> cancho is a native systems language in which resource ownership and authority are part of the program's type-level contract: a value is consumed exactly once, and reaching the outside world requires holding a capability for it, checked at compile time.
+
+Status: not a usable language yet. See the roadmap for what is open.
+
+Source: https://github.com/alpibrusl/cancho
+Docs: https://alpibrusl.github.io/cancho/
+Roadmap: https://alpibrusl.github.io/cancho/ROADMAP.html
+Writing cancho programs (agents): https://github.com/alpibrusl/cancho/blob/main/AGENTS.md
+cancho-hooks (webhook service): https://alpibrusl.github.io/cancho-hooks/
