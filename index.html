@@ -77,6 +77,10 @@ code { font-family: var(--mono); font-size: .9em; background: var(--soft); paddi
 .syn { display: grid; gap: 1.2rem 1rem; grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr)); margin-top: 1.6rem; }
 .syn > div { min-width: 0; }
 .syn pre.code { margin-top: .6rem; }
+.chip { font: 600 .68rem var(--font); letter-spacing: .04em; text-transform: uppercase; padding: .1rem .5rem; border-radius: 999px; vertical-align: middle; margin-left: .35rem; border: 1px solid; }
+.chip.ok { color: var(--good); border-color: var(--good); }
+.chip.warn { color: var(--warn); border-color: var(--warn-line); background: var(--warn-bg); }
+h3.grp { margin: 1.8rem 0 -.8rem; color: var(--muted); font-size: .85rem; text-transform: uppercase; letter-spacing: .06em; }
 .note { color: var(--muted); font-size: .88rem; margin-top: .9rem; }
 
 pre.code { background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; font: .86rem/1.65 var(--mono); overflow-x: auto; margin: 1.4rem 0 0; }
@@ -238,13 +242,28 @@ one consumes it and another does not
 </section>
 
 <section id="ecosystem">
-  <h2>Ecosystem</h2>
+  <h2>Built with cancho</h2>
+  <p class="sub">Real programs and libraries, each with an authority report you can read. <span class="chip warn">Alpha</span> runs but may change; <span class="chip warn">Early</span> is a library with named gaps; <span class="chip ok">Working</span> does what its README claims.</p>
+  <h3 class="grp">Services and tools</h3>
   <div class="grid">
-    <a href="https://alpibrusl.github.io/cancho-hooks/"><h3>cancho-hooks</h3><p>Webhook delivery service written in cancho. Alpha.</p></a>
-    <a href="https://github.com/alpibrusl/cancho/tree/main/packages"><h3>Packages</h3><p>net-sockets, net-connect, agent-wire, http-request, http-response, http-server, tls, x509.</p></a>
-    <a href="https://alpibrusl.github.io/cancho/ROADMAP.html"><h3>Roadmap</h3><p>What landed, what's next, and what each slice found out.</p></a>
+    <a href="https://alpibrusl.github.io/cancho-hooks/"><h3>cancho-hooks <span class="chip warn">Alpha</span></h3><p>Webhook delivery: on disk before the 202, signed, retried, replayable. Not for production yet.</p></a>
+    <a href="https://github.com/alpibrusl/cancho-cache"><h3>cancho-cache <span class="chip warn">Alpha</span></h3><p>Redis-compatible string cache over RESP2/RESP3 in a fixed arena. 38 of Redis 7.0&rsquo;s commands.</p></a>
+    <a href="https://alpibrusl.github.io/cancho-tools/"><h3>cancho-tools <span class="chip ok">Working</span></h3><p>Nine command-line tools for agents: seek, list, peek, jsonq, tally, hash, write, replace, move.</p></a>
+  </div>
+  <h3 class="grp">Libraries</h3>
+  <div class="grid">
+    <a href="https://github.com/alpibrusl/cancho-pg"><h3>cancho-pg <span class="chip warn">Early</span></h3><p>PostgreSQL client: v3 protocol, SCRAM-SHA-256, TLS, non-blocking pool.</p></a>
+    <a href="https://github.com/alpibrusl/cancho-web"><h3>cancho-web <span class="chip warn">Early</span></h3><p>Typed routes, validated bodies, <code>problem+json</code> and OpenAPI from one declaration.</p></a>
+    <a href="https://github.com/alpibrusl/cancho-schema"><h3>cancho-schema <span class="chip warn">Early</span></h3><p>Schemas as data: validation, error bodies and JSON Schema from one value.</p></a>
+    <a href="https://github.com/alpibrusl/cancho-log"><h3>cancho-log <span class="chip warn">Early</span></h3><p>Durable append-only log with crash-safe recovery. Append path only.</p></a>
+  </div>
+  <h3 class="grp">The language</h3>
+  <div class="grid">
+    <a href="https://github.com/alpibrusl/cancho/tree/main/packages"><h3>Compiler packages</h3><p>net-sockets, net-connect, agent-wire, http-request, http-response, http-server, tls, x509.</p></a>
+    <a href="https://alpibrusl.github.io/cancho/ROADMAP.html"><h3>Roadmap</h3><p>What landed, what&rsquo;s next, and what each slice found out.</p></a>
     <a href="https://github.com/alpibrusl/cancho/blob/main/AGENTS.md"><h3>For agents</h3><p>One page for writing cancho programs. <code>cancho introspect</code> and <code>cancho skill</code> emit the CLI as data.</p></a>
   </div>
+  <p class="note">More, including designs not built yet: <a href="https://github.com/orgs/alpibrusl/repositories?q=cancho-&amp;type=public">browse every <code>cancho-*</code> repository</a>, always current.</p>
 </section>
 
 <section id="build">
