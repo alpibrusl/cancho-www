@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>cancho</title>
-<meta name="description" content="A native systems language where resource ownership and authority are part of the type: a value is consumed exactly once, and reaching the outside world needs a capability, checked at compile time. Design stage.">
+<meta name="description" content="A native systems language where resource ownership and authority are part of the type: a value is consumed exactly once, and reaching the outside world needs a capability, checked at compile time. Pre-1.0.">
 <meta property="og:title" content="cancho: ownership and authority in the type">
 <meta property="og:description" content="A value is consumed exactly once, and reaching the outside world requires holding a capability for it. Checked at compile time.">
 <meta property="og:type" content="website">
@@ -93,6 +93,16 @@ footer a { color: var(--muted); }
 .cols { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); margin-top: 1.4rem; }
 .cols > div { border: 1px solid var(--line); border-radius: 14px; padding: 1.1rem 1.3rem; background: var(--surface); }
 .cols p { color: var(--muted); font-size: .93rem; margin: 0; }
+
+.demo figure { margin: 1.6rem 0 0; }
+.demo video { display: block; width: 100%; max-width: 54rem; border-radius: 12px; border: 1px solid #262c36; background: #272822; box-shadow: 0 18px 50px -24px rgba(20, 30, 70, .5); }
+.demo figcaption { color: var(--muted); font-size: .88rem; max-width: 54rem; margin-top: .7rem; }
+.demo details { max-width: 54rem; margin-top: 1rem; }
+.demo summary { cursor: pointer; color: var(--accent); }
+.nums { display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); margin-top: 1.6rem; }
+.nums div { border-top: 3px solid var(--accent); padding-top: .6rem; }
+.nums b { display: block; font-size: 2rem; letter-spacing: -.03em; color: var(--accent); line-height: 1.15; }
+.nums span { color: var(--muted); font-size: .93rem; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 </head>
@@ -101,7 +111,7 @@ footer a { color: var(--muted); }
 <header class="top"><div class="wrap">
   <a class="brand" href="#top">cancho</a>
   <nav aria-label="Sections">
-    <a href="#why" class="opt">Why</a><a href="#example" class="opt">Example</a><a href="#syntax" class="opt">Syntax</a><a href="#not-here" class="opt">Not here</a><a href="#ecosystem">Ecosystem</a>
+    <a href="#demo">Demo</a><a href="#why" class="opt">Why</a><a href="#example" class="opt">Example</a><a href="#syntax" class="opt">Syntax</a><a href="#not-here" class="opt">Not here</a><a href="#self" class="opt">Self-hosting</a><a href="#ecosystem">Ecosystem</a>
     <a href="https://github.com/alpibrusl/cancho">GitHub</a>
   </nav>
 </div></header>
@@ -111,7 +121,7 @@ footer a { color: var(--muted); }
 <div class="hero" id="top">
   <div>
     <img class="logo" src="logo-mark.png" width="112" height="112" alt="cancho logo: a rocky outcrop on a blue sun">
-    <a class="badge" href="#status"><i></i>Design stage · not a usable language yet</a>
+    <a class="badge" href="#status"><i></i>Pre-1.0 · alpha products are built with it</a>
     <h1>Ownership and authority, in the type.</h1>
     <p class="lead">A native systems language where a value is consumed exactly once, and reaching the outside world (the console, a file, a foreign library) requires holding a capability for it. Checked at compile time.</p>
     <div class="cta"><a class="btn primary" href="#example">See an example</a><a class="btn ghost" href="https://alpibrusl.github.io/cancho/">Read the docs</a></div>
@@ -139,6 +149,83 @@ footer a { color: var(--muted); }
   <div><h3>Content-addressed</h3><p>A canonical AST gives every declaration a stable hash. Dependencies pin to hashes, not version strings.</p></div>
 </div>
 
+<section id="demo" class="demo">
+  <h2>See it refuse a leak, then run.</h2>
+  <p class="sub">A program opens a file and never closes it. The compiler refuses it, by a named rule a machine can read. One added line fixes it; it builds to a native binary, and the compiler says what the program may do.</p>
+  <figure>
+    <video controls playsinline preload="metadata" poster="demo/poster.png" aria-describedby="demo-cap">
+      <source src="demo/demo.mp4" type="video/mp4">
+      <source src="demo/demo.webm" type="video/webm">
+      <a href="demo/demo.mp4">Watch the demo (mp4)</a>
+    </video>
+    <figcaption id="demo-cap">A real terminal session, 1 minute. Every command was run for real and the output is what it printed; only the typing is simulated. The last step builds the same program with the compiler written in cancho, which is not yet the default. <a href="demo/demo.cast">The recording as text (asciicast)</a>, and <a href="https://github.com/alpibrusl/cancho-www/blob/main/scripts/record_demo.sh">the script that makes it</a>.</figcaption>
+  </figure>
+  <details>
+    <summary>The same session as text</summary>
+<pre class="code" tabindex="0"># A program that opens a file.
+$ cat leak.cho
+// Open a file.
+import std.io;
+
+fn main(world: World) -&gt; [] int {
+    let Split { io, ffi, fs, heap, args } = split(world);
+    release(args);
+    release(ffi);
+    release(heap);
+    var status = 1;
+    let tmp = narrow(fs, &quot;/tmp&quot;);
+    borrow tmp as &amp;c in {
+        match open_read(c, &quot;/tmp/notes.txt&quot;) {
+            Opened::Ok(f) =&gt; {
+                status = 0;
+            }
+            Opened::Failed(e) =&gt; {
+            }
+        }
+    }
+    release(tmp);
+    borrow mut io as &amp;!i in {
+        if status == 0 {
+            io.write_all(i, &quot;opened it, closed it\n&quot;);
+        } else {
+            io.write_all(i, &quot;no such file\n&quot;);
+        }
+    }
+    release(io);
+    return status;
+}
+# It never closes it. The compiler refuses, and says which rule:
+$ cancho check leak.cho --std
+leak.cho:12:9: error: `f` is still live at the end of this block; nothing consumes it
+            match open_read(c, &quot;/tmp/notes.txt&quot;) {
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+$ cancho check leak.cho --std --output json | grep -E &quot;\&quot;(rule|message)\&quot;&quot;
+      &quot;rule&quot;: &quot;linear-value-unconsumed&quot;,
+      &quot;message&quot;: &quot;`f` is still live at the end of this block; nothing consumes it&quot;,
+# One line fixes it.
+$ diff leak.cho fixed.cho
+13a14
+&gt;                 file_close(f);
+$ cancho build fixed.cho --std -o notes &amp;&amp; ./notes
+opened it, closed it
+# What may it do? The compiler can say, because authority is in the types.
+$ cancho authority fixed.cho --std
+performs
+    fs_read(&quot;/tmp&quot;)
+    io_write
+never touches
+    the network
+    the heap
+    the command line
+    signals
+    other programs
+    foreign code
+# And the compiler can be one written in cancho:
+$ cancho build fixed.cho --std --compiler auto -o notes2 &amp;&amp; ./notes2
+opened it, closed it</pre>
+  </details>
+</section>
+
 <section id="why">
   <h2>Why a language of its own</h2>
   <p class="sub">Agents now write most of the code, and they pull in dependencies faster than anyone can read them. cancho is a bet that the answer is to own the stack (language, compiler, std, packages) and make what code may do a property of its type, so trust is checked by the compiler instead of assumed.</p>
@@ -147,7 +234,7 @@ footer a { color: var(--muted); }
     <div><h3>Bounded, not trusted</h3><p>Foreign code is allowed, but never hidden: <code>cancho authority</code> names exactly what is reachable, and says "unbounded" when it can't bound it.</p></div>
     <div><h3>Agent-first tooling</h3><p>Diagnostics, the command tree and a SKILL.md all come out of the binary as data. See <a href="https://github.com/alpibrusl/cancho/blob/main/AGENTS.md">AGENTS.md</a>.</p></div>
   </div>
-  <p class="note">It is a bet, not a result: cancho is at design stage, and owning everything only pays if agents make maintaining it cheap.</p>
+  <p class="note">It is a bet, not a result: owning everything only pays if agents make maintaining it cheap, and cancho is pre-1.0.</p>
 </section>
 
 <section id="example">
@@ -266,6 +353,17 @@ one consumes it and another does not
   <p class="note">More, including designs not built yet: <a href="https://github.com/orgs/alpibrusl/repositories?q=cancho-&amp;type=public">browse every <code>cancho-*</code> repository</a>, always current.</p>
 </section>
 
+<section id="self">
+  <h2>The compiler is being written in cancho.</h2>
+  <p class="sub">The first compiler is in Rust. A second one, about twenty thousand lines of cancho, reads a program and writes LLVM IR, and builds the standard library and the products below. It is the check the language is held to, in both directions: the Rust compiler is the oracle until the cancho one refuses everything the language refuses.</p>
+  <div class="nums">
+    <div><b>697 / 704</b><span>conformance tests pass when every build goes through the compiler written in cancho; the other 7 are known differences from the Rust compiler, each listed.</span></div>
+    <div><b>256 / 333</b><span>programs that must be refused are refused by the cancho compiler with the same rule as the Rust one. It does not yet check everything.</span></div>
+    <div><b>62</b><span>named rules, stable tags a program can match on, instead of sentences to parse.</span></div>
+  </div>
+  <p class="note">Measured on macOS aarch64 on 2026-10-15; the first two figures are what the repository's tests say and move as the work does (<a href="https://github.com/alpibrusl/cancho/issues/491">epic #491</a>). <a href="https://alpibrusl.github.io/cancho/bootstrap.html">Bootstrap and self-hosting</a> has the record.</p>
+</section>
+
 <section id="build">
   <h2>Build it</h2>
 <pre class="code" tabindex="0">git clone https://github.com/alpibrusl/cancho
@@ -275,8 +373,10 @@ cargo test --workspace   # the whole gate: fmt, clippy, every test</pre>
 </section>
 
 <aside class="status" id="status">
-  <h2>Status: design stage</h2>
+  <h2>Status: pre-1.0</h2>
   <ul>
+    <li>Alpha and early products are built with it (see above), each with an authority report the compiler derives. Alpha means it runs and may change.</li>
+    <li>The compiler is still the Rust one. The cancho compiler builds real programs but does not yet refuse everything the language refuses, so it is not the default.</li>
     <li>Dependencies resolve end to end, and a real TLS handshake compiles and runs.</li>
     <li>There is no manifest-level version string: a hash is what you depend on.</li>
     <li>Claims that turn out wrong are corrected in place in the docs, not quietly edited.</li>
