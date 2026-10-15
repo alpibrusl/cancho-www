@@ -1,0 +1,31 @@
+// Open a file.
+import std.io;
+
+fn main(world: World) -> [] int {
+    let Split { io, ffi, fs, heap, args } = split(world);
+    release(args);
+    release(ffi);
+    release(heap);
+    var status = 1;
+    let tmp = narrow(fs, "/tmp");
+    borrow tmp as &c in {
+        match open_read(c, "/tmp/notes.txt") {
+            Opened::Ok(f) => {
+                file_close(f);
+                status = 0;
+            }
+            Opened::Failed(e) => {
+            }
+        }
+    }
+    release(tmp);
+    borrow mut io as &!i in {
+        if status == 0 {
+            io.write_all(i, "opened it, closed it\n");
+        } else {
+            io.write_all(i, "no such file\n");
+        }
+    }
+    release(io);
+    return status;
+}
