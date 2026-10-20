@@ -294,5 +294,269 @@
       }
     ]
   },
-  "manifesto": "https://alpibru.com/manifesto"
+  "manifesto": "https://alpibru.com/manifesto",
+  "verifies": {
+    "stamp": "Counted at cancho 1d4c44e, 2026-10-20. Each line links its evidence; a claim found false is corrected here, in place.",
+    "disclaimer": "A passing check shows that the checks listed here passed. It does not show a program is correct or secure in every respect, and tests exercise the behaviour they cover, not all behaviour. None of this is a certification, and no independent audit is claimed.",
+    "compiler": [
+      {
+        "claim": "A value is consumed exactly once. A resource left unconsumed is refused as `linear-value-unconsumed` (19 refusal fixtures).",
+        "evidence": [
+          [
+            "rule fixtures",
+            "https://github.com/alpibrusl/cancho/blob/main/docs/agent-errors.md"
+          ]
+        ]
+      },
+      {
+        "claim": "Effect rows are exact. Performing an effect the signature does not declare is refused as `effect-not-declared` (12 fixtures); declaring one that is not performed is refused too.",
+        "evidence": [
+          [
+            "rule fixtures",
+            "https://github.com/alpibrusl/cancho/blob/main/docs/agent-errors.md"
+          ],
+          [
+            "authority",
+            "https://github.com/alpibrusl/cancho/blob/main/docs/authority.md"
+          ]
+        ]
+      },
+      {
+        "claim": "Authority is derived, not declared: `cancho authority` lists what a program can reach, and says “unbounded” when foreign code is reachable.",
+        "evidence": [
+          [
+            "authority",
+            "https://github.com/alpibrusl/cancho/blob/main/docs/authority.md"
+          ],
+          [
+            "foreign code",
+            "https://github.com/alpibrusl/cancho/blob/main/docs/foreign-authority.md"
+          ]
+        ]
+      },
+      {
+        "claim": "Every refusal carries a stable rule tag, and `--output json` gives it as data.",
+        "evidence": [
+          [
+            "the contract",
+            "https://github.com/alpibrusl/cancho/blob/main/docs/agent-errors.md"
+          ]
+        ]
+      },
+      {
+        "claim": "Each declaration has a content hash (`cancho ids`); dependencies pin to hashes.",
+        "evidence": [
+          [
+            "canonical AST (status: proposed)",
+            "https://github.com/alpibrusl/cancho/blob/main/docs/canonical-ast.md"
+          ]
+        ]
+      }
+    ],
+    "tests": [
+      {
+        "claim": "359 refusal fixtures, each naming the rule it must be refused with, and 123 accepting programs.",
+        "evidence": [
+          [
+            "tests/reject",
+            "https://github.com/alpibrusl/cancho/tree/main/tests/reject"
+          ],
+          [
+            "tests/accept",
+            "https://github.com/alpibrusl/cancho/tree/main/tests/accept"
+          ]
+        ]
+      },
+      {
+        "claim": "The conformance suite builds and runs real programs; the gate (format, clippy, tests) runs on linux-x86_64 and darwin-aarch64.",
+        "evidence": [
+          [
+            "CONTRIBUTING",
+            "https://github.com/alpibrusl/cancho/blob/main/CONTRIBUTING.md"
+          ]
+        ]
+      },
+      {
+        "claim": "Every checked code block in AGENTS.md is a fixture; changing a rule name to a wrong one turns the suite red (checked by doing it).",
+        "evidence": [
+          [
+            "AGENTS.md",
+            "https://github.com/alpibrusl/cancho/blob/main/AGENTS.md"
+          ]
+        ]
+      },
+      {
+        "claim": "A mutation fuzzer feeds token-level edits of every program through parsing, checking and code generation, requiring no panic, a stable print-and-parse, and that what the checker accepts the backend compiles.",
+        "evidence": [
+          [
+            "fuzzer",
+            "https://github.com/alpibrusl/cancho/blob/main/crates/cancho/tests/fuzz.rs"
+          ],
+          [
+            "design",
+            "https://github.com/alpibrusl/cancho/blob/main/docs/fuzzing.md"
+          ]
+        ]
+      },
+      {
+        "claim": "Tests are checked by breaking what they cover and watching them fail.",
+        "evidence": [
+          [
+            "CONTRIBUTING",
+            "https://github.com/alpibrusl/cancho/blob/main/CONTRIBUTING.md"
+          ],
+          [
+            "differential testing",
+            "https://github.com/alpibrusl/cancho/blob/main/docs/differential.md"
+          ]
+        ]
+      },
+      {
+        "claim": "With every build going through the compiler written in cancho, 697 of 704 conformance tests pass (measured 2026-10-15, macOS aarch64).",
+        "evidence": [
+          [
+            "bootstrap record",
+            "https://alpibrusl.github.io/cancho/bootstrap.html"
+          ]
+        ]
+      }
+    ],
+    "open": [
+      {
+        "claim": "The compiler written in cancho refuses 256 of the 333 programs that must be refused, with the same rule as the Rust one. It is not the default.",
+        "evidence": [
+          [
+            "epic #491",
+            "https://github.com/alpibrusl/cancho/issues/491"
+          ]
+        ]
+      },
+      {
+        "claim": "Hash stability is not a contract yet: the canonical-AST document is “proposed”, and 39% of this repository’s own historical revisions do not type-check under today’s build.",
+        "evidence": [
+          [
+            "canonical AST",
+            "https://github.com/alpibrusl/cancho/blob/main/docs/canonical-ast.md"
+          ],
+          [
+            "hash stability",
+            "https://github.com/alpibrusl/cancho/blob/main/docs/hash-stability.md"
+          ]
+        ]
+      },
+      {
+        "claim": "A cancho program has one network bound shared by listening and connecting, so a proxy’s authority report cannot say which upstreams it reaches; cancho-gateway enforces its compiled-in list by exact match and tests it, but the compiler does not vouch for it.",
+        "evidence": [
+          [
+            "cancho-gateway",
+            "https://github.com/alpibrusl/cancho-gateway"
+          ]
+        ]
+      },
+      {
+        "claim": "The TLS stack is not independently reviewed (stated in cancho-fetch’s README).",
+        "evidence": [
+          [
+            "cancho-fetch",
+            "https://github.com/alpibrusl/cancho-fetch"
+          ]
+        ]
+      },
+      {
+        "claim": "Not evaluated: whether agents do better with cancho-tools than with the usual tools. That needs an agent-in-the-loop evaluation that has not been run.",
+        "evidence": [
+          [
+            "cancho#228",
+            "https://github.com/alpibrusl/cancho/issues/228"
+          ]
+        ]
+      },
+      {
+        "claim": "Pre-1.0, supported on linux-x86_64 and darwin-aarch64 only, and its own README says it is not a usable language yet.",
+        "evidence": [
+          [
+            "README",
+            "https://github.com/alpibrusl/cancho#readme"
+          ]
+        ]
+      }
+    ]
+  },
+  "paths": [
+    {
+      "id": "agents",
+      "title": "Build software with agents",
+      "blurb": "Start with the language and the agent workflow: describe a task, let an agent build it, read the checks.",
+      "entries": [
+        {
+          "id": "cancho",
+          "can": "Refuses a leaked resource by a named rule, says what a program may do, and builds a native binary.",
+          "next": "Run the compiler",
+          "next_url": "#try"
+        },
+        {
+          "id": "cancho-code",
+          "can": "In its own evaluation (Claude Haiku 5.5, hidden tests), 13 small libraries from hand-written plans finished 38 of 39 units; conditions and caveats are in its eval/results.",
+          "next": "Paste its agent prompt into your coding agent",
+          "next_url": "https://github.com/alpibrusl/cancho-code/blob/main/docs/agent-prompt.md"
+        },
+        {
+          "id": "cancho-tools",
+          "can": "A stale write is refused with a rule tag and the hash to retry: two agents, one file (a transcript in its README).",
+          "next": "Read the two-agents demo",
+          "next_url": "https://github.com/alpibrusl/cancho-tools#one-complete-flow-two-agents-one-file"
+        }
+      ]
+    },
+    {
+      "id": "infra",
+      "title": "Build software infrastructure",
+      "blurb": "Services and tools written in cancho, each with an authority report the compiler derives.",
+      "entries": [
+        {
+          "id": "cancho-hooks",
+          "can": "An event is on disk before the 202 answer, then signed (Standard Webhooks), retried and replayable. No 24-hour soak has completed yet.",
+          "next": "Read its landing page",
+          "next_url": "https://alpibrusl.github.io/cancho-hooks/"
+        },
+        {
+          "id": "cancho-cache",
+          "can": "Answers 69 of Redis 7.0’s 240 commands over RESP2 and RESP3; its authority report, checked in CI, names the one file it reads.",
+          "next": "Try it from redis-cli",
+          "next_url": "https://github.com/alpibrusl/cancho-cache#readme"
+        },
+        {
+          "id": "cancho-table",
+          "can": "A wrong column name is refused with a rule tag and the corrected command as a repair.",
+          "next": "Read its landing page",
+          "next_url": "https://alpibrusl.github.io/cancho-table/"
+        }
+      ]
+    },
+    {
+      "id": "boundaries",
+      "title": "Explore new computing boundaries",
+      "blurb": "Hardware, GPUs and robotics. Experimental: read each status before you rely on it.",
+      "entries": [
+        {
+          "id": "cancho-hdl",
+          "can": "A .chw contract is checked (a field overlap is refused as `field-overlap`), and a C header, device tree, SystemVerilog and CMSIS-SVD are generated from it.",
+          "next": "See its refusal examples",
+          "next_url": "https://github.com/alpibrusl/cancho-hdl#readme"
+        },
+        {
+          "id": "cancho-gpu",
+          "can": "CUDA C and Metal for 208 test cases (182 emit, 26 refused by both) are byte-identical with an independent implementation’s.",
+          "next": "Read its landing page",
+          "next_url": "https://alpibrusl.github.io/cancho-gpu/"
+        },
+        {
+          "id": "cancho-robot",
+          "can": "Nothing is built yet: research, design stage.",
+          "next": "Read the plan",
+          "next_url": "https://alpibrusl.github.io/cancho-robot/"
+        }
+      ]
+    }
+  ]
 }

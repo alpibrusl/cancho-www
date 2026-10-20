@@ -30,7 +30,7 @@
   <a class="brand" href="#top"><img src="logo-mark.png" width="32" height="32" alt="">cancho</a>
   <span class="prever">Pre-1.0 · alpha</span>
   <nav aria-label="Sections">
-    <a href="#try" class="opt">Try it</a><a href="#trust" class="opt">Trust</a><a href="#ecosystem" class="opt">Ecosystem</a><a href="#proof" class="opt">Proof</a><a href="#demo" class="opt">Demo</a><a href="#agents" class="opt">Agents</a><a href="https://alpibru.com/manifesto" class="opt">Manifesto</a><a href="https://alpibrusl.github.io/cancho/" class="opt">Docs</a>
+    <a href="#try" class="opt">Try it</a><a href="#trust" class="opt">Trust</a><a href="#verifies" class="opt">Evidence</a><a href="#ecosystem" class="opt">Ecosystem</a><a href="#demo" class="opt">Demo</a><a href="#agents" class="opt">Agents</a><a href="https://alpibru.com/manifesto" class="opt">Manifesto</a><a href="https://alpibrusl.github.io/cancho/" class="opt">Docs</a>
   </nav>
   <div class="hright">
     <span class="switch" role="group" aria-label="View this page as">
@@ -38,7 +38,7 @@
     </span>
     <a class="ghbtn" href="https://github.com/alpibrusl/cancho"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .6l2.2 4.6 5 .7-3.6 3.5.9 5L8 12l-4.5 2.4.9-5L.8 5.9l5-.7z"/></svg>GitHub</a>
     <details class="menu"><summary aria-label="Menu"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></summary>
-      <div><a href="#try">Try it</a><a href="#trust">Trust</a><a href="#ecosystem">Ecosystem</a><a href="#proof">Proof</a><a href="#demo">Demo</a><a href="#agents">Agents</a><a href="https://alpibru.com/manifesto">Manifesto</a><a href="https://alpibrusl.github.io/cancho/">Docs</a><a href="https://github.com/alpibrusl/cancho">GitHub</a></div>
+      <div><a href="#try">Try it</a><a href="#trust">Trust</a><a href="#verifies">Evidence</a><a href="#ecosystem">Ecosystem</a><a href="#demo">Demo</a><a href="#agents">Agents</a><a href="https://alpibru.com/manifesto">Manifesto</a><a href="https://alpibrusl.github.io/cancho/">Docs</a><a href="https://github.com/alpibrusl/cancho">GitHub</a></div>
     </details>
   </div>
 </div></header>
@@ -99,7 +99,7 @@
       <div class="tx">
         <p class="when">60 seconds · nothing to install</p>
         <h3>See a refusal</h3>
-        <p>A program opens a file and never closes it. The compiler refuses it by a named rule; one added line fixes it.</p>
+        <p>A program opens a file and never closes it. The compiler refuses it by a named rule; one added line fixes it. <b>What this shows:</b> <code>check</code> found a resource that is never consumed and named the rule. Nothing was run, and a pass would not mean the program is correct in other ways.</p>
         <div class="links"><a class="btn primary" href="#demo">Watch the recorded session</a><a class="btn ghost" href="https://github.com/alpibrusl/cancho-www/tree/main/demo/src">The two files</a></div>
       </div>
       <div class="cd"><div class="codebox"><pre tabindex="0"><code>$ cancho check leak.cho --std
@@ -114,7 +114,7 @@ $ echo $?
       <div class="tx">
         <p class="when">5 minutes · Rust and clang</p>
         <h3>Run the compiler</h3>
-        <p>The first <code>run</code> builds the compiler written in cancho once. Green on linux-x86_64 and darwin-aarch64. <code>authority</code> is the one to try on something you did not write.</p>
+        <p><code>check</code> only checks; <code>run</code> builds and executes. The first <code>run</code> builds the compiler written in cancho once. Green on linux-x86_64 and darwin-aarch64. <code>authority</code> is the one to try on something you did not write.</p>
         <div class="links"><a class="btn ghost" href="https://github.com/alpibrusl/cancho#building">Build instructions</a><a class="btn ghost" href="https://alpibrusl.github.io/cancho/">Docs</a></div>
       </div>
       <div class="cd"><div class="codebox" data-copy><pre tabindex="0"><code>git clone https://github.com/alpibrusl/cancho &amp;&amp; cd cancho
@@ -214,6 +214,42 @@ cancho test tests/*.cho --std</code></pre></div><p class="what">What an agent se
 
 <div class="cairn" aria-hidden="true"></div>
 
+<section id="verifies">
+  <p class="eyebrow">Evidence, with its limits</p>
+  <h2>What cancho verifies today.</h2>
+  <p class="sub">Three lists, kept apart: what the compiler refuses, what tests exercise, and what is still being established. Every line links the document, fixture or issue behind it.</p>
+  <!-- verifies:start -->
+<div class="verif reveal">
+  <div class="v ok"><h3>Verified by the compiler</h3><ul>
+    <li>A value is consumed exactly once. A resource left unconsumed is refused as <code>linear-value-unconsumed</code> (19 refusal fixtures). <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/agent-errors.md">rule fixtures</a></span></li>
+    <li>Effect rows are exact. Performing an effect the signature does not declare is refused as <code>effect-not-declared</code> (12 fixtures); declaring one that is not performed is refused too. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/agent-errors.md">rule fixtures</a> <a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/authority.md">authority</a></span></li>
+    <li>Authority is derived, not declared: <code>cancho authority</code> lists what a program can reach, and says “unbounded” when foreign code is reachable. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/authority.md">authority</a> <a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/foreign-authority.md">foreign code</a></span></li>
+    <li>Every refusal carries a stable rule tag, and <code>--output json</code> gives it as data. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/agent-errors.md">the contract</a></span></li>
+    <li>Each declaration has a content hash (<code>cancho ids</code>); dependencies pin to hashes. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/canonical-ast.md">canonical AST (status: proposed)</a></span></li>
+  </ul></div>
+  <div class="v tests"><h3>Exercised by tests</h3><ul>
+    <li>359 refusal fixtures, each naming the rule it must be refused with, and 123 accepting programs. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/tree/main/tests/reject">tests/reject</a> <a class="ev" href="https://github.com/alpibrusl/cancho/tree/main/tests/accept">tests/accept</a></span></li>
+    <li>The conformance suite builds and runs real programs; the gate (format, clippy, tests) runs on linux-x86_64 and darwin-aarch64. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/CONTRIBUTING.md">CONTRIBUTING</a></span></li>
+    <li>Every checked code block in AGENTS.md is a fixture; changing a rule name to a wrong one turns the suite red (checked by doing it). <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/AGENTS.md">AGENTS.md</a></span></li>
+    <li>A mutation fuzzer feeds token-level edits of every program through parsing, checking and code generation, requiring no panic, a stable print-and-parse, and that what the checker accepts the backend compiles. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/crates/cancho/tests/fuzz.rs">fuzzer</a> <a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/fuzzing.md">design</a></span></li>
+    <li>Tests are checked by breaking what they cover and watching them fail. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/CONTRIBUTING.md">CONTRIBUTING</a> <a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/differential.md">differential testing</a></span></li>
+    <li>With every build going through the compiler written in cancho, 697 of 704 conformance tests pass (measured 2026-10-15, macOS aarch64). <span class="evs"><a class="ev" href="https://alpibrusl.github.io/cancho/bootstrap.html">bootstrap record</a></span></li>
+  </ul></div>
+  <div class="v todo"><h3>Still being established</h3><ul>
+    <li>The compiler written in cancho refuses 256 of the 333 programs that must be refused, with the same rule as the Rust one. It is not the default. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/issues/491">epic #491</a></span></li>
+    <li>Hash stability is not a contract yet: the canonical-AST document is “proposed”, and 39% of this repository’s own historical revisions do not type-check under today’s build. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/canonical-ast.md">canonical AST</a> <a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/hash-stability.md">hash stability</a></span></li>
+    <li>A cancho program has one network bound shared by listening and connecting, so a proxy’s authority report cannot say which upstreams it reaches; cancho-gateway enforces its compiled-in list by exact match and tests it, but the compiler does not vouch for it. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho-gateway">cancho-gateway</a></span></li>
+    <li>The TLS stack is not independently reviewed (stated in cancho-fetch’s README). <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho-fetch">cancho-fetch</a></span></li>
+    <li>Not evaluated: whether agents do better with cancho-tools than with the usual tools. That needs an agent-in-the-loop evaluation that has not been run. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/issues/228">cancho#228</a></span></li>
+    <li>Pre-1.0, supported on linux-x86_64 and darwin-aarch64 only, and its own README says it is not a usable language yet. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho#readme">README</a></span></li>
+  </ul></div>
+</div>
+<p class="note">A passing check shows that the checks listed here passed. It does not show a program is correct or secure in every respect, and tests exercise the behaviour they cover, not all behaviour. None of this is a certification, and no independent audit is claimed. Counted at cancho 1d4c44e, 2026-10-20. Each line links its evidence; a claim found false is corrected here, in place.</p>
+<!-- verifies:end -->
+</section>
+
+<div class="cairn" aria-hidden="true"></div>
+
 <section id="authority">
   <p class="eyebrow">Effects, as a value</p>
   <h2>Authority is a value, and you can watch it move.</h2>
@@ -245,6 +281,27 @@ cancho test tests/*.cho --std</code></pre></div><p class="what">What an agent se
   <p class="eyebrow">The ecosystem</p>
   <h2>Tools for the agentic world, one repository each.</h2>
   <p class="sub">Every public <code>alpibrusl/cancho-*</code> repository, from the language to the tools an agent calls. A filled rock is code that exists; a dashed outline is a design not yet set in place. Click a rock for its repository and its page.</p>
+  <h3 class="sub-h">Start with a path</h3>
+  <!-- paths:start -->
+<div class="paths reveal">
+  <article class="path"><h3>Build software with agents</h3><p class="blurb">Start with the language and the agent workflow: describe a task, let an agent build it, read the checks.</p><ul>
+    <li><div class="ph"><a href="https://github.com/alpibrusl/cancho">cancho</a> <span class="chip built">built</span> <a class="pg" href="https://alpibrusl.github.io/cancho/">page</a></div><p>Refuses a leaked resource by a named rule, says what a program may do, and builds a native binary.</p><a class="next" href="#try">Run the compiler →</a></li>
+    <li><div class="ph"><a href="https://github.com/alpibrusl/cancho-code">cancho-code</a> <span class="chip built">built</span> <a class="pg" href="https://alpibrusl.github.io/cancho-code/">page</a></div><p>In its own evaluation (Claude Haiku 5.5, hidden tests), 13 small libraries from hand-written plans finished 38 of 39 units; conditions and caveats are in its eval/results.</p><a class="next" href="https://github.com/alpibrusl/cancho-code/blob/main/docs/agent-prompt.md">Paste its agent prompt into your coding agent →</a></li>
+    <li><div class="ph"><a href="https://github.com/alpibrusl/cancho-tools">cancho-tools</a> <span class="chip early">early</span> <a class="pg" href="https://alpibrusl.github.io/cancho-tools/">page</a></div><p>A stale write is refused with a rule tag and the hash to retry: two agents, one file (a transcript in its README).</p><a class="next" href="https://github.com/alpibrusl/cancho-tools#one-complete-flow-two-agents-one-file">Read the two-agents demo →</a></li>
+  </ul></article>
+  <article class="path"><h3>Build software infrastructure</h3><p class="blurb">Services and tools written in cancho, each with an authority report the compiler derives.</p><ul>
+    <li><div class="ph"><a href="https://github.com/alpibrusl/cancho-hooks">cancho-hooks</a> <span class="chip alpha">alpha</span> <a class="pg" href="https://alpibrusl.github.io/cancho-hooks/">page</a></div><p>An event is on disk before the 202 answer, then signed (Standard Webhooks), retried and replayable. No 24-hour soak has completed yet.</p><a class="next" href="https://alpibrusl.github.io/cancho-hooks/">Read its landing page →</a></li>
+    <li><div class="ph"><a href="https://github.com/alpibrusl/cancho-cache">cancho-cache</a> <span class="chip alpha">alpha</span> <a class="pg" href="https://alpibrusl.github.io/cancho-cache/">page</a></div><p>Answers 69 of Redis 7.0’s 240 commands over RESP2 and RESP3; its authority report, checked in CI, names the one file it reads.</p><a class="next" href="https://github.com/alpibrusl/cancho-cache#readme">Try it from redis-cli →</a></li>
+    <li><div class="ph"><a href="https://github.com/alpibrusl/cancho-table">cancho-table</a> <span class="chip early">early</span> <a class="pg" href="https://alpibrusl.github.io/cancho-table/">page</a></div><p>A wrong column name is refused with a rule tag and the corrected command as a repair.</p><a class="next" href="https://alpibrusl.github.io/cancho-table/">Read its landing page →</a></li>
+  </ul></article>
+  <article class="path"><h3>Explore new computing boundaries</h3><p class="blurb">Hardware, GPUs and robotics. Experimental: read each status before you rely on it.</p><ul>
+    <li><div class="ph"><a href="https://github.com/alpibrusl/cancho-hdl">cancho-hdl</a> <span class="chip built">built</span> <a class="pg" href="https://alpibrusl.github.io/cancho-hdl/">page</a></div><p>A .chw contract is checked (a field overlap is refused as <code>field-overlap</code>), and a C header, device tree, SystemVerilog and CMSIS-SVD are generated from it.</p><a class="next" href="https://github.com/alpibrusl/cancho-hdl#readme">See its refusal examples →</a></li>
+    <li><div class="ph"><a href="https://github.com/alpibrusl/cancho-gpu">cancho-gpu</a> <span class="chip built">built</span> <a class="pg" href="https://alpibrusl.github.io/cancho-gpu/">page</a></div><p>CUDA C and Metal for 208 test cases (182 emit, 26 refused by both) are byte-identical with an independent implementation’s.</p><a class="next" href="https://alpibrusl.github.io/cancho-gpu/">Read its landing page →</a></li>
+    <li><div class="ph"><a href="https://github.com/alpibrusl/cancho-robot">cancho-robot</a> <span class="chip design">design</span> <a class="pg" href="https://alpibrusl.github.io/cancho-robot/">page</a></div><p>Nothing is built yet: research, design stage.</p><a class="next" href="https://alpibrusl.github.io/cancho-robot/">Read the plan →</a></li>
+  </ul></article>
+</div>
+<!-- paths:end -->
+  <h3 class="sub-h">Or browse every repository</h3>
   <div class="chips" id="map-chips" role="group" aria-label="Filter the map"></div>
   <div class="mapwrap">
     <div class="map"><svg id="map-svg" viewBox="0 100 1300 810" role="group" aria-label="Map of the cancho ecosystem"></svg></div>
@@ -286,7 +343,7 @@ cancho test tests/*.cho --std</code></pre></div><p class="what">What an agent se
   <li><a href="https://github.com/alpibrusl/cancho-fetch">cancho-fetch</a> (design): An agent-safe fetch: HTTP and HTTPS to a fixed, built-in list of hosts, with the list in the binary&#x27;s authority row instead of a flag.</li>
   <li><a href="https://github.com/alpibrusl/cancho-mqtt-client">cancho-mqtt-client</a> (design): An MQTT 3.1.1 client library: connect, publish, subscribe, will, QoS 0 and 1, and a reconnect with bounded backoff. The other half of cancho-mqtt.</li>
   </ul></details>
-  <!-- eco:end -->
+<!-- eco:end -->
 </section>
 
 <div class="cairn" aria-hidden="true"></div>
@@ -339,6 +396,70 @@ cancho test tests/*.cho --std</code></pre></div><p class="what">What an agent se
       <figcaption id="cap2">20 seconds: real compiler output beside the compiled counter running, not a live session. <a href="https://github.com/alpibrusl/cancho-ui">cancho-ui</a>.</figcaption>
     </figure>
   </div>
+  <!-- demo-text:start -->
+<details class="demo-text"><summary>The same session as text <small>(a real run, written by scripts/demo_transcript.sh)</small></summary><pre class="code" tabindex="0"># A program that opens a file.
+$ cat leak.cho
+// Open a file.
+import std.io;
+
+fn main(world: World) -&gt; [] int {
+    let Split { io, ffi, fs, heap, args } = split(world);
+    release(args);
+    release(ffi);
+    release(heap);
+    var status = 1;
+    let tmp = narrow(fs, &quot;/tmp&quot;);
+    borrow tmp as &amp;c in {
+        match open_read(c, &quot;/tmp/notes.txt&quot;) {
+            Opened::Ok(f) =&gt; {
+                status = 0;
+            }
+            Opened::Failed(e) =&gt; {
+            }
+        }
+    }
+    release(tmp);
+    borrow mut io as &amp;!i in {
+        if status == 0 {
+            io.write_all(i, &quot;opened it, closed it\n&quot;);
+        } else {
+            io.write_all(i, &quot;no such file\n&quot;);
+        }
+    }
+    release(io);
+    return status;
+}
+# It never closes it. The compiler refuses, and says which rule:
+$ cancho check leak.cho --std
+leak.cho:12:9: error: `f` is still live at the end of this block; nothing consumes it
+            match open_read(c, &quot;/tmp/notes.txt&quot;) {
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+$ cancho check leak.cho --std --output json | grep -E &quot;\&quot;(rule|message)\&quot;&quot;
+      &quot;rule&quot;: &quot;linear-value-unconsumed&quot;,
+      &quot;message&quot;: &quot;`f` is still live at the end of this block; nothing consumes it&quot;,
+# One line fixes it.
+$ diff leak.cho fixed.cho
+13a14
+&gt;                 file_close(f);
+$ cancho build fixed.cho --std -o notes &amp;&amp; ./notes
+opened it, closed it
+# What may it do? The compiler can say, because authority is in the types.
+$ cancho authority fixed.cho --std
+performs
+    fs_read(&quot;/tmp&quot;)
+    io_write
+never touches
+    the network
+    the heap
+    the command line
+    signals
+    other programs
+    foreign code
+# And the compiler can be one written in cancho:
+$ cancho build fixed.cho --std --compiler auto -o notes2 &amp;&amp; ./notes2
+opened it, closed it
+</pre></details>
+<!-- demo-text:end -->
 </section>
 
 <div class="cairn" aria-hidden="true"></div>
@@ -381,6 +502,19 @@ cancho test tests/*.cho --std</code></pre></div><p class="what">What an agent se
   <p class="eyebrow">agent view</p>
   <p class="sub">This is <a href="agents.md">agents.md</a>, served as-is. Switch back with <b>human</b> in the header.</p>
   <pre id="agent-full" tabindex="0">loading…</pre>
+</section>
+
+<section id="next">
+  <p class="eyebrow">Where next</p>
+  <h2>Pick the step that fits you.</h2>
+  <div class="nextgrid reveal">
+    <a href="#demo"><b>Curious developer</b><span>Watch the recorded session</span></a>
+    <a href="#try"><b>New user</b><span>Run the compiler on a first program</span></a>
+    <a href="https://alpibrusl.github.io/cancho/"><b>Systems engineer</b><span>Read the docs and the source</span></a>
+    <a href="https://github.com/alpibrusl/cancho/blob/main/CONTRIBUTING.md"><b>Contributor</b><span>Read how the compiler is worked on</span></a>
+    <a href="#verifies"><b>Evaluating it</b><span>What is verified, and what is not</span></a>
+    <a href="agents.md"><b>An AI agent</b><span>Fetch <code>agents.md</code></span></a>
+  </div>
 </section>
 
 <aside class="status" id="status">
