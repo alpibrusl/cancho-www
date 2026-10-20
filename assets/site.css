@@ -422,3 +422,4 @@ nav { margin-left: auto; gap: 1.3rem; }
 .scene-wrap .caption a { color: var(--accent); white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { .chain li { animation: none; } .chain li:not(:last-child)::after { animation: none; } }
 .hero h1 { font-size: clamp(2.1rem, 4.6vw, 3.05rem); line-height: 1.02; }
+.hero .bet { margin: -.3rem 0 0; font: 600 .95rem var(--font); color: var(--accent); max-width: 34rem; }
