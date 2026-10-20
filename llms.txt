@@ -1,6 +1,6 @@
 # cancho
 
-> cancho is a native systems language in which resource ownership and authority are part of the program's type-level contract: a value is consumed exactly once, and reaching the outside world requires holding a capability for it, checked at compile time.
+> A native systems language in which resource ownership and authority are part of the type, and the ecosystem built with it.
 
 Status: pre-1.0. Alpha products are built with it; the compiler is the Rust one, and a second compiler written in cancho is being checked against it (it does not yet refuse everything the language refuses). See the roadmap for what is open.
 
@@ -8,4 +8,26 @@ Source: https://github.com/alpibrusl/cancho
 Docs: https://alpibrusl.github.io/cancho/
 Roadmap: https://alpibrusl.github.io/cancho/ROADMAP.html
 Writing cancho programs (agents): https://github.com/alpibrusl/cancho/blob/main/AGENTS.md
-cancho-hooks (webhook service): https://alpibrusl.github.io/cancho-hooks/
+This site as Markdown: https://alpibrusl.github.io/cancho-www/agents.md
+Everything in one file: https://alpibrusl.github.io/cancho-www/llms-full.txt
+The ecosystem as JSON: https://alpibrusl.github.io/cancho-www/data/ecosystem.json
+
+## Ecosystem
+
+- [cancho-ui](https://github.com/alpibrusl/cancho-ui) (built): A UI language whose compiler knows what each component is allowed to do. Builds JavaScript and DOM.
+- [cancho-hooks](https://alpibrusl.github.io/cancho-hooks/) (alpha): Webhook delivery: on disk before the 202, signed, retried, dead-lettered and replayable.
+- [cancho-cache](https://github.com/alpibrusl/cancho-cache) (alpha): Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena.
+- [cancho-gateway](https://github.com/alpibrusl/cancho-gateway) (design): An auditable HTTP/1.1 reverse proxy: a fixed upstream set proven by the authority report.
+- [cancho-mqtt](https://github.com/alpibrusl/cancho-mqtt) (design): An MQTT 3.1.1 broker: one thread, one poller, bounded memory.
+- [cancho-dns](https://github.com/alpibrusl/cancho-dns) (design): A forwarding and caching DNS resolver: bounded parser, fixed arena.
+- [cancho-oci](https://github.com/alpibrusl/cancho-oci) (design): Container images without a daemon: a deterministic OCI image builder and registry client.
+- [cancho-pg](https://github.com/alpibrusl/cancho-pg) (early): PostgreSQL client: v3 protocol, SCRAM-SHA-256, extended queries, TLS, non-blocking pool.
+- [cancho-schema](https://github.com/alpibrusl/cancho-schema) (early): Schemas as data: validation, problem+json errors and JSON Schema 2020-12 from one value.
+- [cancho-web](https://github.com/alpibrusl/cancho-web) (early): Typed routes, validated bodies, problem+json errors and an OpenAPI document from one declaration.
+- [cancho-log](https://github.com/alpibrusl/cancho-log) (early): A durable, segmented, append-only log with crash-safe recovery that cuts off a torn tail.
+- [cancho-stats](https://github.com/alpibrusl/cancho-stats) (design): Statistics on tabular data as a command line an agent can read: exact sums, tests, intervals, resampling.
+- [cancho-ml](https://github.com/alpibrusl/cancho-ml) (design): Classical ML, pipelines and evaluation: deterministic, bounded, agent-first.
+- [cancho-tools](https://alpibrusl.github.io/cancho-tools/) (working): Nine small tools for agents: seek, list, peek, jsonq, tally, hash, write, replace, move. JSON out, errors that name a rule.
+- [cancho-table](https://alpibrusl.github.io/cancho-table/) (built): Select, filter, group and aggregate CSV/TSV for agents; bounded, exact, byte-stable.
+- [cancho-robot](https://alpibrusl.github.io/cancho-robot/) (design): A robot arm controller: the Feetech servo bus, SO-101 kinematics and a safety core every motion goes through.
+- [cancho-gpu](https://github.com/alpibrusl/cancho-gpu) (built): A compiler for lex-gpu's .lx tile kernels to CUDA C and Metal, written in cancho.

@@ -1,15 +1,33 @@
 # cancho-www
 
-Static front page for [cancho](https://github.com/alpibrusl/cancho), modelled on lex-www.
-Plain HTML, no build step beyond copying files.
+The home page of the cancho ecosystem: the language ([cancho](https://github.com/alpibrusl/cancho)) and every public `cancho-*` repository, as one page. Plain HTML, CSS and JavaScript; no framework, and the only build step is a Python script that derives the agent files.
+
+The concept is La Pedriza (Sierra de Guadarrama): granite boulders resting on one another with no mortar, as a picture of pieces that each state what they rest on. The hero, the cairn dividers and the ecosystem map are drawn procedurally from a seed (`assets/rocks.js`), so the same page always draws the same rocks.
+
+## Where things are
+
+| | |
+|---|---|
+| `data/ecosystem.json` | **The one source of truth**: every project, its stage, summary and links, plus the measured self-hosting figures. The map and the proof section are drawn from it. |
+| `index.html`, `assets/` | The page. `assets/site.js` has the hero, the authority animation, the map and the proof charts. |
+| `agents.md`, `llms.txt`, `llms-full.txt` | The agent version of the page. **Generated** from `data/ecosystem.json` by `scripts/gen_agent_files.py`; do not edit by hand. The `agent` switch in the header shows `agents.md`. |
+| `demo/`, `assets/media/` | The recorded videos (`scripts/record_demo.sh` makes the first). |
+
+## Changing it
 
 ```sh
-bash scripts/build_site.sh   # assemble _site/
+$EDITOR data/ecosystem.json          # add a project, change a stage, update the figures
+python3 scripts/gen_agent_files.py   # regenerate agents.md, llms.txt, llms-full.txt, the list under the map
+bash scripts/build_site.sh           # assemble _site/
+python3 -m http.server -d _site      # the page fetches data/ecosystem.json, so serve it, do not open the file
 ```
 
-`.github/workflows/pages.yml` deploys `_site/` to GitHub Pages on push to `main`.
-Served by GitHub Pages at `alpibrusl.github.io/cancho-www/` (all links are relative).
+CI fails if the generated files are stale (`gen_agent_files.py --check`). Stages are `working`, `alpha`, `early`, `built`, `design`; use a stage only if the project's own README says so, and `built` when it does not name one. A figure that turns out wrong is corrected in `data/ecosystem.json`, the way the rest of this project corrects claims.
+
+## Deploying
+
+`.github/workflows/pages.yml` deploys `_site/` to GitHub Pages on push to `main`, at `alpibrusl.github.io/cancho-www/` (all links are relative).
 
 Custom domain, once bought: add `echo "<domain>" > _site/CNAME` to `scripts/build_site.sh`, point the
 apex at GitHub Pages (A records 185.199.108.153, .109.153, .110.153, .111.153), then add
-`<link rel="canonical">` and `og:url` to `index.html`.
+`<link rel="canonical">` and `og:url` to `index.html` and update `site` in `data/ecosystem.json`.

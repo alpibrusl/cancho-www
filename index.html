@@ -3,116 +3,39 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>cancho</title>
-<meta name="description" content="A native systems language where resource ownership and authority are part of the type: a value is consumed exactly once, and reaching the outside world needs a capability, checked at compile time. Pre-1.0.">
+<title>cancho: ownership and authority in the type</title>
+<meta name="description" content="cancho is a native systems language where a value is consumed exactly once and reaching the outside world needs a capability, checked at compile time. This is the home of the language and everything built with it. Pre-1.0.">
 <meta property="og:title" content="cancho: ownership and authority in the type">
-<meta property="og:description" content="A value is consumed exactly once, and reaching the outside world requires holding a capability for it. Checked at compile time.">
+<meta property="og:description" content="A language, and the ecosystem built with it, where what code may do is part of its type. Boulders with no mortar.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://alpibrusl.github.io/cancho-www/logo.png">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" type="image/png" href="logo-mark.png">
 <link rel="apple-touch-icon" href="logo.png">
-<style>
-:root {
-  --bg: #fbfbfd; --fg: #14171c; --muted: #5b6573; --line: #e1e4ea; --surface: #ffffff; --soft: #f1f3f8;
-  --accent: #2f5de0; --accent-fg: #ffffff; --good: #0f7b5f; --warn: #92400e; --warn-bg: #fdf6e7; --warn-line: #e0b765; --bad: #d1362f;
-  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #0d1014; --fg: #e8eaee; --muted: #9ba5b3; --line: #232932; --surface: #141920; --soft: #181d25;
-    --accent: #7ea2ff; --accent-fg: #0b1020; --good: #4fd1a5; --warn: #f3c77a; --warn-bg: #1d1a12; --warn-line: #8a6a2a; --bad: #ff6b63; }
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; scroll-padding-top: 4rem; }
-body { margin: 0; background: var(--bg); color: var(--fg); font: 1rem/1.6 var(--font); }
-a { color: var(--accent); text-underline-offset: .15em; }
-.wrap { width: 100%; max-width: 68rem; margin: 0 auto; padding: 0 20px; }
-.skip { position: absolute; left: 16px; top: -4rem; background: var(--accent); color: var(--accent-fg); padding: .5rem .8rem; border-radius: 6px; z-index: 9; }
-.skip:focus { top: 8px; }
-a:focus-visible, .btn:focus-visible, pre:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
-
-header.top { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
-header.top .wrap { display: flex; align-items: center; gap: 1.5rem; height: 3.4rem; }
-.brand { font: 700 1rem var(--mono); color: var(--fg); text-decoration: none; letter-spacing: -.01em; white-space: nowrap; }
-nav { display: flex; gap: 1.2rem; margin-left: auto; }
-nav a { color: var(--muted); text-decoration: none; font-size: .93rem; white-space: nowrap; }
-nav a:hover { color: var(--fg); }
-@media (max-width: 40rem) { nav a.opt { display: none; } }
-
-h1 { font-size: clamp(2.3rem, 6.2vw, 4rem); line-height: 1.04; letter-spacing: -.035em; margin: 0 0 1rem; font-weight: 750; }
-h2 { font-size: clamp(1.6rem, 3.4vw, 2.2rem); line-height: 1.15; letter-spacing: -.025em; margin: 0 0 .5rem; font-weight: 700; }
-h3 { font-size: 1.05rem; margin: 0 0 .25rem; }
-p { margin: 0 0 1rem; }
-section { padding: 4.5rem 0 0; }
-.lead { font-size: 1.2rem; color: var(--muted); max-width: 34rem; }
-.sub { color: var(--muted); max-width: 38rem; }
-code { font-family: var(--mono); font-size: .9em; background: var(--soft); padding: .1em .35em; border-radius: 5px; }
-
-.hero { padding: 4rem 0 0; display: grid; gap: 2.5rem; align-items: center; }
-@media (min-width: 58rem) { .hero { grid-template-columns: 1.05fr 1fr; } }
-.logo { display: block; width: 7rem; height: 7rem; margin-bottom: 1.2rem; }
-.badge { display: inline-flex; gap: .5rem; align-items: center; font-size: .82rem; color: var(--warn); background: var(--warn-bg); border: 1px solid var(--warn-line); padding: .22rem .7rem; border-radius: 999px; margin-bottom: 1.2rem; text-decoration: none; }
-.badge i { width: .5rem; height: .5rem; border-radius: 50%; background: var(--warn-line); display: inline-block; }
-.cta { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.6rem; }
-.btn { display: inline-block; padding: .65rem 1.15rem; border-radius: 8px; font-weight: 600; text-decoration: none; border: 1px solid var(--accent); }
-.btn.primary { background: var(--accent); color: var(--accent-fg); }
-.btn.ghost { color: var(--accent); }
-.btn.ghost:hover { background: var(--soft); }
-
-.term { background: #0d1117; color: #d6dde8; border: 1px solid #262c36; border-radius: 12px; font: .84rem/1.65 var(--mono); padding: 1rem 1.1rem 1.1rem; box-shadow: 0 18px 50px -24px rgba(20, 30, 70, .55); overflow-x: auto; }
-.term .bar { display: flex; gap: .35rem; margin-bottom: .8rem; }
-.term .bar i { width: .65rem; height: .65rem; border-radius: 50%; background: #2d3440; display: block; }
-.term .c { color: #7d8797; } .term .g { color: #5fd3a6; } .term .b { color: #8cb0ff; } .term .y { color: #e8c170; } .term .r { color: #ff8b82; }
-.term pre { margin: 0; white-space: pre; }
-
-.three { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); margin-top: 3.2rem; }
-.three div { border-top: 3px solid var(--accent); padding-top: .8rem; }
-.three p { color: var(--muted); margin: 0; font-size: .96rem; }
-
-.grid { display: grid; gap: 1px; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin-top: 2rem; }
-.grid div, .grid a { background: var(--surface); padding: 1.1rem 1.2rem; color: inherit; text-decoration: none; display: block; }
-.grid a:hover { background: var(--soft); }
-.grid p { color: var(--muted); font-size: .93rem; margin: 0; }
-.syn { display: grid; gap: 1.2rem 1rem; grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr)); margin-top: 1.6rem; }
-.syn > div { min-width: 0; }
-.syn pre.code { margin-top: .6rem; }
-.chip { font: 600 .68rem var(--font); letter-spacing: .04em; text-transform: uppercase; padding: .1rem .5rem; border-radius: 999px; vertical-align: middle; margin-left: .35rem; border: 1px solid; }
-.chip.ok { color: var(--good); border-color: var(--good); }
-.chip.warn { color: var(--warn); border-color: var(--warn-line); background: var(--warn-bg); }
-h3.grp { margin: 1.8rem 0 -.8rem; color: var(--muted); font-size: .85rem; text-transform: uppercase; letter-spacing: .06em; }
-.note { color: var(--muted); font-size: .88rem; margin-top: .9rem; }
-
-pre.code { background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; font: .86rem/1.65 var(--mono); overflow-x: auto; margin: 1.4rem 0 0; }
-.status { margin-top: 4.5rem; background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 14px; padding: 1.3rem 1.5rem; }
-.status h2 { font-size: 1.2rem; letter-spacing: -.01em; }
-.status ul { margin: .4rem 0 0; padding-left: 1.2rem; color: var(--muted); }
-footer { margin-top: 4rem; border-top: 1px solid var(--line); padding: 1.6rem 0 2.6rem; color: var(--muted); font-size: .9rem; }
-footer .wrap { display: flex; flex-wrap: wrap; gap: .5rem 1.6rem; }
-footer a { color: var(--muted); }
-.cols { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); margin-top: 1.4rem; }
-.cols > div { border: 1px solid var(--line); border-radius: 14px; padding: 1.1rem 1.3rem; background: var(--surface); }
-.cols p { color: var(--muted); font-size: .93rem; margin: 0; }
-
-.demo figure { margin: 1.6rem 0 0; }
-.demo video { display: block; width: 100%; max-width: 54rem; border-radius: 12px; border: 1px solid #262c36; background: #272822; box-shadow: 0 18px 50px -24px rgba(20, 30, 70, .5); }
-.demo figcaption { color: var(--muted); font-size: .88rem; max-width: 54rem; margin-top: .7rem; }
-.demo details { max-width: 54rem; margin-top: 1rem; }
-.demo summary { cursor: pointer; color: var(--accent); }
-.nums { display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); margin-top: 1.6rem; }
-.nums div { border-top: 3px solid var(--accent); padding-top: .6rem; }
-.nums b { display: block; font-size: 2rem; letter-spacing: -.03em; color: var(--accent); line-height: 1.15; }
-.nums span { color: var(--muted); font-size: .93rem; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-</style>
+<link rel="alternate" type="text/markdown" href="agents.md" title="cancho, as an agent reads it">
+<link rel="alternate" type="application/json" href="data/ecosystem.json" title="The cancho ecosystem as data">
+<link rel="stylesheet" href="assets/site.css">
+<script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+
+<svg class="defs" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="gr" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" style="stop-color:var(--g1)"/><stop offset=".55" style="stop-color:var(--g2)"/><stop offset="1" style="stop-color:var(--g3)"/>
+    </linearGradient>
+  </defs>
+</svg>
+
 <header class="top"><div class="wrap">
-  <a class="brand" href="#top">cancho</a>
+  <a class="brand" href="#top"><img src="logo-mark.png" width="28" height="28" alt="">cancho</a>
   <nav aria-label="Sections">
-    <a href="#demo">Demo</a><a href="#why" class="opt">Why</a><a href="#example" class="opt">Example</a><a href="#syntax" class="opt">Syntax</a><a href="#not-here" class="opt">Not here</a><a href="#self" class="opt">Self-hosting</a><a href="#ecosystem">Ecosystem</a>
-    <a href="https://github.com/alpibrusl/cancho">GitHub</a>
+    <a href="#authority" class="opt">Authority</a><a href="#ecosystem">Ecosystem</a><a href="#proof" class="opt">Proof</a><a href="#demo" class="opt">Demo</a><a href="#agents" class="opt">Agents</a>
+    <a href="https://github.com/alpibrusl/cancho" class="opt">GitHub</a>
+    <span class="switch" role="group" aria-label="View this page as">
+      <button type="button" id="view-human" aria-pressed="true">human</button><button type="button" id="view-agent" aria-pressed="false">agent</button>
+    </span>
   </nav>
 </div></header>
 
@@ -120,262 +43,208 @@ footer a { color: var(--muted); }
 
 <div class="hero" id="top">
   <div>
-    <img class="logo" src="logo-mark.png" width="112" height="112" alt="cancho logo: a rocky outcrop on a blue sun">
+    <p class="eyebrow">La Pedriza · Sierra de Guadarrama</p>
     <a class="badge" href="#status"><i></i>Pre-1.0 · alpha products are built with it</a>
-    <h1>Ownership and authority, in the type.</h1>
-    <p class="lead">A native systems language where a value is consumed exactly once, and reaching the outside world (the console, a file, a foreign library) requires holding a capability for it. Checked at compile time.</p>
-    <div class="cta"><a class="btn primary" href="#example">See an example</a><a class="btn ghost" href="https://alpibrusl.github.io/cancho/">Read the docs</a></div>
+    <h1>Granite.<br>No mortar.</h1>
+    <p class="lead">In La Pedriza, boulders the size of houses stay where they are by their own weight and what they touch. cancho is a language, and an ecosystem, built the same way: every piece says what it rests on, and the compiler checks it.</p>
+    <div class="cta"><a class="btn primary" href="#authority">Watch it work</a><a class="btn ghost" href="#ecosystem">Explore the ecosystem</a></div>
   </div>
-  <div class="term" role="img" aria-label="Running cancho authority on a program"><div class="bar"><i></i><i></i><i></i></div>
-<pre><span class="c">$</span> cancho authority examples/tally.cho --std
-<span class="b">performs</span>
-    <span class="y">io_read</span>
-    <span class="y">io_write</span>
-<span class="b">never touches</span>
-    <span class="g">the filesystem</span>
-    <span class="g">the heap</span>
-    <span class="g">the command line</span>
-    <span class="g">foreign code</span>
+  <div class="scene" role="img" aria-label="A stack of granite boulders in front of a blue sun, as in the cancho logo"><svg id="scene-svg" viewBox="0 0 640 600" preserveAspectRatio="xMidYMax meet"></svg></div>
+</div>
 
-<span class="c">$ cancho authority … --output json</span>
-{"bounded": <span class="r">false</span>, "unbounded_by": [<span class="c">"scope:symbol", …</span>]}
-<span class="c"># fails closed when foreign code is reachable</span></pre>
+<div class="three reveal">
+  <div class="card">
+    <svg class="chain" viewBox="0 0 300 100" role="img" aria-label="Three blocks linked by their hashes">
+      <rect x="8" y="30" width="72" height="40" rx="8"/><text x="22" y="55">a3f9…</text>
+      <path class="link" d="M80,50 H114"/><rect x="114" y="30" width="72" height="40" rx="8"/><text x="128" y="55">7c21…</text>
+      <path class="link" d="M186,50 H220"/><rect x="220" y="30" width="72" height="40" rx="8"/><text x="234" y="55">e0b4…</text>
+    </svg>
+    <h3>Owned, not borrowed</h3><p>Dependencies pin to content hashes. Nothing changes under you because a maintainer published a new version.</p>
+  </div>
+  <div class="card">
+    <svg class="rings" viewBox="0 0 300 100" role="img" aria-label="Rings spreading from a core and stopping at a boundary">
+      <circle class="pulse" cx="150" cy="50" r="30"/><circle class="pulse" cx="150" cy="50" r="30"/>
+      <circle cx="150" cy="50" r="44" style="opacity:.6;stroke-dasharray:4 5"/><circle class="core" cx="150" cy="50" r="9"/>
+    </svg>
+    <h3>Bounded, not trusted</h3><p>Foreign code is allowed, never hidden. <code>cancho authority</code> names what is reachable, and says “unbounded” when it can’t.</p>
+  </div>
+  <div class="card">
+    <svg class="json" viewBox="0 0 300 100" role="img" aria-label="A diagnostic as JSON with a stable rule tag">
+      <text x="10" y="30"><tspan class="k">"rule"</tspan>: <tspan class="e">"linear-value-unconsumed"</tspan>,</text>
+      <text x="10" y="52"><tspan class="k">"line"</tspan>: 12, <tspan class="k">"col"</tspan>: 9,</text>
+      <text x="10" y="74"><tspan class="k">"fix"</tspan>: <tspan>"file_close(f);"</tspan></text><rect class="caret" x="10" y="82" width="7" height="3"/>
+    </svg>
+    <h3>Agent-first</h3><p>Diagnostics, the command tree and a skill file come out of the binary as data, with a rule tag instead of a sentence to parse.</p>
   </div>
 </div>
 
-<div class="three">
-  <div><h3>Authority is a value</h3><p><code>split(world)</code> is the only place a program gets authority from. A function nothing was handed cannot print, however much it wants to.</p></div>
-  <div><h3>Linear by default</h3><p>An unused capability is still a linear value: forgetting to <code>release</code> one does not compile.</p></div>
-  <div><h3>Content-addressed</h3><p>A canonical AST gives every declaration a stable hash. Dependencies pin to hashes, not version strings.</p></div>
-</div>
+<div class="cairn" aria-hidden="true"></div>
 
-<section id="demo" class="demo">
-  <h2>See it refuse a leak, then run.</h2>
-  <p class="sub">A program opens a file and never closes it. The compiler refuses it, by a named rule a machine can read. One added line fixes it; it builds to a native binary, and the compiler says what the program may do.</p>
-  <figure>
-    <video controls playsinline preload="metadata" poster="demo/poster.png" aria-describedby="demo-cap">
-      <source src="demo/demo.mp4" type="video/mp4">
-      <source src="demo/demo.webm" type="video/webm">
-      <a href="demo/demo.mp4">Watch the demo (mp4)</a>
-    </video>
-    <figcaption id="demo-cap">A real terminal session, 1 minute. Every command was run for real and the output is what it printed; only the typing is simulated. The last step builds the same program with the compiler written in cancho, which is not yet the default. <a href="demo/demo.cast">The recording as text (asciicast)</a>, and <a href="https://github.com/alpibrusl/cancho-www/blob/main/scripts/record_demo.sh">the script that makes it</a>.</figcaption>
-  </figure>
-  <details>
-    <summary>The same session as text</summary>
-<pre class="code" tabindex="0"># A program that opens a file.
-$ cat leak.cho
-// Open a file.
-import std.io;
-
-fn main(world: World) -&gt; [] int {
-    let Split { io, ffi, fs, heap, args } = split(world);
-    release(args);
-    release(ffi);
-    release(heap);
-    var status = 1;
-    let tmp = narrow(fs, &quot;/tmp&quot;);
-    borrow tmp as &amp;c in {
-        match open_read(c, &quot;/tmp/notes.txt&quot;) {
-            Opened::Ok(f) =&gt; {
-                status = 0;
-            }
-            Opened::Failed(e) =&gt; {
-            }
-        }
-    }
-    release(tmp);
-    borrow mut io as &amp;!i in {
-        if status == 0 {
-            io.write_all(i, &quot;opened it, closed it\n&quot;);
-        } else {
-            io.write_all(i, &quot;no such file\n&quot;);
-        }
-    }
-    release(io);
-    return status;
-}
-# It never closes it. The compiler refuses, and says which rule:
-$ cancho check leak.cho --std
-leak.cho:12:9: error: `f` is still live at the end of this block; nothing consumes it
-            match open_read(c, &quot;/tmp/notes.txt&quot;) {
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-$ cancho check leak.cho --std --output json | grep -E &quot;\&quot;(rule|message)\&quot;&quot;
-      &quot;rule&quot;: &quot;linear-value-unconsumed&quot;,
-      &quot;message&quot;: &quot;`f` is still live at the end of this block; nothing consumes it&quot;,
-# One line fixes it.
-$ diff leak.cho fixed.cho
-13a14
-&gt;                 file_close(f);
-$ cancho build fixed.cho --std -o notes &amp;&amp; ./notes
-opened it, closed it
-# What may it do? The compiler can say, because authority is in the types.
-$ cancho authority fixed.cho --std
-performs
-    fs_read(&quot;/tmp&quot;)
-    io_write
-never touches
-    the network
-    the heap
-    the command line
-    signals
-    other programs
-    foreign code
-# And the compiler can be one written in cancho:
-$ cancho build fixed.cho --std --compiler auto -o notes2 &amp;&amp; ./notes2
-opened it, closed it</pre>
-  </details>
-</section>
-
-<section id="why">
-  <h2>Why a language of its own</h2>
-  <p class="sub">Agents now write most of the code, and they pull in dependencies faster than anyone can read them. cancho is a bet that the answer is to own the stack (language, compiler, std, packages) and make what code may do a property of its type, so trust is checked by the compiler instead of assumed.</p>
-  <div class="cols">
-    <div><h3>Owned, not borrowed</h3><p>Dependencies are pinned to content hashes. Nothing changes under you because a maintainer published a new version.</p></div>
-    <div><h3>Bounded, not trusted</h3><p>Foreign code is allowed, but never hidden: <code>cancho authority</code> names exactly what is reachable, and says "unbounded" when it can't bound it.</p></div>
-    <div><h3>Agent-first tooling</h3><p>Diagnostics, the command tree and a SKILL.md all come out of the binary as data. See <a href="https://github.com/alpibrusl/cancho/blob/main/AGENTS.md">AGENTS.md</a>.</p></div>
+<section id="authority">
+  <p class="eyebrow">The idea</p>
+  <h2>Authority is a value, and you can watch it move.</h2>
+  <p class="sub"><code>split(world)</code> is the only place a program gets authority from. Every piece must then be handed on or released; a function that was never given one cannot use it. Pick a story.</p>
+  <div class="tabs" id="auth-tabs" role="group" aria-label="Scenarios"></div>
+  <div class="stage">
+    <div class="codepane" aria-label="The program, one line per step">
+      <div class="bar"><i></i><i></i><i></i></div>
+      <div id="auth-code"><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span></div>
+    </div>
+    <div class="canvas">
+      <svg viewBox="0 0 800 340" role="img" aria-label="Animation: the world splits into five capabilities, which are released or lent"><g id="auth-svg"></g></svg>
+      <div class="ctrl">
+        <button type="button" id="auth-prev" aria-label="Previous step">◀</button>
+        <button type="button" id="auth-play" aria-label="Play">▶</button>
+        <button type="button" id="auth-next" aria-label="Next step">▶|</button>
+        <div class="dots" id="auth-dots" aria-hidden="true"></div>
+        <span class="verdict" id="auth-verdict" role="status"></span>
+        <p class="cap" id="auth-cap" aria-live="polite"></p>
+      </div>
+    </div>
   </div>
-  <p class="note">It is a bet, not a result: owning everything only pays if agents make maintaining it cheap, and cancho is pre-1.0.</p>
+  <p class="note">The two refusals are real rules the compiler reports (<code>linear-value-unconsumed</code>, <code>effect-not-declared</code>). The scenes are drawn, the rule tags are not.</p>
 </section>
 
-<section id="example">
-  <h2>An example</h2>
-  <p class="sub"><code>greet</code> says <code>[io_write]</code> because it was handed a borrowed capability. <code>main</code>'s row is <code>[]</code> even though it prints, because it owns the capability rather than borrowing one.</p>
-<pre class="code" tabindex="0">import std.io;
-
-fn greet[&amp;i, &amp;r](io: &amp;!i Io, name: &amp;r [byte]) -&gt; [io_write] int {
-    io.write_all(io, "Hello, ");
-    return io.write_all(io, name);
-}
-
-fn main(world: World) -&gt; [] int {
-    let Split { io, ffi, fs, heap, args } = split(world);
-    release(ffi); release(fs); release(heap); release(args);
-
-    borrow mut io as &amp;!i in {
-        greet(i, "cancho");
-    }
-    release(io);
-    return 0;
-}</pre>
-</section>
-
-<section id="syntax">
-  <h2>Syntax at a glance</h2>
-  <p class="sub">Familiar on the surface: <code>let</code>, <code>fn</code>, <code>struct</code>, <code>enum</code>, <code>match</code>. The signature carries what's unusual: an effect row between <code>-&gt;</code> and the return type, and a mode on every type. All snippets are from <a href="https://github.com/alpibrusl/cancho/blob/main/examples/tour.cho">examples/tour.cho</a> and the compiler's reject tests.</p>
-  <div class="syn">
-    <div><h3>Data and exhaustive <code>match</code></h3><pre class="code" tabindex="0">struct Vec2 {
-    x: int,
-    y: int,
-}
-
-enum Shape {
-    Empty,
-    Circle(int),
-    Rect(int, int),
-}
-
-fn area(s: Shape) -&gt; [] int {
-    match s {
-        Shape::Empty =&gt; { return 0; }
-        Shape::Circle(r) =&gt; { return 3 * r * r; }
-        Shape::Rect(w, h) =&gt; { return w * h; }
-    }
-}</pre><p class="note"><code>[]</code> means pure. <code>match</code> must cover every variant, and the compiler names the ones you forgot.</p></div>
-    <div><h3>Generics</h3><pre class="code" tabindex="0">enum Opt[T] {
-    None,
-    Some(T),
-}
-
-fn unwrap_or[T: val](o: Opt[T], fallback: T) -&gt; [] T {
-    match o {
-        Opt::None =&gt; { return fallback; }
-        Opt::Some(value) =&gt; { return value; }
-    }
-}</pre><p class="note">One definition, monomorphised per type it is used at. <code>val</code> is the unrestricted mode: copyable and discardable.</p></div>
-    <div><h3>Linear resources</h3><pre class="code" tabindex="0">res struct Ticket {
-    serial: int,
-}
-
-fn issue(serial: int) -&gt; [] Ticket {
-    return Ticket { serial: serial };
-}
-
-fn redeem(t: Ticket) -&gt; [] int {
-    let Ticket { serial } = t;
-    return serial;
-}</pre><p class="note"><code>res</code> is linear: exactly one use, no implicit copy, no implicit discard. There are no destructors; a resource is spent by taking it apart.</p></div>
-    <div><h3>What the compiler refuses</h3><pre class="code" tabindex="0">fn disagree(f: Ticket, flag: bool) -&gt; [] int {
-    if flag {
-        let fd = close(f);
-    }
-    return 0;
-}</pre><pre class="code" tabindex="0">$ cancho check branches_disagree.cho
-branches_disagree.cho:19:5: error: the branches disagree about `f`:
-one consumes it and another does not
-        if flag {
-        ^^^^^^^^^</pre><p class="note">Only one branch consumes <code>f</code>. Rust would insert a hidden runtime drop flag; cancho refuses instead.</p></div>
-  </div>
-  <p class="note">Effect rows are exact and transitive: declaring an effect you don't perform is as much an error as performing one you didn't declare. The full language is in the <a href="https://alpibrusl.github.io/cancho/">docs</a>.</p>
-</section>
-
-<section id="not-here">
-  <h2>What's deliberately not here</h2>
-  <div class="cols">
-    <div><h3>No garbage collector, destructors or exceptions</h3><p>A resource is destroyed by naming the function that knows how.</p></div>
-    <div><h3>No borrow checker</h3><p>Borrowing is lexical: a region is a block, so validity is read off the syntax.</p></div>
-    <div><h3>No implicit anything</h3><p>No implicit conversions, no ambient authority. <code>Io {}</code> does not compile.</p></div>
-    <div><h3>No textual or proc macros</h3><p>They break stable, content-addressable identity.</p></div>
-  </div>
-</section>
+<div class="cairn" aria-hidden="true"></div>
 
 <section id="ecosystem">
-  <h2>Built with cancho</h2>
-  <p class="sub">Real programs and libraries, each with an authority report you can read. <span class="chip warn">Alpha</span> runs but may change; <span class="chip warn">Early</span> is a library with named gaps; <span class="chip ok">Working</span> does what its README claims.</p>
-  <h3 class="grp">Services and tools</h3>
-  <div class="grid">
-    <a href="https://alpibrusl.github.io/cancho-hooks/"><h3>cancho-hooks <span class="chip warn">Alpha</span></h3><p>Webhook delivery: on disk before the 202, signed, retried, replayable. Not for production yet.</p></a>
-    <a href="https://github.com/alpibrusl/cancho-cache"><h3>cancho-cache <span class="chip warn">Alpha</span></h3><p>Redis-compatible string cache over RESP2/RESP3 in a fixed arena. 38 of Redis 7.0&rsquo;s commands.</p></a>
-    <a href="https://alpibrusl.github.io/cancho-tools/"><h3>cancho-tools <span class="chip ok">Working</span></h3><p>Nine command-line tools for agents: seek, list, peek, jsonq, tally, hash, write, replace, move.</p></a>
+  <p class="eyebrow">The ecosystem</p>
+  <h2>A field of boulders.</h2>
+  <p class="sub">Everything in <code>alpibrusl/cancho-*</code> that is public and described. A filled rock is code that exists; a dashed outline is a design not yet set in place. Click a rock.</p>
+  <div class="chips" id="map-chips" role="group" aria-label="Filter the map"></div>
+  <div class="mapwrap">
+    <div class="map"><svg id="map-svg" viewBox="0 90 1200 710" role="group" aria-label="Map of the cancho ecosystem"></svg></div>
+    <aside class="detail" id="detail" aria-live="polite"></aside>
   </div>
-  <h3 class="grp">Libraries</h3>
-  <div class="grid">
-    <a href="https://github.com/alpibrusl/cancho-pg"><h3>cancho-pg <span class="chip warn">Early</span></h3><p>PostgreSQL client: v3 protocol, SCRAM-SHA-256, TLS, non-blocking pool.</p></a>
-    <a href="https://github.com/alpibrusl/cancho-web"><h3>cancho-web <span class="chip warn">Early</span></h3><p>Typed routes, validated bodies, <code>problem+json</code> and OpenAPI from one declaration.</p></a>
-    <a href="https://github.com/alpibrusl/cancho-schema"><h3>cancho-schema <span class="chip warn">Early</span></h3><p>Schemas as data: validation, error bodies and JSON Schema from one value.</p></a>
-    <a href="https://github.com/alpibrusl/cancho-log"><h3>cancho-log <span class="chip warn">Early</span></h3><p>Durable append-only log with crash-safe recovery. Append path only.</p></a>
+  <div class="legend">
+    <span><svg viewBox="0 0 26 18" aria-hidden="true"><path d="M3,15 Q1,5 10,3 Q22,1 24,12 Q24,16 20,16Z" fill="url(#gr)" stroke="var(--rock-line)"/></svg>exists</span>
+    <span><svg viewBox="0 0 26 18" aria-hidden="true"><path d="M3,15 Q1,5 10,3 Q22,1 24,12 Q24,16 20,16Z" fill="none" stroke="var(--g3)" stroke-dasharray="3 3"/></svg>design, not built</span>
+    <span><svg viewBox="0 0 26 18" aria-hidden="true"><path d="M2,14 Q13,0 24,14" fill="none" stroke="var(--accent)" stroke-dasharray="3 4" stroke-width="1.6"/></svg>rests on</span>
+    <span id="map-count"></span>
   </div>
-  <h3 class="grp">The language</h3>
-  <div class="grid">
-    <a href="https://github.com/alpibrusl/cancho/tree/main/packages"><h3>Compiler packages</h3><p>net-sockets, net-connect, agent-wire, http-request, http-response, http-server, tls, x509.</p></a>
-    <a href="https://alpibrusl.github.io/cancho/ROADMAP.html"><h3>Roadmap</h3><p>What landed, what&rsquo;s next, and what each slice found out.</p></a>
-    <a href="https://github.com/alpibrusl/cancho/blob/main/AGENTS.md"><h3>For agents</h3><p>One page for writing cancho programs. <code>cancho introspect</code> and <code>cancho skill</code> emit the CLI as data.</p></a>
-  </div>
-  <p class="note">More, including designs not built yet: <a href="https://github.com/orgs/alpibrusl/repositories?q=cancho-&amp;type=public">browse every <code>cancho-*</code> repository</a>, always current.</p>
+  <p class="note">Position is a layout, not a measurement: size and distance mean nothing, only the shape of the outline and the “rests on” lines do. Private repositories are not shown.</p>
+  <!-- eco:start -->
+  <details class="note" id="map-fallback"><summary>The same map as a list</summary>
+  <ul>
+  <li><a href="https://github.com/alpibrusl/cancho">cancho</a> (built): The language and its Rust compiler. A second compiler, written in cancho, is being checked against it.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-ui">cancho-ui</a> (built): A UI language whose compiler knows what each component is allowed to do. Builds JavaScript and DOM.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-hooks">cancho-hooks</a> (alpha): Webhook delivery: on disk before the 202, signed, retried, dead-lettered and replayable.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-cache">cancho-cache</a> (alpha): Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-gateway">cancho-gateway</a> (design): An auditable HTTP/1.1 reverse proxy: a fixed upstream set proven by the authority report.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-mqtt">cancho-mqtt</a> (design): An MQTT 3.1.1 broker: one thread, one poller, bounded memory.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-dns">cancho-dns</a> (design): A forwarding and caching DNS resolver: bounded parser, fixed arena.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-oci">cancho-oci</a> (design): Container images without a daemon: a deterministic OCI image builder and registry client.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-pg">cancho-pg</a> (early): PostgreSQL client: v3 protocol, SCRAM-SHA-256, extended queries, TLS, non-blocking pool.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-schema">cancho-schema</a> (early): Schemas as data: validation, problem+json errors and JSON Schema 2020-12 from one value.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-web">cancho-web</a> (early): Typed routes, validated bodies, problem+json errors and an OpenAPI document from one declaration.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-log">cancho-log</a> (early): A durable, segmented, append-only log with crash-safe recovery that cuts off a torn tail.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-stats">cancho-stats</a> (design): Statistics on tabular data as a command line an agent can read: exact sums, tests, intervals, resampling.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-ml">cancho-ml</a> (design): Classical ML, pipelines and evaluation: deterministic, bounded, agent-first.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-tools">cancho-tools</a> (working): Nine small tools for agents: seek, list, peek, jsonq, tally, hash, write, replace, move. JSON out, errors that name a rule.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-table">cancho-table</a> (built): Select, filter, group and aggregate CSV/TSV for agents; bounded, exact, byte-stable.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-robot">cancho-robot</a> (design): A robot arm controller: the Feetech servo bus, SO-101 kinematics and a safety core every motion goes through.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-gpu">cancho-gpu</a> (built): A compiler for lex-gpu&#x27;s .lx tile kernels to CUDA C and Metal, written in cancho.</li>
+  </ul></details>
+  <!-- eco:end -->
 </section>
 
-<section id="self">
+<div class="cairn" aria-hidden="true"></div>
+
+<section id="proof">
+  <p class="eyebrow">Proof, not promises</p>
   <h2>The compiler is being written in cancho.</h2>
-  <p class="sub">The first compiler is in Rust. A second one, about twenty thousand lines of cancho, reads a program and writes LLVM IR, and builds the standard library and the products below. It is the check the language is held to, in both directions: the Rust compiler is the oracle until the cancho one refuses everything the language refuses.</p>
-  <div class="nums">
-    <div><b>697 / 704</b><span>conformance tests pass when every build goes through the compiler written in cancho; the other 7 are known differences from the Rust compiler, each listed.</span></div>
-    <div><b>256 / 333</b><span>programs that must be refused are refused by the cancho compiler with the same rule as the Rust one. It does not yet check everything.</span></div>
-    <div><b>62</b><span>named rules, stable tags a program can match on, instead of sentences to parse.</span></div>
+  <p class="sub">A second compiler, about twenty thousand lines of cancho, reads a program and writes LLVM IR. The Rust compiler is the oracle until the cancho one refuses everything the language refuses. One square is one test.</p>
+  <div class="proof">
+    <div class="card">
+      <b data-count="conformance"><span>0</span> <small>/ 704</small></b>
+      <div id="w-conformance"></div>
+      <p>conformance tests pass when every build goes through the compiler written in cancho. The 7 amber outlines are known differences from the Rust compiler, each listed.</p>
+    </div>
+    <div class="card">
+      <b data-count="refusals"><span>0</span> <small>/ 333</small></b>
+      <div id="w-refusals"></div>
+      <p>programs that must be refused are refused with the same rule as the Rust compiler. The empty squares are what it does not check yet.</p>
+    </div>
+    <div class="card">
+      <b data-count="rules"><span>0</span> <small>named rules</small></b>
+      <div id="w-rules"></div>
+      <p>stable tags a program can match on, instead of sentences to parse.</p>
+    </div>
   </div>
-  <p class="note">Measured on macOS aarch64 on 2026-10-15; the first two figures are what the repository's tests say and move as the work does (<a href="https://github.com/alpibrusl/cancho/issues/491">epic #491</a>). <a href="https://alpibrusl.github.io/cancho/bootstrap.html">Bootstrap and self-hosting</a> has the record.</p>
+  <p class="note">Measured <span id="proof-date"></span>. The first two figures are what the repository’s tests say and move as the work does (<a href="https://github.com/alpibrusl/cancho/issues/491">epic #491</a>). <a href="https://alpibrusl.github.io/cancho/bootstrap.html">Bootstrap and self-hosting</a> has the record.</p>
 </section>
 
-<section id="build">
-  <h2>Build it</h2>
-<pre class="code" tabindex="0">git clone https://github.com/alpibrusl/cancho
-cd cancho
-cargo test --workspace   # the whole gate: fmt, clippy, every test</pre>
-  <p class="note">Green on linux-x86_64 and darwin-aarch64. Codegen is LLVM via <code>clang</code> by default; <code>--backend cranelift</code> is faster to iterate on.</p>
+<div class="cairn" aria-hidden="true"></div>
+
+<section id="demo">
+  <p class="eyebrow">Recorded, not staged</p>
+  <h2>See it refuse, then run.</h2>
+  <p class="sub">Real terminals, real output; only the typing is simulated. A leaked file is refused by a named rule, one line fixes it, and the compiler says what the program may do. Then the same idea, lifted to a UI.</p>
+  <div class="videos">
+    <figure>
+      <h3>cancho: a leak, a rule, a fix</h3>
+      <video controls playsinline preload="metadata" poster="demo/poster.png" aria-describedby="cap1">
+        <source src="demo/demo.mp4" type="video/mp4"><source src="demo/demo.webm" type="video/webm">
+        <a href="demo/demo.mp4">Watch the demo (mp4)</a>
+      </video>
+      <figcaption id="cap1">1 minute. The last step builds the same program with the compiler written in cancho, which is not yet the default. <a href="demo/demo.cast">As text (asciicast)</a>, and <a href="https://github.com/alpibrusl/cancho-www/blob/main/scripts/record_demo.sh">the script that makes it</a>.</figcaption>
+    </figure>
+    <figure>
+      <h3>cancho-ui: a component declares what it may do</h3>
+      <video controls playsinline preload="metadata" poster="assets/media/ui-demo.poster.jpg" aria-describedby="cap2">
+        <source src="assets/media/ui-demo.mp4" type="video/mp4"><source src="assets/media/ui-demo.webm" type="video/webm">
+        <a href="assets/media/ui-demo.mp4">Watch the demo (mp4)</a>
+      </video>
+      <figcaption id="cap2">20 seconds: real compiler output beside the compiled counter running, not a live session. <a href="https://github.com/alpibrusl/cancho-ui">cancho-ui</a>.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<div class="cairn" aria-hidden="true"></div>
+
+<section id="not-here">
+  <p class="eyebrow">Deliberately not here</p>
+  <h2>What was left out is the design.</h2>
+  <div class="nope" role="list">
+    <span role="listitem" style="--i:0">garbage collector</span><span role="listitem" style="--i:1">destructors</span><span role="listitem" style="--i:2">exceptions</span><span role="listitem" style="--i:3">borrow checker</span>
+    <span role="listitem" style="--i:4">implicit conversions</span><span role="listitem" style="--i:5">ambient authority</span><span role="listitem" style="--i:6">textual macros</span><span role="listitem" style="--i:7">proc macros</span>
+  </div>
+  <p class="note">Borrowing is lexical: a region is a block, so a reference’s validity is read off the syntax. <code>Io {}</code> does not compile. Macros would break stable, content-addressable identity. <a href="https://alpibrusl.github.io/cancho/">The docs</a> have the reasons.</p>
+</section>
+
+<div class="cairn" aria-hidden="true"></div>
+
+<section id="agents">
+  <p class="eyebrow">For agents</p>
+  <h2>The same page, as data.</h2>
+  <p class="sub">Flip the switch in the header to read this site the way an agent does, or fetch it. Every number and every project above comes from one JSON file.</p>
+  <div class="agents">
+    <ul class="endpoints">
+      <li><a href="agents.md">agents.md</a><span>This site as Markdown: what cancho is, the ecosystem, the commands, where to start.</span></li>
+      <li><a href="data/ecosystem.json">data/ecosystem.json</a><span>Every project with stage, summary, authority and links. The map is drawn from it.</span></li>
+      <li><a href="llms.txt">llms.txt</a> · <a href="llms-full.txt">llms-full.txt</a><span>The index, and the whole thing in one file.</span></li>
+      <li><a href="https://github.com/alpibrusl/cancho/blob/main/AGENTS.md">AGENTS.md</a><span>One page for writing cancho programs.</span></li>
+      <li><code>cancho introspect</code> · <code>cancho skill</code><span>The command tree and a SKILL.md, emitted by the binary as data.</span></li>
+    </ul>
+    <div class="term">
+      <div class="tabs2" id="agent-tabs" role="group" aria-label="Files">
+        <button type="button" data-file="agents.md" aria-pressed="true">agents.md</button><button type="button" data-file="data/ecosystem.json" aria-pressed="false">ecosystem.json</button><button type="button" data-file="llms.txt" aria-pressed="false">llms.txt</button>
+      </div>
+      <pre id="agent-pre" tabindex="0" aria-label="File contents">loading…</pre>
+    </div>
+  </div>
+</section>
+
+<section id="agent-view" aria-label="This site as an agent reads it">
+  <p class="eyebrow">agent view</p>
+  <p class="sub">This is <a href="agents.md">agents.md</a>, served as-is. Switch back with <b>human</b> in the header.</p>
+  <pre id="agent-full" tabindex="0">loading…</pre>
 </section>
 
 <aside class="status" id="status">
   <h2>Status: pre-1.0</h2>
   <ul>
-    <li>Alpha and early products are built with it (see above), each with an authority report the compiler derives. Alpha means it runs and may change.</li>
+    <li>Alpha and early products are built with it (see the map), each with an authority report the compiler derives. Alpha means it runs and may change.</li>
     <li>The compiler is still the Rust one. The cancho compiler builds real programs but does not yet refuse everything the language refuses, so it is not the default.</li>
     <li>Dependencies resolve end to end, and a real TLS handshake compiles and runs.</li>
     <li>There is no manifest-level version string: a hash is what you depend on.</li>
@@ -383,12 +252,22 @@ cargo test --workspace   # the whole gate: fmt, clippy, every test</pre>
   </ul>
 </aside>
 
+<div class="etym">
+  <p><b>cancho</b> (Spanish): a big rock, a boulder. La Pedriza del Manzanares is a granite landscape in the Sierra de Guadarrama, north of Madrid, where weathered, jointed granite left fields of boulders resting on one another with nothing between them.</p>
+</div>
+
 </main>
 
 <footer><div class="wrap">
   <span>cancho · <a href="https://alpibru.com">Alpibru</a> · EUPL-1.2</span>
   <a href="https://github.com/alpibrusl/cancho">GitHub</a>
+  <a href="https://alpibrusl.github.io/cancho/">Docs</a>
+  <a href="https://alpibrusl.github.io/cancho/ROADMAP.html">Roadmap</a>
+  <a href="agents.md">agents.md</a>
   <a href="llms.txt">llms.txt</a>
 </div></footer>
+
+<script src="assets/rocks.js"></script>
+<script src="assets/site.js"></script>
 </body>
 </html>
