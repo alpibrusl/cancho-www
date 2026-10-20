@@ -27,6 +27,6 @@ CI fails if the generated files are stale (`gen_agent_files.py --check`). Stages
 
 ## Deploying
 
-`.github/workflows/pages.yml` deploys `_site/` to GitHub Pages on push to `main`, at `cancho.dev` (all links are relative, so it also works under `alpibrusl.github.io/cancho-www/`).
+`.github/workflows/pages.yml` deploys `_site/` to GitHub Pages on push to `main`, at `alpibrusl.github.io/cancho-www/` (all links are relative).
 
-Custom domain: `cancho.dev`. `scripts/build_site.sh` writes `_site/CNAME`; `index.html` has the matching `<link rel="canonical">` and `og:url`, and `site` in `data/ecosystem.json` feeds the URLs in the generated `agents.md` and `llms.txt`. DNS (at the registrar): apex A records 185.199.108.153, .109.153, .110.153, .111.153 (and AAAA 2606:50c0:8000::153, 8001::153, 8002::153, 8003::153), plus `www` as a CNAME to `alpibrusl.github.io`; then set the custom domain and enforce HTTPS in the repository's Pages settings.
+Custom domain, once bought (planned: `cancho.dev`): add `echo "<domain>" > _site/CNAME` to `scripts/build_site.sh`, point the apex at GitHub Pages (A records 185.199.108.153, .109.153, .110.153, .111.153; AAAA 2606:50c0:8000::153 to 8003::153; `www` CNAME to `alpibrusl.github.io`), then set the custom domain and enforce HTTPS in Pages settings. Update `<link rel="canonical">`, `og:url` and `og:image` in `index.html`, and `site` in `data/ecosystem.json` (it feeds the URLs in the generated `agents.md` and `llms.txt`; run `scripts/gen_agent_files.py`).

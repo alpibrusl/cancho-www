@@ -78,5 +78,5 @@ Record: https://alpibrusl.github.io/cancho/bootstrap.html
 
 ## Machine-readable
 
-- https://cancho.dev/data/ecosystem.json: every project above as JSON
-- https://cancho.dev/llms.txt and https://cancho.dev/llms-full.txt
+- https://alpibrusl.github.io/cancho-www/data/ecosystem.json: every project above as JSON
+- https://alpibrusl.github.io/cancho-www/llms.txt and https://alpibrusl.github.io/cancho-www/llms-full.txt
