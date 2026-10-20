@@ -12,9 +12,7 @@
   .sub { font-size: 27px; line-height: 1.4; color: var(--muted); margin: 22px 0 0; max-width: 520px; }
   .url { font: 500 20px var(--mono); color: var(--muted); }
   .art { position: relative; margin: 0; background: linear-gradient(var(--sky), color-mix(in srgb, var(--sky) 55%, var(--bg))); overflow: hidden; }
-  .art svg { position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; }
-  .static .drop, .static .sun-wrap, .static .cloud, .static .birds { animation: none !important; }
-  .static .layer { transform: none !important; }
+  .art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 55%; }
 </style></head>
 <body class="static" data-theme="light">
   <div class="copy">
@@ -23,7 +21,5 @@
       <p class="sub">A language where ownership and authority are in the type, and the ecosystem built with it.</p></div>
     <div class="url">alpibrusl.github.io/cancho-www</div>
   </div>
-  <div class="art"><svg id="scene-svg" viewBox="0 0 640 600" preserveAspectRatio="xMidYMax slice"></svg></div>
-  <script src="../../assets/rocks.js"></script><script src="../../assets/scene.js"></script>
-  <script>window.Scene.draw(document.getElementById('scene-svg'));</script>
+  <div class="art"><img src="stones.jpg" alt=""></div>
 </body></html>

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Renders og.png (1200x630) from scripts/og/og.html, which draws the same scene as the page (assets/scene.js).
+/* Renders og.png (1200x630) from scripts/og/og.html: the title on the left, scripts/og/stones.jpg (generated with Mistral AI) on the right.
    Needs playwright and a Chromium:  node scripts/make_og.js
    The light theme is forced so the card does not depend on the machine that renders it. */
 const { chromium } = require('playwright');
