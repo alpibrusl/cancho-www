@@ -55,6 +55,7 @@
       "stage": "alpha",
       "summary": "Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena.",
       "url": "https://github.com/alpibrusl/cancho-cache",
+      "page": "https://alpibrusl.github.io/cancho-cache/",
       "authority": "no FFI; authority report checked in CI",
       "note": "38 of Redis 7.0's commands; not a Redis replacement."
     },
@@ -140,7 +141,8 @@
       "kind": "library",
       "stage": "design",
       "summary": "Statistics on tabular data as a command line an agent can read: exact sums, tests, intervals, resampling.",
-      "url": "https://github.com/alpibrusl/cancho-stats"
+      "url": "https://github.com/alpibrusl/cancho-stats",
+      "page": "https://alpibrusl.github.io/cancho-stats/"
     },
     {
       "id": "cancho-ml",
