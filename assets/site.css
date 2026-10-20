@@ -1,5 +1,6 @@
 /* cancho-www: La Pedriza palette. Granite, a blue sun, ink. Light is morning, dark is night. */
 @font-face { font-family: "Plus Jakarta Sans Variable"; font-style: normal; font-display: swap; font-weight: 200 800; src: url("fonts/plus-jakarta-sans-latin-wght-normal.woff2") format("woff2-variations"), url("fonts/plus-jakarta-sans-latin-wght-normal.woff2") format("woff2"); }
+@font-face { font-family: "Caveat Variable"; font-style: normal; font-display: swap; font-weight: 400 700; src: url("fonts/caveat-latin-wght-normal.woff2") format("woff2-variations"), url("fonts/caveat-latin-wght-normal.woff2") format("woff2"); }
 @font-face { font-family: "JetBrains Mono Variable"; font-style: normal; font-display: swap; font-weight: 100 800; src: url("fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2-variations"), url("fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2"); }
 :root {
   --bg: #f7f4eb; --fg: #121417; --muted: #4f545b; --line: #e2ddd0; --surface: #ffffff; --soft: #efece1;
@@ -11,6 +12,9 @@
   --font: "Plus Jakarta Sans Variable", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --term-bg: #12151a; --term-fg: #d6dde8;
+  --hand: "Caveat Variable", "Segoe Script", "Bradley Hand", cursive;
+  --map-paper: #f4efc6; --map-forest: #b9d28f; --map-trail: #3f8c3a; --map-river: #5aa0d6; --map-ink: #43302a;
+  --map-road: #fffdf0; --map-road-edge: #5a4636; --gr1: #f1cbb8; --gr2: #dc9f87; --gr3: #b46f58; --gr-edge: #8e5645; --gr-design: #b46f58;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -20,6 +24,8 @@
     --g1: #8a93a1; --g2: #566070; --g3: #2c3441; --rock-line: #0b1016; --lichen: #8f8a46; --shrub: #060b10;
     --sky: #101a28; --ridge0: #121c29; --ridge1: #16222f; --ridge2: #1c2b3d; --cloud-o: .05;
     --ring: #222b36; --shadow: none;
+    --map-paper: #172125; --map-forest: #24432f; --map-trail: #78c47c; --map-river: #3d79ab; --map-ink: #eadfcf;
+    --map-road: #2a3236; --map-road-edge: #9a8872; --gr1: #c9a199; --gr2: #9c716b; --gr3: #6b4743; --gr-edge: #3b2624; --gr-design: #c9a199;
   }
 }
 * { box-sizing: border-box; }
@@ -343,3 +349,76 @@ nav { margin-left: auto; gap: 1.3rem; }
 .agents-hero .eyebrow { color: #8cb0ff; }
 .agents-hero .sub { color: #c4ccd8; margin-bottom: 0; }
 @media (prefers-reduced-motion: reduce) { .gallery img { transition: none; } .gallery figure:hover img { transform: none; } }
+
+/* the map as a walkers' map: parchment, forest, pink granite, green footpaths, handwritten names */
+.map { background: var(--map-paper); }
+.map svg .paper { fill: var(--map-paper); }
+.map svg .grain { fill: #000; opacity: 1; }
+.map svg .forest ellipse { fill: var(--map-forest); opacity: .7; }
+.map svg .river { fill: none; stroke: var(--map-river); stroke-width: 2.4; stroke-linecap: round; opacity: .85; }
+.map svg .river-name { font: 600 22px var(--hand); fill: var(--map-river); letter-spacing: .02em; }
+.map svg .road-edge { fill: none; stroke: var(--map-road-edge); stroke-width: 12; stroke-linecap: round; }
+.map svg .road-fill { fill: none; stroke: var(--map-road); stroke-width: 8.5; stroke-linecap: round; }
+.map svg .road-name { font: 700 14px var(--hand); fill: var(--map-road-edge); letter-spacing: .08em; dominant-baseline: central; }
+.map svg .trail { fill: none; stroke: var(--map-trail); stroke-width: 1.5; stroke-dasharray: 5 4; opacity: .85; transition: opacity .3s; }
+.map svg.filtered .trail { opacity: .18; }
+.map svg .region { font: 600 40px var(--hand); fill: var(--map-ink); opacity: .34; }
+.map svg .village rect { fill: #fffdf4; stroke: var(--map-road-edge); stroke-width: .9; }
+.map svg .north-line { fill: none; stroke: var(--map-ink); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.map svg .north text { font: 700 20px var(--hand); fill: var(--map-ink); }
+.map svg .g-shadow { fill: #1d2b12; opacity: .28; }
+.map svg .g-body { fill: url(#gran); stroke: var(--gr-edge); stroke-width: 1; stroke-linejoin: round; }
+.map svg .g-pebble { stroke-width: .8; }
+.map svg .g-shade { fill: url(#gran-shade); }
+.map svg .g-light { fill: #fff; opacity: .4; }
+.map svg .g-crack { fill: none; stroke: var(--gr-edge); stroke-width: 1; stroke-linecap: round; opacity: .5; }
+.map svg .rock.design .g-body { fill: var(--map-paper); fill-opacity: .55; stroke: var(--gr-design); stroke-width: 1.3; stroke-dasharray: 3 4; stroke-linecap: round; }
+.map svg .rock.sel .g-body:not(.g-pebble) { stroke: var(--accent); stroke-width: 2.8; }
+.map svg .name { font: 700 22px var(--hand); fill: var(--map-ink); stroke: var(--map-paper); stroke-width: 4px; paint-order: stroke; stroke-linejoin: round; letter-spacing: .01em; }
+.map svg .name.big { font-size: 32px; }
+.map svg .name.sub { font-weight: 500; font-size: 17px; opacity: .8; }
+.map svg .rock.sel .name { fill: var(--accent); }
+.map svg .leader { fill: none; stroke: var(--map-ink); stroke-width: 1; opacity: .7; }
+.map svg .mk-rest { fill: var(--accent); }
+.map svg .rests { fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-dasharray: 8 5; }
+.map svg .rests.dim { opacity: .1; }
+.map svg .pin { stroke: #fff; stroke-width: 1.6; }
+.map svg .park rect { fill: #1d63b8; stroke: #fff; stroke-width: 1.6; }
+.map svg .park-p { font: 700 16px var(--font); fill: #fff; }
+.map svg .park { cursor: pointer; }
+.map svg .rock.dim { opacity: .2; }
+.legend svg .lg-line { fill: none; stroke: var(--gr-edge); stroke-width: 1.3; }
+.legend svg .lg-fill { fill: var(--gr2); stroke: var(--gr-edge); stroke-width: 1.1; }
+
+/* the agentic story: a chain of five checked links, the shape of the tool, a pull quote */
+.sub-h { margin: 3.2rem 0 1rem; font-size: 1.3rem; letter-spacing: -.02em; }
+.chain { list-style: none; margin: 2.2rem 0 0; padding: 0; display: grid; gap: 1.5rem; counter-reset: step; }
+@media (min-width: 64rem) { .chain { grid-template-columns: repeat(5, 1fr); gap: 1.4rem; } }
+.chain li { position: relative; background: var(--surface); border-radius: 16px; padding: 1.1rem 1.1rem 1.2rem; box-shadow: var(--shadow), 0 0 0 1px var(--ring); animation: lit 10s ease-in-out infinite; animation-delay: calc(var(--i) * 2s); }
+@keyframes lit { 0%, 19% { box-shadow: var(--shadow), 0 0 0 2px var(--accent); transform: translateY(-3px); } 22%, 100% { box-shadow: var(--shadow), 0 0 0 1px var(--ring); transform: none; } }
+.chain li:not(:last-child)::after { content: ""; position: absolute; background: repeating-linear-gradient(90deg, var(--accent) 0 5px, transparent 5px 9px); background-size: 9px 2px; height: 2px; width: 1.4rem; right: -1.4rem; top: 2.1rem; animation: flow .8s linear infinite; }
+@keyframes flow { to { background-position: 9px 0; } }
+@media (max-width: 63.99rem) { .chain li:not(:last-child)::after { right: auto; left: 2rem; top: auto; bottom: -1.5rem; width: 2px; height: 1.5rem; background: repeating-linear-gradient(180deg, var(--accent) 0 5px, transparent 5px 9px); background-size: 2px 9px; animation-name: flowv; } }
+@keyframes flowv { to { background-position: 0 9px; } }
+.chain .ico { width: 1.7rem; height: 1.7rem; fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; display: block; margin-bottom: .5rem; }
+.chain .n { position: absolute; top: 1rem; right: 1rem; font: 700 .72rem var(--mono); color: var(--muted); }
+.chain h3 { font-size: 1.15rem; margin: 0; letter-spacing: -.02em; }
+.chain .what { font-weight: 650; color: var(--fg); margin: .2rem 0 .5rem; font-size: .95rem; line-height: 1.35; }
+.chain p { font-size: .88rem; color: var(--muted); margin: 0 0 .8rem; }
+.chain .ref { font: 600 .78rem var(--mono); margin-right: .4rem; }
+.roles { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin-top: 1.6rem; }
+.roles div { background: var(--accent-soft); border-radius: 12px; padding: .8rem 1.1rem; font-size: .95rem; color: var(--fg); }
+.compare { display: grid; gap: .55rem; margin-top: .4rem; }
+.compare > div { display: grid; grid-template-columns: 11rem 1fr 1fr; gap: .55rem; align-items: stretch; }
+.compare > div > span { padding: .7rem 1rem; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow), 0 0 0 1px var(--ring); font-size: .93rem; color: var(--muted); }
+.compare .us { background: var(--accent-soft); color: var(--fg); box-shadow: none; }
+.compare small { color: var(--muted); font-size: .8rem; }
+.compare > div > span:first-child { background: none; box-shadow: none; padding-left: 0; font-weight: 700; color: var(--fg); }
+.compare .ch > span { background: none; box-shadow: none; font: 600 .72rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding-bottom: 0; }
+.compare .ch .us { color: var(--accent); background: none; }
+@media (max-width: 46rem) { .compare > div { grid-template-columns: 1fr; } .compare .ch { display: none; } .compare > div > span:first-child { padding-bottom: 0; } }
+.pull { margin: 3rem 0 0; padding: 0 0 0 1.4rem; border-left: 4px solid var(--accent); font-size: clamp(1.3rem, 2.6vw, 1.8rem); line-height: 1.3; letter-spacing: -.02em; font-weight: 650; max-width: 40rem; }
+.pull cite { display: block; margin-top: .7rem; font: 500 .85rem var(--font); letter-spacing: 0; color: var(--muted); font-style: normal; }
+.scene-wrap .caption a { color: var(--accent); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .chain li { animation: none; } .chain li:not(:last-child)::after { animation: none; } }
+.hero h1 { font-size: clamp(2.1rem, 4.6vw, 3.05rem); line-height: 1.02; }

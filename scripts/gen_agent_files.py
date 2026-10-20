@@ -34,6 +34,7 @@ def agents_md():
         "",
         "## The idea",
         "",
+        f"- Built for agents, not adapted from humans: you should not have to read what an agent wrote to trust it. The compiler verifies it, says what it may do, and answers in data. Comprehension is one basis for trust; verification is another. The case: {data['manifesto']}",
         "- A value is consumed exactly once. A `res` value must be consumed on every path; there are no destructors, no garbage collector, no exceptions.",
         "- Reaching the outside world (console, file, network, foreign code) requires holding a capability for it. `split(world)` is the only source of authority, and every piece must be handed on or `release`d.",
         "- Effect rows are exact: performing an effect you did not declare, or declaring one you do not perform, is refused.",
@@ -70,8 +71,8 @@ def agents_md():
                 line += " Rests on: " + ", ".join(p["rests_on"]) + "."
             if p.get("note"):
                 line += f" {p['note']}"
-            if p.get("docs"):
-                line += f" Docs: {p['docs']}"
+            if p.get("page"):
+                line += f" Page: {p['page']}"
             out.append(line)
         out.append("")
     out += [
@@ -104,6 +105,7 @@ def llms_txt():
         "",
         "Status: pre-1.0. Alpha products are built with it; the compiler is the Rust one, and a second compiler written in cancho is being checked against it (it does not yet refuse everything the language refuses). See the roadmap for what is open.",
         "",
+        f"Manifesto (the idea behind it): {data['manifesto']}",
         "Source: https://github.com/alpibrusl/cancho",
         "Docs: https://alpibrusl.github.io/cancho/",
         "Roadmap: https://alpibrusl.github.io/cancho/ROADMAP.html",
@@ -118,7 +120,10 @@ def llms_txt():
     for p in projects:
         if p["id"] == "cancho":
             continue
-        out.append(f"- [{p['name']}]({p.get('docs') or p['url']}) ({p['stage']}): {p['summary']}")
+        line = f"- [{p['name']}]({p['url']}) ({p['stage']}): {p['summary']}"
+        if p.get("page"):
+            line += f" Page: {p['page']}"
+        out.append(line)
     out.append("")
     return "\n".join(out)
 
@@ -154,8 +159,9 @@ def llms_full():
 def eco_list():
     lines = ['<details class="note" id="map-fallback"><summary>The same map as a list</summary>', "<ul>"]
     for p in projects:
+        page = f' · <a href="{html.escape(p["page"])}">page</a>' if p.get("page") else ""
         lines.append(
-            f'<li><a href="{html.escape(p["url"])}">{html.escape(p["name"])}</a> ({p["stage"]}): {html.escape(p["summary"])}</li>'
+            f'<li><a href="{html.escape(p["url"])}">{html.escape(p["name"])}</a>{page} ({p["stage"]}): {html.escape(p["summary"])}</li>'
         )
     lines += ["</ul></details>"]
     return "\n".join("  " + l for l in lines)
