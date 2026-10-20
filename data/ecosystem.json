@@ -2,7 +2,7 @@
   "name": "cancho",
   "tagline": "A native systems language in which resource ownership and authority are part of the type, and the ecosystem built with it.",
   "as_of": "2026-10-20",
-  "site": "https://alpibrusl.github.io/cancho-www/",
+  "site": "https://cancho.dev/",
   "stages": {
     "working": "Does what its README claims.",
     "alpha": "Runs, may change, not for production.",
