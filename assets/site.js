@@ -243,7 +243,19 @@
 
   var menu = $('.menu');
   if (menu) menu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { menu.open = false; }); });
-  hero(); cairns(); authority(); agents(); observers();
+  function copyButtons() {
+    document.querySelectorAll('.codebox[data-copy]').forEach(function (box) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'copy'; b.textContent = 'Copy'; b.setAttribute('aria-label', 'Copy the commands');
+      b.addEventListener('click', function () {
+        var text = box.querySelector('code').textContent.replace(/[ \t]+#.*$/gm, '').replace(/\s+$/gm, '');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { b.textContent = 'Select and copy'; });
+        else { var r = document.createRange(); r.selectNodeContents(box.querySelector('code')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Press Ctrl+C'; }
+      });
+      box.appendChild(b);
+    });
+  }
+  hero(); cairns(); authority(); agents(); observers(); copyButtons();
   fetch('data/ecosystem.json').then(function (r) { return r.json(); }).then(function (data) { window.CanchoMap.draw(data); proof(data); proofAnim(); })
     .catch(function () { var m = $('#map-fallback'); if (m) m.open = true; });
 })();
