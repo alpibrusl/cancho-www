@@ -369,6 +369,8 @@
     if (location.hash === '#agent') view('agent');
   }
 
+  var menu = $('.menu');
+  if (menu) menu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { menu.open = false; }); });
   hero(); cairns(); authority(); agents(); observers();
   fetch('data/ecosystem.json').then(function (r) { return r.json(); }).then(function (data) { map(data); proof(data); proofAnim(); })
     .catch(function () { var m = $('#map-fallback'); if (m) m.open = true; });

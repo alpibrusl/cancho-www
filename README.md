@@ -14,6 +14,8 @@ The concept is La Pedriza (Sierra de Guadarrama): granite boulders resting on on
 | `ui/agent-files.cui`, `assets/agent-files.js` | The agent-files pane, **written in [cancho-ui](https://github.com/alpibrusl/cancho-ui)**: `requires Network;` and nothing else. `assets/agent-files.js` is its compiled output (do not edit); rebuild it with `cancho-ui build ui/agent-files.cui -o assets/agent-files.js` and replay the behaviour with `cancho-ui test ui/agent-files.cui ui/agent-files.trace.json`. Everything else on the page is plain JS because cancho-ui has no SVG, media or styling primitives yet. |
 | `demo/`, `assets/media/` | The recorded videos (`scripts/record_demo.sh` makes the first). |
 
+Fonts (Plus Jakarta Sans, JetBrains Mono; SIL OFL) are served from `assets/fonts/`, so the page makes no third-party requests; see `THIRD_PARTY.md`.
+
 ## Changing it
 
 ```sh
