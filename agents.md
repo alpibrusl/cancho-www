@@ -1,11 +1,12 @@
 # cancho
 
-> A native systems language in which resource ownership and authority are part of the type, and the ecosystem built with it.
+> Tools built for agents, not adapted from humans: a native systems language, and the ecosystem built with it, where trust comes from verification, not comprehension.
 
 Status: pre-1.0. As of 2026-10-20. Alpha products are built with it; the compiler is the Rust one, and a second compiler written in cancho is being checked against it (it does not yet refuse everything the language refuses).
 
 ## The idea
 
+- Built for agents, not adapted from humans: you should not have to read what an agent wrote to trust it. The compiler verifies it, says what it may do, and answers in data. Comprehension is one basis for trust; verification is another. The case: https://alpibru.com/manifesto
 - A value is consumed exactly once. A `res` value must be consumed on every path; there are no destructors, no garbage collector, no exceptions.
 - Reaching the outside world (console, file, network, foreign code) requires holding a capability for it. `split(world)` is the only source of authority, and every piece must be handed on or `release`d.
 - Effect rows are exact: performing an effect you did not declare, or declaring one you do not perform, is refused.

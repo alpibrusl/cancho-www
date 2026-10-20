@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>cancho: ownership and authority in the type</title>
-<meta name="description" content="cancho is a native systems language where a value is consumed exactly once and reaching the outside world needs a capability, checked at compile time. This is the home of the language and everything built with it. Pre-1.0.">
-<meta property="og:title" content="cancho: ownership and authority in the type">
-<meta property="og:description" content="A language, and the ecosystem built with it, where what code may do is part of its type. Boulders with no mortar.">
+<title>cancho: tools built for agents, not adapted from humans</title>
+<meta name="description" content="cancho is a native systems language, and an ecosystem, built on one bet: you should not have to read what an agent wrote to trust it. The compiler verifies it, says what it may do, and answers in data. Pre-1.0.">
+<meta property="og:title" content="cancho: tools built for agents, not adapted from humans">
+<meta property="og:description" content="Trust without comprehension: a language where what code may do is in its type, and the ecosystem built with it.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://alpibrusl.github.io/cancho-www/">
 <meta property="og:image" content="https://alpibrusl.github.io/cancho-www/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="cancho: Granite. No mortar. A stack of granite boulders in front of a blue sun.">
+<meta property="og:image:alt" content="cancho: Tools built for agents. Trust without comprehension.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://alpibrusl.github.io/cancho-www/">
 <meta name="color-scheme" content="light dark">
@@ -30,7 +30,7 @@
   <a class="brand" href="#top"><img src="logo-mark.png" width="32" height="32" alt="">cancho</a>
   <span class="prever">Pre-1.0 · alpha</span>
   <nav aria-label="Sections">
-    <a href="#authority" class="opt">Authority</a><a href="#ecosystem" class="opt">Ecosystem</a><a href="#proof" class="opt">Proof</a><a href="#demo" class="opt">Demo</a><a href="#agents" class="opt">Agents</a><a href="https://alpibrusl.github.io/cancho/" class="opt">Docs</a>
+    <a href="#trust" class="opt">Trust</a><a href="#ecosystem" class="opt">Ecosystem</a><a href="#proof" class="opt">Proof</a><a href="#demo" class="opt">Demo</a><a href="#agents" class="opt">Agents</a><a href="https://alpibru.com/manifesto" class="opt">Manifesto</a><a href="https://alpibrusl.github.io/cancho/" class="opt">Docs</a>
   </nav>
   <div class="hright">
     <span class="switch" role="group" aria-label="View this page as">
@@ -38,7 +38,7 @@
     </span>
     <a class="ghbtn" href="https://github.com/alpibrusl/cancho"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .6l2.2 4.6 5 .7-3.6 3.5.9 5L8 12l-4.5 2.4.9-5L.8 5.9l5-.7z"/></svg>GitHub</a>
     <details class="menu"><summary aria-label="Menu"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></summary>
-      <div><a href="#authority">Authority</a><a href="#ecosystem">Ecosystem</a><a href="#proof">Proof</a><a href="#demo">Demo</a><a href="#agents">Agents</a><a href="https://alpibrusl.github.io/cancho/">Docs</a><a href="https://github.com/alpibrusl/cancho">GitHub</a></div>
+      <div><a href="#trust">Trust</a><a href="#ecosystem">Ecosystem</a><a href="#proof">Proof</a><a href="#demo">Demo</a><a href="#agents">Agents</a><a href="https://alpibru.com/manifesto">Manifesto</a><a href="https://alpibrusl.github.io/cancho/">Docs</a><a href="https://github.com/alpibrusl/cancho">GitHub</a></div>
     </details>
   </div>
 </div></header>
@@ -47,17 +47,17 @@
 
 <div class="hero" id="top">
   <div>
-    <p class="eyebrow">La Pedriza · Sierra de Guadarrama</p>
+    <p class="eyebrow">Trust without comprehension</p>
     <a class="badge" href="#status"><i></i>Pre-1.0 · alpha products are built with it</a>
-    <h1>Granite.<br><em>No mortar.</em></h1>
-    <p class="lead">In La Pedriza, boulders the size of houses stay where they are by their own weight and what they touch. <b>cancho</b> is a language, and an ecosystem, built the same way: every piece says what it rests on, and the compiler checks it.</p>
-    <div class="cta"><a class="btn primary" href="#authority">Watch it work</a><a class="btn ghost" href="#ecosystem">Explore the ecosystem</a><a class="btn text" href="https://github.com/alpibrusl/cancho">alpibrusl/cancho</a></div>
+    <h1>Tools built for agents.<br><em>Not adapted from humans.</em></h1>
+    <p class="lead"><b>cancho</b> is a language, and an ecosystem, built on one bet: you should not have to read what an agent wrote to trust it. The compiler verifies it, says what it may do, and answers in data.</p>
+    <div class="cta"><a class="btn primary" href="#trust">See how trust works</a><a class="btn ghost" href="#ecosystem">Explore the ecosystem</a><a class="btn text" href="https://alpibru.com/manifesto">Read the manifesto</a></div>
     <ul class="facts"><li>No ambient authority</li><li>Content-addressed</li><li>Diagnostics as data</li></ul>
   </div>
   <div class="scene-wrap">
     <div class="scene" role="img" aria-label="A stack of granite boulders in front of a blue sun, as in the cancho logo"><svg id="scene-svg" viewBox="0 0 640 600" preserveAspectRatio="xMidYMax meet"></svg></div>
-    <span class="tag"><i></i>La Pedriza · 40°44′N 3°53′W</span>
-    <p class="caption"><b>Each rock rests on what it touches.</b> Each cancho value rests on what it was handed.</p>
+    <span class="tag"><i></i>cancho · Spanish for a boulder</span>
+    <p class="caption"><b>Comprehension was a strategy.</b> It is not the only one. <a href="https://alpibru.com/manifesto">Trust Without Comprehension</a></p>
   </div>
 </div>
 
@@ -68,14 +68,14 @@
       <path class="link" d="M80,50 H114"/><rect x="114" y="30" width="72" height="40" rx="8"/><text x="128" y="55">7c21…</text>
       <path class="link" d="M186,50 H220"/><rect x="220" y="30" width="72" height="40" rx="8"/><text x="234" y="55">e0b4…</text>
     </svg>
-    <h3>Owned, not borrowed</h3><p>Dependencies pin to content hashes. Nothing changes under you because a maintainer published a new version.</p>
+    <h3>Identity, not lines</h3><p>A canonical AST gives every declaration a stable hash, and dependencies pin to hashes, not version strings. Nothing changes under you because a maintainer published a new version.</p>
   </div>
   <div class="card">
     <svg class="rings" viewBox="0 0 300 100" role="img" aria-label="Rings spreading from a core and stopping at a boundary">
       <circle class="pulse" cx="150" cy="50" r="30"/><circle class="pulse" cx="150" cy="50" r="30"/>
       <circle cx="150" cy="50" r="44" style="opacity:.6;stroke-dasharray:4 5"/><circle class="core" cx="150" cy="50" r="9"/>
     </svg>
-    <h3>Bounded, not trusted</h3><p>Foreign code is allowed, never hidden. <code>cancho authority</code> names what is reachable, and says “unbounded” when it can’t.</p>
+    <h3>Authority, not trust</h3><p>What a program may do is in its type, so a reviewer checks the policy, not every line. <code>cancho authority</code> names what is reachable, and says “unbounded” when it can’t.</p>
   </div>
   <div class="card">
     <svg class="json" viewBox="0 0 300 100" role="img" aria-label="A diagnostic as JSON with a stable rule tag">
@@ -83,28 +83,78 @@
       <text x="10" y="52"><tspan class="k">"line"</tspan>: 12, <tspan class="k">"col"</tspan>: 9,</text>
       <text x="10" y="74"><tspan class="k">"fix"</tspan>: <tspan>"file_close(f);"</tspan></text><rect class="caret" x="10" y="82" width="7" height="3"/>
     </svg>
-    <h3>Agent-first</h3><p>Diagnostics, the command tree and a skill file come out of the binary as data, with a rule tag instead of a sentence to parse.</p>
+    <h3>Verified, not read</h3><p>The compiler answers in data: a rule tag, a position, a fix. Diagnostics, the command tree and a skill file come out of the binary for an agent to use directly.</p>
   </div>
 </div>
 
 <div class="cairn" aria-hidden="true"></div>
 
-<section id="place">
-  <p class="eyebrow">The place</p>
-  <h2>Boulders that stand by themselves.</h2>
-  <p class="sub">La Pedriza is a granite landscape north of Madrid where weathering left fields of boulders resting on one another with nothing between them. That is the picture behind the name, and behind how the language is built.</p>
-  <div class="gallery">
-    <figure class="reveal"><picture><source type="image/webp" srcset="assets/img/field.webp"><img src="assets/img/field.jpg" width="1024" height="768" alt="Aerial view of a hillside covered in tall stacks of rounded granite boulders, with a dirt path and scrub between them under an overcast sky." loading="lazy" decoding="async"></picture><figcaption>A field of boulders. None is held by anything but what it touches.</figcaption></figure>
-    <figure class="reveal"><picture><source type="image/webp" srcset="assets/img/dawn.webp"><img src="assets/img/dawn.jpg" width="1024" height="768" alt="Granite boulders in pink morning light and low mist, with one large rounded rock in the centre." loading="lazy" decoding="async"></picture><figcaption>First light on the granite.</figcaption></figure>
-    <figure class="reveal"><picture><source type="image/webp" srcset="assets/img/balance.webp"><img src="assets/img/balance.jpg" width="1024" height="768" alt="Two rounded granite boulders, one resting on the other, lit from behind by the setting sun over a wide valley." loading="lazy" decoding="async"></picture><figcaption>Two stones, no mortar.</figcaption></figure>
+<section id="trust">
+  <p class="eyebrow">Trust without comprehension</p>
+  <h2>An agent writes. Five links check it.</h2>
+  <p class="sub">Comprehension is one basis for trust; verification is another, and it is the one that scales. Nothing in this chain asks a person to read the code first. Each link is checked, and none of them has to be understood.</p>
+  <ol class="chain reveal">
+    <li style="--i:0">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg>
+      <span class="n">1</span>
+      <h3>Generate</h3>
+      <p class="what">An agent writes</p>
+      <p>A brief becomes a plan of small units, each with a signature and examples, built one at a time.</p>
+      <a class="ref" href="https://github.com/alpibrusl/cancho-code">cancho-code</a> <span class="chip built">built</span>
+    </li>
+    <li style="--i:1">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+      <span class="n">2</span>
+      <h3>Verify</h3>
+      <p class="what">The compiler checks it</p>
+      <p>Refused by a named rule, or silent. The answer is a rule tag and a position, not a paragraph.</p>
+      <a class="ref" href="https://github.com/alpibrusl/cancho">cancho check</a> <span class="chip built">built</span>
+    </li>
+    <li style="--i:2">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>
+      <span class="n">3</span>
+      <h3>Test</h3>
+      <p class="what">The examples run</p>
+      <p>A contract’s tests call the candidate, and the verdict names the signature it satisfied.</p>
+      <a class="ref" href="https://github.com/alpibrusl/cancho">cancho satisfy</a> <span class="chip built">built</span>
+    </li>
+    <li style="--i:3">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+      <span class="n">4</span>
+      <h3>Constrain</h3>
+      <p class="what">It runs with only what it was given</p>
+      <p>The compiler lists what the program may do, and says “unbounded” when it cannot bound it.</p>
+      <a class="ref" href="https://github.com/alpibrusl/cancho">cancho authority</a> <span class="chip built">built</span>
+    </li>
+    <li style="--i:4">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v16H6z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>
+      <span class="n">5</span>
+      <h3>Record</h3>
+      <p class="what">What happened is on the record</p>
+      <p>An append-only journal. A worker saying “done” only moves a task to verification; the runtime accepts it.</p>
+      <a class="ref" href="https://github.com/alpibrusl/cancho-forge">cancho-forge</a> <span class="chip built">built · early</span>
+    </li>
+  </ol>
+  <div class="roles reveal">
+    <div><b>Humans</b> set the goal, write the spec and the policy, and read the trace.</div>
+    <div><b>Agents</b> generate, verify, compose and test.</div>
   </div>
-  <p class="note">Illustrations generated with Mistral AI. They show the idea; they are not photographs of La Pedriza.</p>
+  <p class="note">Every link is a real command or repository, with the limits its README states: <code>cancho-forge</code> is Milestone 1’s core only, and <code>cancho-code</code> reports its own measured results with their conditions.</p>
+
+  <h3 class="sub-h">The shape of the tool</h3>
+  <div class="compare reveal" role="table" aria-label="Human tools used by agents, against tools built for agents">
+    <div class="ch" role="row"><span role="columnheader"></span><span role="columnheader">Human tools, used by agents</span><span role="columnheader" class="us">Built for agents</span></div>
+    <div role="row"><span role="rowheader">What changed?</span><span><code>line 47 changed</code></span><span class="us"><code>authority: expanded</code> <small>(+ requires Network, from <a href="https://github.com/alpibrusl/cancho-ui">cancho-ui</a> diff)</small></span></div>
+    <div role="row"><span role="rowheader">Why trust it?</span><span>Read it, and hold it in your head.</span><span class="us">Check the contract: types, effects, examples.</span></div>
+    <div role="row"><span role="rowheader">What does the agent get?</span><span>A codebase to read.</span><span class="us">A contract to satisfy.</span></div>
+  </div>
+  <blockquote class="pull reveal">“Comprehension was a strategy. It is not the only one.”<cite>Alfonso Sastre, <a href="https://alpibru.com/manifesto">Trust Without Comprehension</a>, 2026</cite></blockquote>
 </section>
 
 <div class="cairn" aria-hidden="true"></div>
 
 <section id="authority">
-  <p class="eyebrow">The idea</p>
+  <p class="eyebrow">Effects, as a value</p>
   <h2>Authority is a value, and you can watch it move.</h2>
   <p class="sub"><code>split(world)</code> is the only place a program gets authority from. Every piece must then be handed on or released; a function that was never given one cannot use it. Pick a story.</p>
   <div class="tabs" id="auth-tabs" role="group" aria-label="Scenarios"></div>
@@ -132,8 +182,8 @@
 
 <section id="ecosystem">
   <p class="eyebrow">The ecosystem</p>
-  <h2>A field of boulders.</h2>
-  <p class="sub">Every public <code>alpibrusl/cancho-*</code> repository. A filled rock is code that exists; a dashed outline is a design not yet set in place. Click a rock.</p>
+  <h2>Tools for the agentic world, one repository each.</h2>
+  <p class="sub">Every public <code>alpibrusl/cancho-*</code> repository, from the language to the tools an agent calls. A filled rock is code that exists; a dashed outline is a design not yet set in place. Click a rock for its repository and its page.</p>
   <div class="chips" id="map-chips" role="group" aria-label="Filter the map"></div>
   <div class="mapwrap">
     <div class="map"><svg id="map-svg" viewBox="0 100 1300 810" role="group" aria-label="Map of the cancho ecosystem"></svg></div>
@@ -283,15 +333,27 @@
   </ul>
 </aside>
 
-<div class="etym">
-  <p><b>cancho</b> (Spanish): a big rock, a boulder. La Pedriza del Manzanares is a granite landscape in the Sierra de Guadarrama, north of Madrid, where weathered, jointed granite left fields of boulders resting on one another with nothing between them.</p>
-</div>
+<div class="cairn" aria-hidden="true"></div>
+
+<section id="name">
+  <p class="eyebrow">The name</p>
+  <h2>A big rock.</h2>
+  <p class="sub"><b>cancho</b> is Spanish for a boulder. In La Pedriza, a granite landscape north of Madrid, weathered, jointed rock left fields of boulders resting on one another with nothing between them. Each stays by its own weight and what it touches. The language is built the same way: every piece says what it rests on, and the compiler checks it.</p>
+  <div class="gallery">
+    <figure class="reveal"><picture><source type="image/webp" srcset="assets/img/field.webp"><img src="assets/img/field.jpg" width="1024" height="768" alt="Aerial view of a hillside covered in tall stacks of rounded granite boulders, with a dirt path and scrub between them under an overcast sky." loading="lazy" decoding="async"></picture><figcaption>A field of boulders. None is held by anything but what it touches.</figcaption></figure>
+    <figure class="reveal"><picture><source type="image/webp" srcset="assets/img/dawn.webp"><img src="assets/img/dawn.jpg" width="1024" height="768" alt="Granite boulders in pink morning light and low mist, with one large rounded rock in the centre." loading="lazy" decoding="async"></picture><figcaption>First light on the granite.</figcaption></figure>
+    <figure class="reveal"><picture><source type="image/webp" srcset="assets/img/balance.webp"><img src="assets/img/balance.jpg" width="1024" height="768" alt="Two rounded granite boulders, one resting on the other, lit from behind by the setting sun over a wide valley." loading="lazy" decoding="async"></picture><figcaption>Two stones, no mortar.</figcaption></figure>
+  </div>
+  <p class="note">Illustrations generated with Mistral AI. They show the idea; they are not photographs of La Pedriza.</p>
+</section>
+
 
 </main>
 
 <footer><div class="wrap">
   <span>cancho · <a href="https://alpibru.com">Alpibru</a> · EUPL-1.2</span>
   <a href="https://github.com/alpibrusl/cancho">GitHub</a>
+  <a href="https://alpibru.com/manifesto">Manifesto</a>
   <a href="https://alpibrusl.github.io/cancho/">Docs</a>
   <a href="https://alpibrusl.github.io/cancho/ROADMAP.html">Roadmap</a>
   <a href="agents.md">agents.md</a>

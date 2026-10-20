@@ -1,9 +1,10 @@
 # cancho
 
-> A native systems language in which resource ownership and authority are part of the type, and the ecosystem built with it.
+> Tools built for agents, not adapted from humans: a native systems language, and the ecosystem built with it, where trust comes from verification, not comprehension.
 
 Status: pre-1.0. Alpha products are built with it; the compiler is the Rust one, and a second compiler written in cancho is being checked against it (it does not yet refuse everything the language refuses). See the roadmap for what is open.
 
+Manifesto (the idea behind it): https://alpibru.com/manifesto
 Source: https://github.com/alpibrusl/cancho
 Docs: https://alpibrusl.github.io/cancho/
 Roadmap: https://alpibrusl.github.io/cancho/ROADMAP.html

@@ -389,3 +389,36 @@ nav { margin-left: auto; gap: 1.3rem; }
 .map svg .rock.dim { opacity: .2; }
 .legend svg .lg-line { fill: none; stroke: var(--gr-edge); stroke-width: 1.3; }
 .legend svg .lg-fill { fill: var(--gr2); stroke: var(--gr-edge); stroke-width: 1.1; }
+
+/* the agentic story: a chain of five checked links, the shape of the tool, a pull quote */
+.sub-h { margin: 3.2rem 0 1rem; font-size: 1.3rem; letter-spacing: -.02em; }
+.chain { list-style: none; margin: 2.2rem 0 0; padding: 0; display: grid; gap: 1.5rem; counter-reset: step; }
+@media (min-width: 64rem) { .chain { grid-template-columns: repeat(5, 1fr); gap: 1.4rem; } }
+.chain li { position: relative; background: var(--surface); border-radius: 16px; padding: 1.1rem 1.1rem 1.2rem; box-shadow: var(--shadow), 0 0 0 1px var(--ring); animation: lit 10s ease-in-out infinite; animation-delay: calc(var(--i) * 2s); }
+@keyframes lit { 0%, 19% { box-shadow: var(--shadow), 0 0 0 2px var(--accent); transform: translateY(-3px); } 22%, 100% { box-shadow: var(--shadow), 0 0 0 1px var(--ring); transform: none; } }
+.chain li:not(:last-child)::after { content: ""; position: absolute; background: repeating-linear-gradient(90deg, var(--accent) 0 5px, transparent 5px 9px); background-size: 9px 2px; height: 2px; width: 1.4rem; right: -1.4rem; top: 2.1rem; animation: flow .8s linear infinite; }
+@keyframes flow { to { background-position: 9px 0; } }
+@media (max-width: 63.99rem) { .chain li:not(:last-child)::after { right: auto; left: 2rem; top: auto; bottom: -1.5rem; width: 2px; height: 1.5rem; background: repeating-linear-gradient(180deg, var(--accent) 0 5px, transparent 5px 9px); background-size: 2px 9px; animation-name: flowv; } }
+@keyframes flowv { to { background-position: 0 9px; } }
+.chain .ico { width: 1.7rem; height: 1.7rem; fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; display: block; margin-bottom: .5rem; }
+.chain .n { position: absolute; top: 1rem; right: 1rem; font: 700 .72rem var(--mono); color: var(--muted); }
+.chain h3 { font-size: 1.15rem; margin: 0; letter-spacing: -.02em; }
+.chain .what { font-weight: 650; color: var(--fg); margin: .2rem 0 .5rem; font-size: .95rem; line-height: 1.35; }
+.chain p { font-size: .88rem; color: var(--muted); margin: 0 0 .8rem; }
+.chain .ref { font: 600 .78rem var(--mono); margin-right: .4rem; }
+.roles { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin-top: 1.6rem; }
+.roles div { background: var(--accent-soft); border-radius: 12px; padding: .8rem 1.1rem; font-size: .95rem; color: var(--fg); }
+.compare { display: grid; gap: .55rem; margin-top: .4rem; }
+.compare > div { display: grid; grid-template-columns: 11rem 1fr 1fr; gap: .55rem; align-items: stretch; }
+.compare > div > span { padding: .7rem 1rem; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow), 0 0 0 1px var(--ring); font-size: .93rem; color: var(--muted); }
+.compare .us { background: var(--accent-soft); color: var(--fg); box-shadow: none; }
+.compare small { color: var(--muted); font-size: .8rem; }
+.compare > div > span:first-child { background: none; box-shadow: none; padding-left: 0; font-weight: 700; color: var(--fg); }
+.compare .ch > span { background: none; box-shadow: none; font: 600 .72rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding-bottom: 0; }
+.compare .ch .us { color: var(--accent); background: none; }
+@media (max-width: 46rem) { .compare > div { grid-template-columns: 1fr; } .compare .ch { display: none; } .compare > div > span:first-child { padding-bottom: 0; } }
+.pull { margin: 3rem 0 0; padding: 0 0 0 1.4rem; border-left: 4px solid var(--accent); font-size: clamp(1.3rem, 2.6vw, 1.8rem); line-height: 1.3; letter-spacing: -.02em; font-weight: 650; max-width: 40rem; }
+.pull cite { display: block; margin-top: .7rem; font: 500 .85rem var(--font); letter-spacing: 0; color: var(--muted); font-style: normal; }
+.scene-wrap .caption a { color: var(--accent); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .chain li { animation: none; } .chain li:not(:last-child)::after { animation: none; } }
+.hero h1 { font-size: clamp(2.1rem, 4.6vw, 3.05rem); line-height: 1.02; }
