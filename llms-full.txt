@@ -40,7 +40,7 @@ Stages: `working` = Does what its README claims.; `alpha` = Runs, may change, no
 ### Services
 
 - [cancho-hooks](https://github.com/alpibrusl/cancho-hooks) `alpha`: Webhook delivery: on disk before the 202, signed, retried, dead-lettered and replayable. Not for production yet. Page: https://alpibrusl.github.io/cancho-hooks/
-- [cancho-cache](https://github.com/alpibrusl/cancho-cache) `alpha`: Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena. Authority: no FFI; authority report checked in CI. 38 of Redis 7.0's commands; not a Redis replacement.
+- [cancho-cache](https://github.com/alpibrusl/cancho-cache) `alpha`: Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena. Authority: no FFI; authority report checked in CI. 38 of Redis 7.0's commands; not a Redis replacement. Page: https://alpibrusl.github.io/cancho-cache/
 - [cancho-gateway](https://github.com/alpibrusl/cancho-gateway) `design`: An auditable HTTP/1.1 reverse proxy: a fixed upstream set proven by the authority report. Page: https://alpibrusl.github.io/cancho-gateway/
 - [cancho-mqtt](https://github.com/alpibrusl/cancho-mqtt) `design`: An MQTT 3.1.1 broker: one thread, one poller, bounded memory. Page: https://alpibrusl.github.io/cancho-mqtt/
 - [cancho-dns](https://github.com/alpibrusl/cancho-dns) `design`: A forwarding and caching DNS resolver: bounded parser, fixed arena. Page: https://alpibrusl.github.io/cancho-dns/
@@ -53,9 +53,9 @@ Stages: `working` = Does what its README claims.; `alpha` = Runs, may change, no
 - [cancho-schema](https://github.com/alpibrusl/cancho-schema) `early`: Schemas as data: validation, problem+json errors and JSON Schema 2020-12 from one value. Authority: heap only; no C.
 - [cancho-web](https://github.com/alpibrusl/cancho-web) `early`: Typed routes, validated bodies, problem+json errors and an OpenAPI document from one declaration. Authority: one thread, no FFI. Rests on: cancho-schema. Page: https://alpibrusl.github.io/cancho-web/
 - [cancho-log](https://github.com/alpibrusl/cancho-log) `early`: A durable, segmented, append-only log with crash-safe recovery that cuts off a torn tail. Authority: no FFI. Append path only; not a Kafka replacement.
-- [cancho-stats](https://github.com/alpibrusl/cancho-stats) `design`: Statistics on tabular data as a command line an agent can read: exact sums, tests, intervals, resampling.
+- [cancho-stats](https://github.com/alpibrusl/cancho-stats) `design`: Statistics on tabular data as a command line an agent can read: exact sums, tests, intervals, resampling. Page: https://alpibrusl.github.io/cancho-stats/
 - [cancho-ml](https://github.com/alpibrusl/cancho-ml) `design`: Classical ML, pipelines and evaluation: deterministic, bounded, agent-first. Page: https://alpibrusl.github.io/cancho-ml/
-- [cancho-mqtt-client](https://github.com/alpibrusl/cancho-mqtt-client) `design`: An MQTT 3.1.1 client library: connect, publish, subscribe, will, QoS 0 and 1, and a reconnect with bounded backoff. The other half of cancho-mqtt.
+- [cancho-mqtt-client](https://github.com/alpibrusl/cancho-mqtt-client) `design`: An MQTT 3.1.1 client library: connect, publish, subscribe, will, QoS 0 and 1, and a reconnect with bounded backoff. The other half of cancho-mqtt. Page: https://alpibrusl.github.io/cancho-mqtt-client/
 
 ### Tools
 

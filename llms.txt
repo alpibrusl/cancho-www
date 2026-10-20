@@ -17,7 +17,7 @@ The ecosystem as JSON: https://alpibrusl.github.io/cancho-www/data/ecosystem.jso
 
 - [cancho-ui](https://github.com/alpibrusl/cancho-ui) (built): A UI language whose compiler knows what each component is allowed to do. Builds JavaScript and DOM. Page: https://alpibrusl.github.io/cancho-ui/
 - [cancho-hooks](https://github.com/alpibrusl/cancho-hooks) (alpha): Webhook delivery: on disk before the 202, signed, retried, dead-lettered and replayable. Page: https://alpibrusl.github.io/cancho-hooks/
-- [cancho-cache](https://github.com/alpibrusl/cancho-cache) (alpha): Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena.
+- [cancho-cache](https://github.com/alpibrusl/cancho-cache) (alpha): Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena. Page: https://alpibrusl.github.io/cancho-cache/
 - [cancho-gateway](https://github.com/alpibrusl/cancho-gateway) (design): An auditable HTTP/1.1 reverse proxy: a fixed upstream set proven by the authority report. Page: https://alpibrusl.github.io/cancho-gateway/
 - [cancho-mqtt](https://github.com/alpibrusl/cancho-mqtt) (design): An MQTT 3.1.1 broker: one thread, one poller, bounded memory. Page: https://alpibrusl.github.io/cancho-mqtt/
 - [cancho-dns](https://github.com/alpibrusl/cancho-dns) (design): A forwarding and caching DNS resolver: bounded parser, fixed arena. Page: https://alpibrusl.github.io/cancho-dns/
@@ -26,7 +26,7 @@ The ecosystem as JSON: https://alpibrusl.github.io/cancho-www/data/ecosystem.jso
 - [cancho-schema](https://github.com/alpibrusl/cancho-schema) (early): Schemas as data: validation, problem+json errors and JSON Schema 2020-12 from one value.
 - [cancho-web](https://github.com/alpibrusl/cancho-web) (early): Typed routes, validated bodies, problem+json errors and an OpenAPI document from one declaration. Page: https://alpibrusl.github.io/cancho-web/
 - [cancho-log](https://github.com/alpibrusl/cancho-log) (early): A durable, segmented, append-only log with crash-safe recovery that cuts off a torn tail.
-- [cancho-stats](https://github.com/alpibrusl/cancho-stats) (design): Statistics on tabular data as a command line an agent can read: exact sums, tests, intervals, resampling.
+- [cancho-stats](https://github.com/alpibrusl/cancho-stats) (design): Statistics on tabular data as a command line an agent can read: exact sums, tests, intervals, resampling. Page: https://alpibrusl.github.io/cancho-stats/
 - [cancho-ml](https://github.com/alpibrusl/cancho-ml) (design): Classical ML, pipelines and evaluation: deterministic, bounded, agent-first. Page: https://alpibrusl.github.io/cancho-ml/
 - [cancho-tools](https://github.com/alpibrusl/cancho-tools) (working): Nine small tools for agents: seek, list, peek, jsonq, tally, hash, write, replace, move. JSON out, errors that name a rule. Page: https://alpibrusl.github.io/cancho-tools/
 - [cancho-table](https://github.com/alpibrusl/cancho-table) (built): Select, filter, group and aggregate CSV/TSV for agents; bounded, exact, byte-stable. Page: https://alpibrusl.github.io/cancho-table/
@@ -37,4 +37,4 @@ The ecosystem as JSON: https://alpibrusl.github.io/cancho-www/data/ecosystem.jso
 - [cancho-hdl](https://github.com/alpibrusl/cancho-hdl) (built): One .chw file declares the software/hardware boundary (registers, fields, interrupts, DMA); it is checked, and a C header, device tree, SystemVerilog RTL and CMSIS-SVD are generated from it. Page: https://alpibrusl.github.io/cancho-hdl/
 - [cancho-client-gen](https://github.com/alpibrusl/cancho-client-gen) (built): Reads the OpenAPI 3.1 document that cancho-web generates and writes strictly typed clients; the contract, both ways.
 - [cancho-fetch](https://github.com/alpibrusl/cancho-fetch) (design): An agent-safe fetch: HTTP and HTTPS to a fixed, built-in list of hosts, with the list in the binary's authority row instead of a flag.
-- [cancho-mqtt-client](https://github.com/alpibrusl/cancho-mqtt-client) (design): An MQTT 3.1.1 client library: connect, publish, subscribe, will, QoS 0 and 1, and a reconnect with bounded backoff. The other half of cancho-mqtt.
+- [cancho-mqtt-client](https://github.com/alpibrusl/cancho-mqtt-client) (design): An MQTT 3.1.1 client library: connect, publish, subscribe, will, QoS 0 and 1, and a reconnect with bounded backoff. The other half of cancho-mqtt. Page: https://alpibrusl.github.io/cancho-mqtt-client/
