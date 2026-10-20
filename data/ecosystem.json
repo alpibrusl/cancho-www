@@ -256,8 +256,7 @@
       "kind": "library",
       "stage": "design",
       "summary": "An MQTT 3.1.1 client library: connect, publish, subscribe, will, QoS 0 and 1, and a reconnect with bounded backoff. The other half of cancho-mqtt.",
-      "url": "https://github.com/alpibrusl/cancho-mqtt-client",
-      "page": "https://alpibrusl.github.io/cancho-mqtt-client/"
+      "url": "https://github.com/alpibrusl/cancho-mqtt-client"
     }
   ],
   "measured": {

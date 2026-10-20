@@ -55,7 +55,7 @@ Stages: `working` = Does what its README claims.; `alpha` = Runs, may change, no
 - [cancho-log](https://github.com/alpibrusl/cancho-log) `early`: A durable, segmented, append-only log with crash-safe recovery that cuts off a torn tail. Authority: no FFI. Append path only; not a Kafka replacement.
 - [cancho-stats](https://github.com/alpibrusl/cancho-stats) `design`: Statistics on tabular data as a command line an agent can read: exact sums, tests, intervals, resampling. Page: https://alpibrusl.github.io/cancho-stats/
 - [cancho-ml](https://github.com/alpibrusl/cancho-ml) `design`: Classical ML, pipelines and evaluation: deterministic, bounded, agent-first. Page: https://alpibrusl.github.io/cancho-ml/
-- [cancho-mqtt-client](https://github.com/alpibrusl/cancho-mqtt-client) `design`: An MQTT 3.1.1 client library: connect, publish, subscribe, will, QoS 0 and 1, and a reconnect with bounded backoff. The other half of cancho-mqtt. Page: https://alpibrusl.github.io/cancho-mqtt-client/
+- [cancho-mqtt-client](https://github.com/alpibrusl/cancho-mqtt-client) `design`: An MQTT 3.1.1 client library: connect, publish, subscribe, will, QoS 0 and 1, and a reconnect with bounded backoff. The other half of cancho-mqtt.
 
 ### Tools
 
