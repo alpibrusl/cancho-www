@@ -1,0 +1,22 @@
+{
+  "schema": "cancho-ui-trace",
+  "version": "0.1.0",
+  "component": "AgentFiles",
+  "note": "`start ShowAgents` fetches agents.md on mount (request 1). Each button fetches its own file from the page's origin; a failure is shown, not thrown; a request that is superseded by a newer one is dropped.",
+  "steps": [
+    { "resolve": 1, "with": { "Ok": "# cancho" },
+      "state": { "file": "agents.md", "status": "agents.md", "body": "# cancho" } },
+    { "event": "ShowJson",
+      "state": { "file": "data/ecosystem.json", "status": "loading" },
+      "expect": { "outcome": "suspended",
+                  "issued": [ { "request": 2, "effect": "net.get", "args": ["data/ecosystem.json"] } ] } },
+    { "resolve": 2, "with": { "Err": "HTTP 404" },
+      "state": { "status": "data/ecosystem.json: HTTP 404", "body": "" } },
+    { "event": "ShowLlms", "expect": { "pending": [3] } },
+    { "event": "ShowAgents", "expect": { "pending": [3, 4] } },
+    { "resolve": 3, "with": { "Ok": "stale llms" },
+      "state": { "file": "agents.md", "status": "loading", "body": "" } },
+    { "resolve": 4, "with": { "Ok": "fresh agents" },
+      "state": { "file": "agents.md", "status": "agents.md", "body": "fresh agents" } }
+  ]
+}

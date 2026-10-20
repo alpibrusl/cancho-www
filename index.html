@@ -227,10 +227,8 @@
       <li><code>cancho introspect</code> · <code>cancho skill</code><span>The command tree and a SKILL.md, emitted by the binary as data.</span></li>
     </ul>
     <div class="term">
-      <div class="tabs2" id="agent-tabs" role="group" aria-label="Files">
-        <button type="button" data-file="agents.md" aria-pressed="true">agents.md</button><button type="button" data-file="data/ecosystem.json" aria-pressed="false">ecosystem.json</button><button type="button" data-file="llms.txt" aria-pressed="false">llms.txt</button>
-      </div>
-      <pre id="agent-pre" tabindex="0" aria-label="File contents">loading…</pre>
+      <div id="root" class="cui" aria-label="Agent files"><pre tabindex="0">Fetch <a href="agents.md">agents.md</a>, <a href="data/ecosystem.json">ecosystem.json</a> or <a href="llms.txt">llms.txt</a> directly.</pre></div>
+      <p class="uinote">This pane is written in <a href="https://github.com/alpibrusl/cancho-ui">cancho-ui</a> (<a href="https://github.com/alpibrusl/cancho-www/blob/main/ui/agent-files.cui">ui/agent-files.cui</a>). It declares <code>requires Network;</code> and nothing else, and its network can only reach this site.</p>
     </div>
   </div>
 </section>
@@ -269,5 +267,6 @@
 
 <script src="assets/rocks.js"></script>
 <script src="assets/site.js"></script>
+<script type="module" src="assets/agent-files.js"></script>
 </body>
 </html>

@@ -251,3 +251,16 @@ footer a { color: var(--muted); }
 .slot { opacity: .55; }
 .zone.slot { stroke-dasharray: 3 5; }
 @media (max-width: 46rem) { .map { overflow-x: auto; } .map svg { min-width: 44rem; } }
+
+/* the cancho-ui component in the agents pane: the compiler emits structure, the page owns presentation */
+.cui { padding: .6rem; }
+.cui .cui-col { display: flex; flex-direction: column; gap: .5rem; }
+.cui button { display: inline-block; align-self: flex-start; font: 600 .78rem var(--mono); color: var(--term-fg); background: #1a212b; border: 1px solid #2d3644; border-radius: 8px; padding: .4rem .8rem; cursor: pointer; min-height: 2rem; }
+.cui button:hover { border-color: #6ea3ee; }
+.cui .cui-col { flex-flow: row wrap; align-items: center; }
+.cui [role="status"] { flex-basis: 100%; color: #8b95a6; font: 600 .74rem var(--mono); letter-spacing: .04em; padding-top: .3rem; border-top: 1px solid #262c36; }
+.cui .cui-col > span:last-child { flex-basis: 100%; display: block; white-space: pre-wrap; word-break: break-word; max-height: 22rem; overflow: auto; padding: .2rem .3rem; }
+.cui pre { margin: 0; padding: .6rem; white-space: pre-wrap; }
+.cui a, .uinote a { color: #8cb0ff; }
+.uinote { margin: 0; padding: .7rem 1rem .9rem; border-top: 1px solid #262c36; color: #8b95a6; font: .76rem/1.5 var(--font); }
+.uinote code { background: #1a212b; }

@@ -357,14 +357,6 @@
       return fetch(name).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (t) { cache[name] = t; into.textContent = t; })
         .catch(function () { into.textContent = '# could not load ' + name + '\n# fetch it directly: ' + name; });
     }
-    var pre = $('#agent-pre');
-    document.querySelectorAll('#agent-tabs button').forEach(function (b) {
-      b.addEventListener('click', function () {
-        document.querySelectorAll('#agent-tabs button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
-        load(b.dataset.file, pre);
-      });
-    });
-    load('agents.md', pre);
     var human = $('#view-human'), agent = $('#view-agent'), full = $('#agent-full');
     function view(v) {
       document.body.setAttribute('data-view', v);
