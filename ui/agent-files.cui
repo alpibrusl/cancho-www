@@ -1,0 +1,79 @@
+// ui/agent-files.cui — the "for agents" pane of the home page: three files, one button each, fetched from this
+// site's own origin. It is written in cancho-ui (https://github.com/alpibrusl/cancho-ui), so the page says, and the
+// compiler checks, what this component may do: `requires Network;` and nothing else. No Storage, no Clock, no Location.
+//
+// `net.get` only reaches the page's own origin; any other URL comes back as Err("blocked: ..."), so this pane cannot
+// call out even if its source were edited to try. Replay it without a browser:
+//     cancho-ui test ui/agent-files.cui ui/agent-files.trace.json
+
+component AgentFiles {
+    requires Network;
+
+    state file: String = "agents.md";
+    state status: String = "loading";
+    state body: String = "";
+    state r: Result[String, String] = Ok("");
+
+    on ShowAgents {
+        file = "agents.md";
+        status = "loading";
+        r = await(net.get("agents.md"));
+        status = match r {
+            Ok(_) => { "agents.md" }
+            Err(why) => { "agents.md: {why}" }
+            Cancelled => { "cancelled" }
+        };
+        body = match r {
+            Ok(text) => { text }
+            Err(_) => { "" }
+            Cancelled => { "" }
+        };
+    }
+
+    on ShowJson {
+        file = "data/ecosystem.json";
+        status = "loading";
+        r = await(net.get("data/ecosystem.json"));
+        status = match r {
+            Ok(_) => { "data/ecosystem.json" }
+            Err(why) => { "data/ecosystem.json: {why}" }
+            Cancelled => { "cancelled" }
+        };
+        body = match r {
+            Ok(text) => { text }
+            Err(_) => { "" }
+            Cancelled => { "" }
+        };
+    }
+
+    on ShowLlms {
+        file = "llms.txt";
+        status = "loading";
+        r = await(net.get("llms.txt"));
+        status = match r {
+            Ok(_) => { "llms.txt" }
+            Err(why) => { "llms.txt: {why}" }
+            Cancelled => { "cancelled" }
+        };
+        body = match r {
+            Ok(text) => { text }
+            Err(_) => { "" }
+            Cancelled => { "" }
+        };
+    }
+
+    start ShowAgents;
+
+    view {
+        Column {
+            Button { label: "agents.md" on: ShowAgents }
+            Button { label: "ecosystem.json" on: ShowJson }
+            Button { label: "llms.txt" on: ShowLlms }
+            Text {
+                role: status
+                "{status}"
+            }
+            Text { body }
+        }
+    }
+}
