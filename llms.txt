@@ -31,3 +31,9 @@ The ecosystem as JSON: https://alpibrusl.github.io/cancho-www/data/ecosystem.jso
 - [cancho-table](https://alpibrusl.github.io/cancho-table/) (built): Select, filter, group and aggregate CSV/TSV for agents; bounded, exact, byte-stable.
 - [cancho-robot](https://alpibrusl.github.io/cancho-robot/) (design): A robot arm controller: the Feetech servo bus, SO-101 kinematics and a safety core every motion goes through.
 - [cancho-gpu](https://github.com/alpibrusl/cancho-gpu) (built): A compiler for lex-gpu's .lx tile kernels to CUDA C and Metal, written in cancho.
+- [cancho-code](https://alpibrusl.github.io/cancho-code) (built): An AI coding assistant that proves its work: the cancho compiler checks every piece the model writes, and a task is done only when the compiler and the task's own examples say so.
+- [cancho-forge](https://github.com/alpibrusl/cancho-forge) (built): An agent-run software company you can audit: state, budgets, approvals and evidence are kept by the runtime, and a worker cannot accept its own work.
+- [cancho-hdl](https://github.com/alpibrusl/cancho-hdl) (built): One .chw file declares the software/hardware boundary (registers, fields, interrupts, DMA); it is checked, and a C header, device tree, SystemVerilog RTL and CMSIS-SVD are generated from it.
+- [cancho-client-gen](https://github.com/alpibrusl/cancho-client-gen) (built): Reads the OpenAPI 3.1 document that cancho-web generates and writes strictly typed clients; the contract, both ways.
+- [cancho-fetch](https://github.com/alpibrusl/cancho-fetch) (design): An agent-safe fetch: HTTP and HTTPS to a fixed, built-in list of hosts, with the list in the binary's authority row instead of a flag.
+- [cancho-mqtt-client](https://github.com/alpibrusl/cancho-mqtt-client) (design): An MQTT 3.1.1 client library: connect, publish, subscribe, will, QoS 0 and 1, and a reconnect with bounded backoff. The other half of cancho-mqtt.
