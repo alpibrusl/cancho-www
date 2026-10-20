@@ -171,105 +171,6 @@
     }
   }
 
-  /* ---------- the Pedriza map ---------- */
-  function map(data) {
-    var svg = $('#map-svg');
-    if (!svg) return;
-    var W = 1300, H = 800;
-    var spots = {
-      cancho: [260, 500], 'cancho-ui': [230, 705],
-      'cancho-forge': [400, 255], 'cancho-cache': [560, 330], 'cancho-hooks': [700, 250], 'cancho-gateway': [850, 330], 'cancho-mqtt': [990, 250], 'cancho-dns': [1120, 330], 'cancho-oci': [1225, 250],
-      'cancho-schema': [560, 480], 'cancho-web': [740, 545], 'cancho-pg': [900, 480], 'cancho-log': [1050, 545], 'cancho-stats': [1180, 470], 'cancho-ml': [1205, 595], 'cancho-mqtt-client': [410, 610],
-      'cancho-tools': [520, 770], 'cancho-table': [680, 770], 'cancho-client-gen': [850, 770], 'cancho-code': [600, 860], 'cancho-fetch': [770, 860],
-      'cancho-robot': [1030, 770], 'cancho-gpu': [1170, 770], 'cancho-hdl': [1100, 860]
-    };
-    var regions = [['language', 'La Pedriza', 80, 330], ['service', 'Services', 440, 150], ['library', 'Libraries', 440, 400], ['tool', 'Tools', 400, 725], ['edge', 'Edge', 925, 735]];
-    var cg = el('g', {}, svg);
-    for (var k = 0; k < 9; k++) {
-      var rr = R.rng(100 + k), d = 'M0,' + (120 + k * 82);
-      for (var x = 0; x <= W; x += 100) d += 'Q' + (x + 50) + ',' + (120 + k * 82 + (rr() - 0.5) * 80).toFixed(0) + ' ' + (x + 100) + ',' + (120 + k * 82 + (rr() - 0.5) * 40).toFixed(0);
-      el('path', { d: d, class: 'contour' }, cg);
-    }
-    regions.forEach(function (r) { var t = el('text', { x: r[2], y: r[3], class: 'region' }, svg); t.textContent = r[1]; });
-    var pos = {}, spare = 0;
-    data.projects.forEach(function (p) {
-      var big = p.id === 'cancho', s = spots[p.id] || [100 + (spare++) * 120, 770];
-      pos[p.id] = { p: p, x: s[0], y: s[1], rx: big ? 118 : 46 + (R.hash(p.id) % 14), ry: big ? 88 : 34 + (R.hash(p.id + 'y') % 10) };
-    });
-    var lines = el('g', {}, svg), rocks = [];
-    Object.keys(pos).sort(function (a, b) { return pos[a].y - pos[b].y; }).forEach(function (id) {
-      var q = pos[id], p = q.p;
-      var g = el('g', { class: 'rock ' + (p.stage === 'design' ? 'design' : 'built'), tabindex: 0, role: 'button', 'aria-label': p.name + ', ' + p.stage + ': ' + p.summary, 'data-id': id, 'data-kind': p.kind }, svg);
-      var inner = el('g', { class: 'inner' }, g);
-      R.rock(inner, { seed: p.id, x: q.x, baseY: q.y, rx: q.rx, ry: q.ry, n: p.id === 'cancho' ? 16 : 11, jitter: p.id === 'cancho' ? 0.07 : 0.14, cracks: p.id === 'cancho' ? 4 : 2, lichen: p.id === 'cancho' ? 7 : 2 });
-      el('circle', { cx: q.x + q.rx * 0.55, cy: q.y - q.ry * 1.05, r: 6.5, class: 'pin ' + p.stage }, inner);
-      el('text', { x: q.x, y: q.y + 19, class: 'name' }, g).textContent = p.name;
-      g.addEventListener('click', function () { select(id); });
-      g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(id); } });
-      rocks.push(g);
-    });
-    // "rests on" lines sit under the rocks
-    svg.insertBefore(lines, rocks[0]);
-    var restLines = [];
-    data.projects.forEach(function (p) {
-      (p.rests_on || []).forEach(function (t) {
-        if (!pos[t]) return;
-        var a = pos[p.id], b = pos[t];
-        var path = el('path', { d: 'M' + a.x + ',' + (a.y - a.ry * 0.5) + 'Q' + ((a.x + b.x) / 2) + ',' + (Math.min(a.y, b.y) - 90) + ' ' + b.x + ',' + (b.y - b.ry * 0.5), class: 'rests', 'data-a': p.id, 'data-b': t }, lines);
-        restLines.push(path);
-      });
-    });
-
-    var detail = $('#detail');
-    function select(id) {
-      rocks.forEach(function (g) { g.classList.toggle('sel', g.getAttribute('data-id') === id); });
-      var p = pos[id].p;
-      detail.textContent = '';
-      var chip = document.createElement('span'); chip.className = 'chip ' + p.stage; chip.textContent = p.stage; detail.appendChild(chip);
-      var h = document.createElement('h3'); h.textContent = p.name; detail.appendChild(h);
-      var s = document.createElement('p'); s.textContent = p.summary; detail.appendChild(s);
-      var dl = document.createElement('dl');
-      function row(t, v) { if (!v) return; var dt = document.createElement('dt'); dt.textContent = t; var dd = document.createElement('dd'); dd.textContent = v; dl.appendChild(dt); dl.appendChild(dd); }
-      row('Stage', data.stages[p.stage]); row('Authority', p.authority); row('Note', p.note);
-      if (p.rests_on) row('Rests on', p.rests_on.join(', '));
-      detail.appendChild(dl);
-      var links = document.createElement('div'); links.className = 'links';
-      var a = document.createElement('a'); a.className = 'btn primary'; a.href = p.url; a.textContent = 'Repository'; links.appendChild(a);
-      if (p.docs) { var b = document.createElement('a'); b.className = 'btn ghost'; b.href = p.docs; b.textContent = 'Docs'; links.appendChild(b); }
-      detail.appendChild(links);
-    }
-    select('cancho');
-
-    // filters
-    var state = { kind: 'all', only: false };
-    function apply() {
-      rocks.forEach(function (g) {
-        var id = g.getAttribute('data-id'), p = pos[id].p;
-        var dim = (state.kind !== 'all' && p.kind !== state.kind) || (state.only && p.stage === 'design');
-        g.classList.toggle('dim', dim);
-        g.setAttribute('tabindex', dim ? -1 : 0);
-      });
-      restLines.forEach(function (l) {
-        var dim = $('.rock[data-id="' + l.getAttribute('data-a') + '"]').classList.contains('dim') || $('.rock[data-id="' + l.getAttribute('data-b') + '"]').classList.contains('dim');
-        l.classList.toggle('dim', dim);
-      });
-    }
-    var chips = $('#map-chips');
-    var kinds = [['all', 'All']].concat(Object.keys(data.kinds).map(function (k) { return [k, data.kinds[k]]; }));
-    kinds.forEach(function (k, i) {
-      var b = document.createElement('button'); b.type = 'button'; b.textContent = k[1]; b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
-      b.addEventListener('click', function () { state.kind = k[0]; chips.querySelectorAll('button[data-k]').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); apply(); });
-      b.setAttribute('data-k', k[0]);
-      chips.appendChild(b);
-    });
-    var only = document.createElement('button'); only.type = 'button'; only.textContent = 'Only what exists'; only.setAttribute('aria-pressed', 'false'); only.style.marginLeft = 'auto';
-    only.addEventListener('click', function () { state.only = !state.only; only.setAttribute('aria-pressed', state.only ? 'true' : 'false'); apply(); });
-    chips.appendChild(only);
-    var counts = { built: 0, design: 0 };
-    data.projects.forEach(function (p) { counts[p.stage === 'design' ? 'design' : 'built']++; });
-    $('#map-count').textContent = counts.built + ' built, ' + counts.design + ' still on paper';
-  }
-
   /* ---------- proof: waffles of the real numbers ---------- */
   function waffle(host, cols, total, passed, diffFrom) {
     var cell = 14, gap = 3, rows = Math.ceil(total / cols);
@@ -343,6 +244,6 @@
   var menu = $('.menu');
   if (menu) menu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { menu.open = false; }); });
   hero(); cairns(); authority(); agents(); observers();
-  fetch('data/ecosystem.json').then(function (r) { return r.json(); }).then(function (data) { map(data); proof(data); proofAnim(); })
+  fetch('data/ecosystem.json').then(function (r) { return r.json(); }).then(function (data) { window.CanchoMap.draw(data); proof(data); proofAnim(); })
     .catch(function () { var m = $('#map-fallback'); if (m) m.open = true; });
 })();

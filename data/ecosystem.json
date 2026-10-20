@@ -25,7 +25,7 @@
       "stage": "built",
       "summary": "The language and its Rust compiler. A second compiler, written in cancho, is being checked against it.",
       "url": "https://github.com/alpibrusl/cancho",
-      "docs": "https://alpibrusl.github.io/cancho/",
+      "page": "https://alpibrusl.github.io/cancho/",
       "note": "Pre-1.0."
     },
     {
@@ -35,6 +35,7 @@
       "stage": "built",
       "summary": "A UI language whose compiler knows what each component is allowed to do. Builds JavaScript and DOM.",
       "url": "https://github.com/alpibrusl/cancho-ui",
+      "page": "https://alpibrusl.github.io/cancho-ui/",
       "authority": "a component declares `requires Clock;`; a missing or unused declaration is refused (capability-missing, capability-unused)"
     },
     {
@@ -44,7 +45,7 @@
       "stage": "alpha",
       "summary": "Webhook delivery: on disk before the 202, signed, retried, dead-lettered and replayable.",
       "url": "https://github.com/alpibrusl/cancho-hooks",
-      "docs": "https://alpibrusl.github.io/cancho-hooks/",
+      "page": "https://alpibrusl.github.io/cancho-hooks/",
       "note": "Not for production yet."
     },
     {
@@ -54,6 +55,7 @@
       "stage": "alpha",
       "summary": "Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena.",
       "url": "https://github.com/alpibrusl/cancho-cache",
+      "page": "https://alpibrusl.github.io/cancho-cache/",
       "authority": "no FFI; authority report checked in CI",
       "note": "38 of Redis 7.0's commands; not a Redis replacement."
     },
@@ -63,7 +65,8 @@
       "kind": "service",
       "stage": "design",
       "summary": "An auditable HTTP/1.1 reverse proxy: a fixed upstream set proven by the authority report.",
-      "url": "https://github.com/alpibrusl/cancho-gateway"
+      "url": "https://github.com/alpibrusl/cancho-gateway",
+      "page": "https://alpibrusl.github.io/cancho-gateway/"
     },
     {
       "id": "cancho-mqtt",
@@ -71,7 +74,8 @@
       "kind": "service",
       "stage": "design",
       "summary": "An MQTT 3.1.1 broker: one thread, one poller, bounded memory.",
-      "url": "https://github.com/alpibrusl/cancho-mqtt"
+      "url": "https://github.com/alpibrusl/cancho-mqtt",
+      "page": "https://alpibrusl.github.io/cancho-mqtt/"
     },
     {
       "id": "cancho-dns",
@@ -79,7 +83,8 @@
       "kind": "service",
       "stage": "design",
       "summary": "A forwarding and caching DNS resolver: bounded parser, fixed arena.",
-      "url": "https://github.com/alpibrusl/cancho-dns"
+      "url": "https://github.com/alpibrusl/cancho-dns",
+      "page": "https://alpibrusl.github.io/cancho-dns/"
     },
     {
       "id": "cancho-oci",
@@ -114,6 +119,7 @@
       "stage": "early",
       "summary": "Typed routes, validated bodies, problem+json errors and an OpenAPI document from one declaration.",
       "url": "https://github.com/alpibrusl/cancho-web",
+      "page": "https://alpibrusl.github.io/cancho-web/",
       "authority": "one thread, no FFI",
       "rests_on": [
         "cancho-schema"
@@ -143,7 +149,8 @@
       "kind": "library",
       "stage": "design",
       "summary": "Classical ML, pipelines and evaluation: deterministic, bounded, agent-first.",
-      "url": "https://github.com/alpibrusl/cancho-ml"
+      "url": "https://github.com/alpibrusl/cancho-ml",
+      "page": "https://alpibrusl.github.io/cancho-ml/"
     },
     {
       "id": "cancho-tools",
@@ -152,7 +159,7 @@
       "stage": "working",
       "summary": "Nine small tools for agents: seek, list, peek, jsonq, tally, hash, write, replace, move. JSON out, errors that name a rule.",
       "url": "https://github.com/alpibrusl/cancho-tools",
-      "docs": "https://alpibrusl.github.io/cancho-tools/",
+      "page": "https://alpibrusl.github.io/cancho-tools/",
       "authority": "a compiler-proven authority per binary"
     },
     {
@@ -162,7 +169,7 @@
       "stage": "built",
       "summary": "Select, filter, group and aggregate CSV/TSV for agents; bounded, exact, byte-stable.",
       "url": "https://github.com/alpibrusl/cancho-table",
-      "docs": "https://alpibrusl.github.io/cancho-table/",
+      "page": "https://alpibrusl.github.io/cancho-table/",
       "rests_on": [
         "cancho-tools"
       ]
@@ -174,7 +181,7 @@
       "stage": "design",
       "summary": "A robot arm controller: the Feetech servo bus, SO-101 kinematics and a safety core every motion goes through.",
       "url": "https://github.com/alpibrusl/cancho-robot",
-      "docs": "https://alpibrusl.github.io/cancho-robot/",
+      "page": "https://alpibrusl.github.io/cancho-robot/",
       "note": "Research, design stage."
     },
     {
@@ -184,6 +191,7 @@
       "stage": "built",
       "summary": "A compiler for lex-gpu's .lx tile kernels to CUDA C and Metal, written in cancho.",
       "url": "https://github.com/alpibrusl/cancho-gpu",
+      "page": "https://alpibrusl.github.io/cancho-gpu/",
       "note": "Byte-identical to lex-gpu's Rust emitter on every test case."
     },
     {
@@ -193,7 +201,7 @@
       "stage": "built",
       "summary": "An AI coding assistant that proves its work: the cancho compiler checks every piece the model writes, and a task is done only when the compiler and the task's own examples say so.",
       "url": "https://github.com/alpibrusl/cancho-code",
-      "docs": "https://alpibrusl.github.io/cancho-code",
+      "page": "https://alpibrusl.github.io/cancho-code/",
       "note": "Its README reports 38 of 39 units verified on 13 small libraries built from hand-written plans (Claude Haiku 5.5, hidden tests); conditions and caveats are in its eval/results."
     },
     {
@@ -203,6 +211,7 @@
       "stage": "built",
       "summary": "An agent-run software company you can audit: state, budgets, approvals and evidence are kept by the runtime, and a worker cannot accept its own work.",
       "url": "https://github.com/alpibrusl/cancho-forge",
+      "page": "https://alpibrusl.github.io/cancho-forge/",
       "authority": "the dispatcher holds an Exec narrowed to the worker's own programs; no filesystem, no network (Milestone 0 spike)",
       "note": "Milestone 1's core only: a task state machine, an append-only journal with crash recovery, snapshots, and a read-only status and history."
     },
@@ -213,6 +222,7 @@
       "stage": "built",
       "summary": "One .chw file declares the software/hardware boundary (registers, fields, interrupts, DMA); it is checked, and a C header, device tree, SystemVerilog RTL and CMSIS-SVD are generated from it.",
       "url": "https://github.com/alpibrusl/cancho-hdl",
+      "page": "https://alpibrusl.github.io/cancho-hdl/",
       "note": "Being ported from Python to cancho: the parser, validator and checker are ported; the generators, diff and report are still Python."
     },
     {

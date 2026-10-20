@@ -33,42 +33,42 @@ Stages: `working` = Does what its README claims.; `alpha` = Runs, may change, no
 
 ### Language and compiler
 
-- [cancho](https://github.com/alpibrusl/cancho) `built`: The language and its Rust compiler. A second compiler, written in cancho, is being checked against it. Pre-1.0. Docs: https://alpibrusl.github.io/cancho/
-- [cancho-ui](https://github.com/alpibrusl/cancho-ui) `built`: A UI language whose compiler knows what each component is allowed to do. Builds JavaScript and DOM. Authority: a component declares `requires Clock;`; a missing or unused declaration is refused (capability-missing, capability-unused).
+- [cancho](https://github.com/alpibrusl/cancho) `built`: The language and its Rust compiler. A second compiler, written in cancho, is being checked against it. Pre-1.0. Page: https://alpibrusl.github.io/cancho/
+- [cancho-ui](https://github.com/alpibrusl/cancho-ui) `built`: A UI language whose compiler knows what each component is allowed to do. Builds JavaScript and DOM. Authority: a component declares `requires Clock;`; a missing or unused declaration is refused (capability-missing, capability-unused). Page: https://alpibrusl.github.io/cancho-ui/
 
 ### Services
 
-- [cancho-hooks](https://github.com/alpibrusl/cancho-hooks) `alpha`: Webhook delivery: on disk before the 202, signed, retried, dead-lettered and replayable. Not for production yet. Docs: https://alpibrusl.github.io/cancho-hooks/
-- [cancho-cache](https://github.com/alpibrusl/cancho-cache) `alpha`: Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena. Authority: no FFI; authority report checked in CI. 38 of Redis 7.0's commands; not a Redis replacement.
-- [cancho-gateway](https://github.com/alpibrusl/cancho-gateway) `design`: An auditable HTTP/1.1 reverse proxy: a fixed upstream set proven by the authority report.
-- [cancho-mqtt](https://github.com/alpibrusl/cancho-mqtt) `design`: An MQTT 3.1.1 broker: one thread, one poller, bounded memory.
-- [cancho-dns](https://github.com/alpibrusl/cancho-dns) `design`: A forwarding and caching DNS resolver: bounded parser, fixed arena.
+- [cancho-hooks](https://github.com/alpibrusl/cancho-hooks) `alpha`: Webhook delivery: on disk before the 202, signed, retried, dead-lettered and replayable. Not for production yet. Page: https://alpibrusl.github.io/cancho-hooks/
+- [cancho-cache](https://github.com/alpibrusl/cancho-cache) `alpha`: Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena. Authority: no FFI; authority report checked in CI. 38 of Redis 7.0's commands; not a Redis replacement. Page: https://alpibrusl.github.io/cancho-cache/
+- [cancho-gateway](https://github.com/alpibrusl/cancho-gateway) `design`: An auditable HTTP/1.1 reverse proxy: a fixed upstream set proven by the authority report. Page: https://alpibrusl.github.io/cancho-gateway/
+- [cancho-mqtt](https://github.com/alpibrusl/cancho-mqtt) `design`: An MQTT 3.1.1 broker: one thread, one poller, bounded memory. Page: https://alpibrusl.github.io/cancho-mqtt/
+- [cancho-dns](https://github.com/alpibrusl/cancho-dns) `design`: A forwarding and caching DNS resolver: bounded parser, fixed arena. Page: https://alpibrusl.github.io/cancho-dns/
 - [cancho-oci](https://github.com/alpibrusl/cancho-oci) `design`: Container images without a daemon: a deterministic OCI image builder and registry client.
-- [cancho-forge](https://github.com/alpibrusl/cancho-forge) `built`: An agent-run software company you can audit: state, budgets, approvals and evidence are kept by the runtime, and a worker cannot accept its own work. Authority: the dispatcher holds an Exec narrowed to the worker's own programs; no filesystem, no network (Milestone 0 spike). Milestone 1's core only: a task state machine, an append-only journal with crash recovery, snapshots, and a read-only status and history.
+- [cancho-forge](https://github.com/alpibrusl/cancho-forge) `built`: An agent-run software company you can audit: state, budgets, approvals and evidence are kept by the runtime, and a worker cannot accept its own work. Authority: the dispatcher holds an Exec narrowed to the worker's own programs; no filesystem, no network (Milestone 0 spike). Milestone 1's core only: a task state machine, an append-only journal with crash recovery, snapshots, and a read-only status and history. Page: https://alpibrusl.github.io/cancho-forge/
 
 ### Libraries
 
 - [cancho-pg](https://github.com/alpibrusl/cancho-pg) `early`: PostgreSQL client: v3 protocol, SCRAM-SHA-256, extended queries, TLS, non-blocking pool. Authority: network and heap only; no C or foreign calls.
 - [cancho-schema](https://github.com/alpibrusl/cancho-schema) `early`: Schemas as data: validation, problem+json errors and JSON Schema 2020-12 from one value. Authority: heap only; no C.
-- [cancho-web](https://github.com/alpibrusl/cancho-web) `early`: Typed routes, validated bodies, problem+json errors and an OpenAPI document from one declaration. Authority: one thread, no FFI. Rests on: cancho-schema.
+- [cancho-web](https://github.com/alpibrusl/cancho-web) `early`: Typed routes, validated bodies, problem+json errors and an OpenAPI document from one declaration. Authority: one thread, no FFI. Rests on: cancho-schema. Page: https://alpibrusl.github.io/cancho-web/
 - [cancho-log](https://github.com/alpibrusl/cancho-log) `early`: A durable, segmented, append-only log with crash-safe recovery that cuts off a torn tail. Authority: no FFI. Append path only; not a Kafka replacement.
 - [cancho-stats](https://github.com/alpibrusl/cancho-stats) `design`: Statistics on tabular data as a command line an agent can read: exact sums, tests, intervals, resampling.
-- [cancho-ml](https://github.com/alpibrusl/cancho-ml) `design`: Classical ML, pipelines and evaluation: deterministic, bounded, agent-first.
+- [cancho-ml](https://github.com/alpibrusl/cancho-ml) `design`: Classical ML, pipelines and evaluation: deterministic, bounded, agent-first. Page: https://alpibrusl.github.io/cancho-ml/
 - [cancho-mqtt-client](https://github.com/alpibrusl/cancho-mqtt-client) `design`: An MQTT 3.1.1 client library: connect, publish, subscribe, will, QoS 0 and 1, and a reconnect with bounded backoff. The other half of cancho-mqtt.
 
 ### Tools
 
-- [cancho-tools](https://github.com/alpibrusl/cancho-tools) `working`: Nine small tools for agents: seek, list, peek, jsonq, tally, hash, write, replace, move. JSON out, errors that name a rule. Authority: a compiler-proven authority per binary. Docs: https://alpibrusl.github.io/cancho-tools/
-- [cancho-table](https://github.com/alpibrusl/cancho-table) `built`: Select, filter, group and aggregate CSV/TSV for agents; bounded, exact, byte-stable. Rests on: cancho-tools. Docs: https://alpibrusl.github.io/cancho-table/
-- [cancho-code](https://github.com/alpibrusl/cancho-code) `built`: An AI coding assistant that proves its work: the cancho compiler checks every piece the model writes, and a task is done only when the compiler and the task's own examples say so. Its README reports 38 of 39 units verified on 13 small libraries built from hand-written plans (Claude Haiku 5.5, hidden tests); conditions and caveats are in its eval/results. Docs: https://alpibrusl.github.io/cancho-code
+- [cancho-tools](https://github.com/alpibrusl/cancho-tools) `working`: Nine small tools for agents: seek, list, peek, jsonq, tally, hash, write, replace, move. JSON out, errors that name a rule. Authority: a compiler-proven authority per binary. Page: https://alpibrusl.github.io/cancho-tools/
+- [cancho-table](https://github.com/alpibrusl/cancho-table) `built`: Select, filter, group and aggregate CSV/TSV for agents; bounded, exact, byte-stable. Rests on: cancho-tools. Page: https://alpibrusl.github.io/cancho-table/
+- [cancho-code](https://github.com/alpibrusl/cancho-code) `built`: An AI coding assistant that proves its work: the cancho compiler checks every piece the model writes, and a task is done only when the compiler and the task's own examples say so. Its README reports 38 of 39 units verified on 13 small libraries built from hand-written plans (Claude Haiku 5.5, hidden tests); conditions and caveats are in its eval/results. Page: https://alpibrusl.github.io/cancho-code/
 - [cancho-client-gen](https://github.com/alpibrusl/cancho-client-gen) `built`: Reads the OpenAPI 3.1 document that cancho-web generates and writes strictly typed clients; the contract, both ways. Authority: the clients it writes make no foreign call. Rests on: cancho-web.
 - [cancho-fetch](https://github.com/alpibrusl/cancho-fetch) `design`: An agent-safe fetch: HTTP and HTTPS to a fixed, built-in list of hosts, with the list in the binary's authority row instead of a flag. Rests on: cancho-tools. Design only; the host matching it needs is in review in cancho (#561).
 
 ### Hardware and kernels
 
-- [cancho-robot](https://github.com/alpibrusl/cancho-robot) `design`: A robot arm controller: the Feetech servo bus, SO-101 kinematics and a safety core every motion goes through. Research, design stage. Docs: https://alpibrusl.github.io/cancho-robot/
-- [cancho-gpu](https://github.com/alpibrusl/cancho-gpu) `built`: A compiler for lex-gpu's .lx tile kernels to CUDA C and Metal, written in cancho. Byte-identical to lex-gpu's Rust emitter on every test case.
-- [cancho-hdl](https://github.com/alpibrusl/cancho-hdl) `built`: One .chw file declares the software/hardware boundary (registers, fields, interrupts, DMA); it is checked, and a C header, device tree, SystemVerilog RTL and CMSIS-SVD are generated from it. Being ported from Python to cancho: the parser, validator and checker are ported; the generators, diff and report are still Python.
+- [cancho-robot](https://github.com/alpibrusl/cancho-robot) `design`: A robot arm controller: the Feetech servo bus, SO-101 kinematics and a safety core every motion goes through. Research, design stage. Page: https://alpibrusl.github.io/cancho-robot/
+- [cancho-gpu](https://github.com/alpibrusl/cancho-gpu) `built`: A compiler for lex-gpu's .lx tile kernels to CUDA C and Metal, written in cancho. Byte-identical to lex-gpu's Rust emitter on every test case. Page: https://alpibrusl.github.io/cancho-gpu/
+- [cancho-hdl](https://github.com/alpibrusl/cancho-hdl) `built`: One .chw file declares the software/hardware boundary (registers, fields, interrupts, DMA); it is checked, and a C header, device tree, SystemVerilog RTL and CMSIS-SVD are generated from it. Being ported from Python to cancho: the parser, validator and checker are ported; the generators, diff and report are still Python. Page: https://alpibrusl.github.io/cancho-hdl/
 
 More, including repositories not listed here: https://github.com/orgs/alpibrusl/repositories?q=cancho-&type=public
 

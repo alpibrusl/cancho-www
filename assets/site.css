@@ -1,5 +1,6 @@
 /* cancho-www: La Pedriza palette. Granite, a blue sun, ink. Light is morning, dark is night. */
 @font-face { font-family: "Plus Jakarta Sans Variable"; font-style: normal; font-display: swap; font-weight: 200 800; src: url("fonts/plus-jakarta-sans-latin-wght-normal.woff2") format("woff2-variations"), url("fonts/plus-jakarta-sans-latin-wght-normal.woff2") format("woff2"); }
+@font-face { font-family: "Caveat Variable"; font-style: normal; font-display: swap; font-weight: 400 700; src: url("fonts/caveat-latin-wght-normal.woff2") format("woff2-variations"), url("fonts/caveat-latin-wght-normal.woff2") format("woff2"); }
 @font-face { font-family: "JetBrains Mono Variable"; font-style: normal; font-display: swap; font-weight: 100 800; src: url("fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2-variations"), url("fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2"); }
 :root {
   --bg: #f7f4eb; --fg: #121417; --muted: #4f545b; --line: #e2ddd0; --surface: #ffffff; --soft: #efece1;
@@ -11,6 +12,9 @@
   --font: "Plus Jakarta Sans Variable", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --term-bg: #12151a; --term-fg: #d6dde8;
+  --hand: "Caveat Variable", "Segoe Script", "Bradley Hand", cursive;
+  --map-paper: #f4efc6; --map-forest: #b9d28f; --map-trail: #3f8c3a; --map-river: #5aa0d6; --map-ink: #43302a;
+  --map-road: #fffdf0; --map-road-edge: #5a4636; --gr1: #f1cbb8; --gr2: #dc9f87; --gr3: #b46f58; --gr-edge: #8e5645; --gr-design: #b46f58;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -20,6 +24,8 @@
     --g1: #8a93a1; --g2: #566070; --g3: #2c3441; --rock-line: #0b1016; --lichen: #8f8a46; --shrub: #060b10;
     --sky: #101a28; --ridge0: #121c29; --ridge1: #16222f; --ridge2: #1c2b3d; --cloud-o: .05;
     --ring: #222b36; --shadow: none;
+    --map-paper: #172125; --map-forest: #24432f; --map-trail: #78c47c; --map-river: #3d79ab; --map-ink: #eadfcf;
+    --map-road: #2a3236; --map-road-edge: #9a8872; --gr1: #c9a199; --gr2: #9c716b; --gr3: #6b4743; --gr-edge: #3b2624; --gr-design: #c9a199;
   }
 }
 * { box-sizing: border-box; }
@@ -343,3 +349,43 @@ nav { margin-left: auto; gap: 1.3rem; }
 .agents-hero .eyebrow { color: #8cb0ff; }
 .agents-hero .sub { color: #c4ccd8; margin-bottom: 0; }
 @media (prefers-reduced-motion: reduce) { .gallery img { transition: none; } .gallery figure:hover img { transform: none; } }
+
+/* the map as a walkers' map: parchment, forest, pink granite, green footpaths, handwritten names */
+.map { background: var(--map-paper); }
+.map svg .paper { fill: var(--map-paper); }
+.map svg .grain { fill: #000; opacity: 1; }
+.map svg .forest ellipse { fill: var(--map-forest); opacity: .7; }
+.map svg .river { fill: none; stroke: var(--map-river); stroke-width: 2.4; stroke-linecap: round; opacity: .85; }
+.map svg .river-name { font: 600 22px var(--hand); fill: var(--map-river); letter-spacing: .02em; }
+.map svg .road-edge { fill: none; stroke: var(--map-road-edge); stroke-width: 12; stroke-linecap: round; }
+.map svg .road-fill { fill: none; stroke: var(--map-road); stroke-width: 8.5; stroke-linecap: round; }
+.map svg .road-name { font: 700 14px var(--hand); fill: var(--map-road-edge); letter-spacing: .08em; dominant-baseline: central; }
+.map svg .trail { fill: none; stroke: var(--map-trail); stroke-width: 1.5; stroke-dasharray: 5 4; opacity: .85; transition: opacity .3s; }
+.map svg.filtered .trail { opacity: .18; }
+.map svg .region { font: 600 40px var(--hand); fill: var(--map-ink); opacity: .34; }
+.map svg .village rect { fill: #fffdf4; stroke: var(--map-road-edge); stroke-width: .9; }
+.map svg .north-line { fill: none; stroke: var(--map-ink); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.map svg .north text { font: 700 20px var(--hand); fill: var(--map-ink); }
+.map svg .g-shadow { fill: #1d2b12; opacity: .28; }
+.map svg .g-body { fill: url(#gran); stroke: var(--gr-edge); stroke-width: 1; stroke-linejoin: round; }
+.map svg .g-pebble { stroke-width: .8; }
+.map svg .g-shade { fill: url(#gran-shade); }
+.map svg .g-light { fill: #fff; opacity: .4; }
+.map svg .g-crack { fill: none; stroke: var(--gr-edge); stroke-width: 1; stroke-linecap: round; opacity: .5; }
+.map svg .rock.design .g-body { fill: var(--map-paper); fill-opacity: .55; stroke: var(--gr-design); stroke-width: 1.3; stroke-dasharray: 3 4; stroke-linecap: round; }
+.map svg .rock.sel .g-body:not(.g-pebble) { stroke: var(--accent); stroke-width: 2.8; }
+.map svg .name { font: 700 22px var(--hand); fill: var(--map-ink); stroke: var(--map-paper); stroke-width: 4px; paint-order: stroke; stroke-linejoin: round; letter-spacing: .01em; }
+.map svg .name.big { font-size: 32px; }
+.map svg .name.sub { font-weight: 500; font-size: 17px; opacity: .8; }
+.map svg .rock.sel .name { fill: var(--accent); }
+.map svg .leader { fill: none; stroke: var(--map-ink); stroke-width: 1; opacity: .7; }
+.map svg .mk-rest { fill: var(--accent); }
+.map svg .rests { fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-dasharray: 8 5; }
+.map svg .rests.dim { opacity: .1; }
+.map svg .pin { stroke: #fff; stroke-width: 1.6; }
+.map svg .park rect { fill: #1d63b8; stroke: #fff; stroke-width: 1.6; }
+.map svg .park-p { font: 700 16px var(--font); fill: #fff; }
+.map svg .park { cursor: pointer; }
+.map svg .rock.dim { opacity: .2; }
+.legend svg .lg-line { fill: none; stroke: var(--gr-edge); stroke-width: 1.3; }
+.legend svg .lg-fill { fill: var(--gr2); stroke: var(--gr-edge); stroke-width: 1.1; }

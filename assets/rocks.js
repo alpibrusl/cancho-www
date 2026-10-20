@@ -109,5 +109,5 @@
   }
 
   if (document.body) ensureDefs();
-  window.Rocks = { ensureDefs: ensureDefs, rock: rock, ridge: ridge, rng: rng, hash: hash, el: el, NS: NS };
+  window.Rocks = { ensureDefs: ensureDefs, outline: outline, smooth: smooth, rock: rock, ridge: ridge, rng: rng, hash: hash, el: el, NS: NS };
 })();

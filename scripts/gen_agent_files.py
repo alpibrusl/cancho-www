@@ -70,8 +70,8 @@ def agents_md():
                 line += " Rests on: " + ", ".join(p["rests_on"]) + "."
             if p.get("note"):
                 line += f" {p['note']}"
-            if p.get("docs"):
-                line += f" Docs: {p['docs']}"
+            if p.get("page"):
+                line += f" Page: {p['page']}"
             out.append(line)
         out.append("")
     out += [
@@ -118,7 +118,10 @@ def llms_txt():
     for p in projects:
         if p["id"] == "cancho":
             continue
-        out.append(f"- [{p['name']}]({p.get('docs') or p['url']}) ({p['stage']}): {p['summary']}")
+        line = f"- [{p['name']}]({p['url']}) ({p['stage']}): {p['summary']}"
+        if p.get("page"):
+            line += f" Page: {p['page']}"
+        out.append(line)
     out.append("")
     return "\n".join(out)
 
@@ -154,8 +157,9 @@ def llms_full():
 def eco_list():
     lines = ['<details class="note" id="map-fallback"><summary>The same map as a list</summary>', "<ul>"]
     for p in projects:
+        page = f' · <a href="{html.escape(p["page"])}">page</a>' if p.get("page") else ""
         lines.append(
-            f'<li><a href="{html.escape(p["url"])}">{html.escape(p["name"])}</a> ({p["stage"]}): {html.escape(p["summary"])}</li>'
+            f'<li><a href="{html.escape(p["url"])}">{html.escape(p["name"])}</a>{page} ({p["stage"]}): {html.escape(p["summary"])}</li>'
         )
     lines += ["</ul></details>"]
     return "\n".join("  " + l for l in lines)

@@ -8,7 +8,7 @@ The concept is La Pedriza (Sierra de Guadarrama): granite boulders resting on on
 
 | | |
 |---|---|
-| `data/ecosystem.json` | **The one source of truth**: every project, its stage, summary and links, plus the measured self-hosting figures. The map and the proof section are drawn from it. |
+| `data/ecosystem.json` | **The one source of truth**: every project, its stage, summary and links, plus the measured self-hosting figures. The map and the proof section are drawn from it. `page` is a project's landing page, `url` its repository. |
 | `index.html`, `assets/` | The page. `assets/site.js` has the hero, the authority animation, the map and the proof charts. |
 | `agents.md`, `llms.txt`, `llms-full.txt` | The agent version of the page. **Generated** from `data/ecosystem.json` by `scripts/gen_agent_files.py`; do not edit by hand. The `agent` switch in the header shows `agents.md`. |
 | `ui/agent-files.cui`, `assets/agent-files.js` | The agent-files pane, **written in [cancho-ui](https://github.com/alpibrusl/cancho-ui)**: `requires Network;` and nothing else. `assets/agent-files.js` is its compiled output (do not edit); rebuild it with `cancho-ui build ui/agent-files.cui -o assets/agent-files.js` and replay the behaviour with `cancho-ui test ui/agent-files.cui ui/agent-files.trace.json`. Everything else on the page is plain JS because cancho-ui has no SVG, media or styling primitives yet. |
@@ -16,6 +16,8 @@ The concept is La Pedriza (Sierra de Guadarrama): granite boulders resting on on
 | `demo/`, `assets/media/` | The recorded videos (`scripts/record_demo.sh` makes the first). |
 
 Fonts (Plus Jakarta Sans, JetBrains Mono; SIL OFL) are served from `assets/fonts/`, so the page makes no third-party requests; see `THIRD_PARTY.md`.
+
+`scripts/github_about.sh` holds the GitHub About text for the repositories that had none; run it once with `gh` logged in.
 
 ## Changing it
 
@@ -26,7 +28,7 @@ bash scripts/build_site.sh           # assemble _site/
 python3 -m http.server -d _site      # the page fetches data/ecosystem.json, so serve it, do not open the file
 ```
 
-CI (on pull requests and before every deploy) fails if the generated files are stale (`gen_agent_files.py --check`) or if `data/ecosystem.json` lists a repository that is not public (`scripts/check_public.py`, an anonymous `git ls-remote` per repository). Stages are `working`, `alpha`, `early`, `built`, `design`; use a stage only if the project's own README says so, and `built` when it does not name one. A figure that turns out wrong is corrected in `data/ecosystem.json`, the way the rest of this project corrects claims.
+CI (on pull requests and before every deploy) fails if the generated files are stale (`gen_agent_files.py --check`) or if `data/ecosystem.json` lists a repository that is not public (`scripts/check_public.py`, an anonymous `git ls-remote` per repository, and an HTTP check that each `page` answers). A `page` is only listed when the repository's own README or website field links it. Stages are `working`, `alpha`, `early`, `built`, `design`; use a stage only if the project's own README says so, and `built` when it does not name one. A figure that turns out wrong is corrected in `data/ecosystem.json`, the way the rest of this project corrects claims.
 
 ## Deploying
 
