@@ -1,0 +1,16 @@
+name: checks
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generated agent files are up to date
+        run: python3 scripts/gen_agent_files.py --check
+      - name: Only public repositories are listed
+        run: python3 scripts/check_public.py
+      - name: The site builds
+        run: bash scripts/build_site.sh

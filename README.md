@@ -26,7 +26,7 @@ bash scripts/build_site.sh           # assemble _site/
 python3 -m http.server -d _site      # the page fetches data/ecosystem.json, so serve it, do not open the file
 ```
 
-CI fails if the generated files are stale (`gen_agent_files.py --check`). Stages are `working`, `alpha`, `early`, `built`, `design`; use a stage only if the project's own README says so, and `built` when it does not name one. A figure that turns out wrong is corrected in `data/ecosystem.json`, the way the rest of this project corrects claims.
+CI (on pull requests and before every deploy) fails if the generated files are stale (`gen_agent_files.py --check`) or if `data/ecosystem.json` lists a repository that is not public (`scripts/check_public.py`, an anonymous `git ls-remote` per repository). Stages are `working`, `alpha`, `early`, `built`, `design`; use a stage only if the project's own README says so, and `built` when it does not name one. A figure that turns out wrong is corrected in `data/ecosystem.json`, the way the rest of this project corrects claims.
 
 ## Deploying
 
