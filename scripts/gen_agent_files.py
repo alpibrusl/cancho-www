@@ -23,6 +23,31 @@ def by_kind():
         yield title, [p for p in projects if p["kind"] == k]
 
 
+def paths_md():
+    by_id = {p["id"]: p for p in projects}
+    out = []
+    for path in data["paths"]:
+        out += [f"### {path['title']}", "", path["blurb"], ""]
+        for e in path["entries"]:
+            p = by_id[e["id"]]
+            page = f" Page: {p['page']}" if p.get("page") else ""
+            nxt = site + e["next_url"] if e["next_url"].startswith("#") else e["next_url"]
+            out.append(f"- [{p['name']}]({p['url']}) `{p['stage']}`: {e['can']}{page} Next: {e['next']}: {nxt}")
+        out.append("")
+    return out
+
+
+def verifies_md():
+    v, out = data["verifies"], []
+    for key, title in (("compiler", "Verified by the compiler"), ("tests", "Exercised by tests"), ("open", "Still being established")):
+        out += [f"### {title}", ""]
+        for it in v[key]:
+            out.append(f"- {it['claim']} (" + ", ".join(f"[{l}]({u})" for l, u in it["evidence"]) + ")")
+        out.append("")
+    out += [v["stamp"], ""]
+    return out
+
+
 def agents_md():
     m = data["measured"]
     out = [
@@ -56,6 +81,14 @@ def agents_md():
         "Start here to write cancho: https://github.com/alpibrusl/cancho/blob/main/AGENTS.md",
         "Docs: https://alpibrusl.github.io/cancho/",
         "",
+        "## Where to start",
+        "",
+    ] + paths_md() + [
+        "## What is verified, and what is not",
+        "",
+        data["verifies"]["disclaimer"],
+        "",
+    ] + verifies_md() + [
         "## Ecosystem",
         "",
         "Stages: " + "; ".join(f"`{k}` = {v}" for k, v in stages.items()),
@@ -167,12 +200,63 @@ def eco_list():
     return "\n".join("  " + l for l in lines)
 
 
+import re
+
+
+def md_code(s):
+    """`code` spans in the data text become <code>."""
+    return re.sub(r"`([^`]+)`", r"<code>\1</code>", html.escape(s, quote=False))
+
+
+def verifies_html():
+    v = data["verifies"]
+    cols = [("compiler", "Verified by the compiler", "ok"), ("tests", "Exercised by tests", "tests"), ("open", "Still being established", "todo")]
+    out = ['<div class="verif reveal">']
+    for key, title, cls in cols:
+        out.append(f'  <div class="v {cls}"><h3>{title}</h3><ul>')
+        for it in v[key]:
+            ev = " ".join(f'<a class="ev" href="{html.escape(u)}">{html.escape(l)}</a>' for l, u in it["evidence"])
+            out.append(f"    <li>{md_code(it['claim'])} <span class=\"evs\">{ev}</span></li>")
+        out.append("  </ul></div>")
+    out.append("</div>")
+    out.append(f'<p class="note">{html.escape(v["disclaimer"])} {html.escape(v["stamp"])}</p>')
+    return "\n".join(out)
+
+
+def paths_html():
+    by_id = {p["id"]: p for p in projects}
+    out = ['<div class="paths reveal">']
+    for path in data["paths"]:
+        out.append(f'  <article class="path"><h3>{html.escape(path["title"])}</h3><p class="blurb">{html.escape(path["blurb"])}</p><ul>')
+        for e in path["entries"]:
+            p = by_id[e["id"]]
+            page = f' <a class="pg" href="{html.escape(p["page"])}">page</a>' if p.get("page") else ""
+            out.append(
+                f'    <li><div class="ph"><a href="{html.escape(p["url"])}">{html.escape(p["name"])}</a> <span class="chip {p["stage"]}">{p["stage"]}</span>{page}</div>'
+                f'<p>{md_code(e["can"])}</p><a class="next" href="{html.escape(e["next_url"])}">{html.escape(e["next"])} \u2192</a></li>'
+            )
+        out.append("  </ul></article>")
+    out.append("</div>")
+    return "\n".join(out)
+
+
+def demo_text_html():
+    text = (ROOT / "demo" / "transcript.txt").read_text()
+    return ('<details class="demo-text"><summary>The same session as text <small>(a real run, written by scripts/demo_transcript.sh)</small></summary>'
+            f'<pre class="code" tabindex="0">{html.escape(text)}</pre></details>')
+
+
+BLOCKS = {"eco": eco_list, "verifies": verifies_html, "paths": paths_html, "demo-text": demo_text_html}
+
+
 def index_html():
     path = ROOT / "index.html"
     text = path.read_text()
-    a, b = "<!-- eco:start -->", "<!-- eco:end -->"
-    i, j = text.index(a) + len(a), text.index(b)
-    return path, text[:i] + "\n" + eco_list() + "\n  " + text[j:]
+    for name, fn in BLOCKS.items():
+        a, b = f"<!-- {name}:start -->", f"<!-- {name}:end -->"
+        i, j = text.index(a) + len(a), text.index(b)
+        text = text[:i] + "\n" + fn() + "\n" + text[j:]
+    return path, text
 
 
 def main():

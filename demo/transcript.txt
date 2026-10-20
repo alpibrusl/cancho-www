@@ -1,0 +1,61 @@
+# A program that opens a file.
+$ cat leak.cho
+// Open a file.
+import std.io;
+
+fn main(world: World) -> [] int {
+    let Split { io, ffi, fs, heap, args } = split(world);
+    release(args);
+    release(ffi);
+    release(heap);
+    var status = 1;
+    let tmp = narrow(fs, "/tmp");
+    borrow tmp as &c in {
+        match open_read(c, "/tmp/notes.txt") {
+            Opened::Ok(f) => {
+                status = 0;
+            }
+            Opened::Failed(e) => {
+            }
+        }
+    }
+    release(tmp);
+    borrow mut io as &!i in {
+        if status == 0 {
+            io.write_all(i, "opened it, closed it\n");
+        } else {
+            io.write_all(i, "no such file\n");
+        }
+    }
+    release(io);
+    return status;
+}
+# It never closes it. The compiler refuses, and says which rule:
+$ cancho check leak.cho --std
+leak.cho:12:9: error: `f` is still live at the end of this block; nothing consumes it
+            match open_read(c, "/tmp/notes.txt") {
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+$ cancho check leak.cho --std --output json | grep -E "\"(rule|message)\""
+      "rule": "linear-value-unconsumed",
+      "message": "`f` is still live at the end of this block; nothing consumes it",
+# One line fixes it.
+$ diff leak.cho fixed.cho
+13a14
+>                 file_close(f);
+$ cancho build fixed.cho --std -o notes && ./notes
+opened it, closed it
+# What may it do? The compiler can say, because authority is in the types.
+$ cancho authority fixed.cho --std
+performs
+    fs_read("/tmp")
+    io_write
+never touches
+    the network
+    the heap
+    the command line
+    signals
+    other programs
+    foreign code
+# And the compiler can be one written in cancho:
+$ cancho build fixed.cho --std --compiler auto -o notes2 && ./notes2
+opened it, closed it

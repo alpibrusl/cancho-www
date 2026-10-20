@@ -28,6 +28,64 @@ cancho skill                                         # a SKILL.md, as data
 Start here to write cancho: https://github.com/alpibrusl/cancho/blob/main/AGENTS.md
 Docs: https://alpibrusl.github.io/cancho/
 
+## Where to start
+
+### Build software with agents
+
+Start with the language and the agent workflow: describe a task, let an agent build it, read the checks.
+
+- [cancho](https://github.com/alpibrusl/cancho) `built`: Refuses a leaked resource by a named rule, says what a program may do, and builds a native binary. Page: https://alpibrusl.github.io/cancho/ Next: Run the compiler: https://alpibrusl.github.io/cancho-www/#try
+- [cancho-code](https://github.com/alpibrusl/cancho-code) `built`: In its own evaluation (Claude Haiku 5.5, hidden tests), 13 small libraries from hand-written plans finished 38 of 39 units; conditions and caveats are in its eval/results. Page: https://alpibrusl.github.io/cancho-code/ Next: Paste its agent prompt into your coding agent: https://github.com/alpibrusl/cancho-code/blob/main/docs/agent-prompt.md
+- [cancho-tools](https://github.com/alpibrusl/cancho-tools) `early`: A stale write is refused with a rule tag and the hash to retry: two agents, one file (a transcript in its README). Page: https://alpibrusl.github.io/cancho-tools/ Next: Read the two-agents demo: https://github.com/alpibrusl/cancho-tools#one-complete-flow-two-agents-one-file
+
+### Build software infrastructure
+
+Services and tools written in cancho, each with an authority report the compiler derives.
+
+- [cancho-hooks](https://github.com/alpibrusl/cancho-hooks) `alpha`: An event is on disk before the 202 answer, then signed (Standard Webhooks), retried and replayable. No 24-hour soak has completed yet. Page: https://alpibrusl.github.io/cancho-hooks/ Next: Read its landing page: https://alpibrusl.github.io/cancho-hooks/
+- [cancho-cache](https://github.com/alpibrusl/cancho-cache) `alpha`: Answers 69 of Redis 7.0’s 240 commands over RESP2 and RESP3; its authority report, checked in CI, names the one file it reads. Page: https://alpibrusl.github.io/cancho-cache/ Next: Try it from redis-cli: https://github.com/alpibrusl/cancho-cache#readme
+- [cancho-table](https://github.com/alpibrusl/cancho-table) `early`: A wrong column name is refused with a rule tag and the corrected command as a repair. Page: https://alpibrusl.github.io/cancho-table/ Next: Read its landing page: https://alpibrusl.github.io/cancho-table/
+
+### Explore new computing boundaries
+
+Hardware, GPUs and robotics. Experimental: read each status before you rely on it.
+
+- [cancho-hdl](https://github.com/alpibrusl/cancho-hdl) `built`: A .chw contract is checked (a field overlap is refused as `field-overlap`), and a C header, device tree, SystemVerilog and CMSIS-SVD are generated from it. Page: https://alpibrusl.github.io/cancho-hdl/ Next: See its refusal examples: https://github.com/alpibrusl/cancho-hdl#readme
+- [cancho-gpu](https://github.com/alpibrusl/cancho-gpu) `built`: CUDA C and Metal for 208 test cases (182 emit, 26 refused by both) are byte-identical with an independent implementation’s. Page: https://alpibrusl.github.io/cancho-gpu/ Next: Read its landing page: https://alpibrusl.github.io/cancho-gpu/
+- [cancho-robot](https://github.com/alpibrusl/cancho-robot) `design`: Nothing is built yet: research, design stage. Page: https://alpibrusl.github.io/cancho-robot/ Next: Read the plan: https://alpibrusl.github.io/cancho-robot/
+
+## What is verified, and what is not
+
+A passing check shows that the checks listed here passed. It does not show a program is correct or secure in every respect, and tests exercise the behaviour they cover, not all behaviour. None of this is a certification, and no independent audit is claimed.
+
+### Verified by the compiler
+
+- A value is consumed exactly once. A resource left unconsumed is refused as `linear-value-unconsumed` (19 refusal fixtures). ([rule fixtures](https://github.com/alpibrusl/cancho/blob/main/docs/agent-errors.md))
+- Effect rows are exact. Performing an effect the signature does not declare is refused as `effect-not-declared` (12 fixtures); declaring one that is not performed is refused too. ([rule fixtures](https://github.com/alpibrusl/cancho/blob/main/docs/agent-errors.md), [authority](https://github.com/alpibrusl/cancho/blob/main/docs/authority.md))
+- Authority is derived, not declared: `cancho authority` lists what a program can reach, and says “unbounded” when foreign code is reachable. ([authority](https://github.com/alpibrusl/cancho/blob/main/docs/authority.md), [foreign code](https://github.com/alpibrusl/cancho/blob/main/docs/foreign-authority.md))
+- Every refusal carries a stable rule tag, and `--output json` gives it as data. ([the contract](https://github.com/alpibrusl/cancho/blob/main/docs/agent-errors.md))
+- Each declaration has a content hash (`cancho ids`); dependencies pin to hashes. ([canonical AST (status: proposed)](https://github.com/alpibrusl/cancho/blob/main/docs/canonical-ast.md))
+
+### Exercised by tests
+
+- 359 refusal fixtures, each naming the rule it must be refused with, and 123 accepting programs. ([tests/reject](https://github.com/alpibrusl/cancho/tree/main/tests/reject), [tests/accept](https://github.com/alpibrusl/cancho/tree/main/tests/accept))
+- The conformance suite builds and runs real programs; the gate (format, clippy, tests) runs on linux-x86_64 and darwin-aarch64. ([CONTRIBUTING](https://github.com/alpibrusl/cancho/blob/main/CONTRIBUTING.md))
+- Every checked code block in AGENTS.md is a fixture; changing a rule name to a wrong one turns the suite red (checked by doing it). ([AGENTS.md](https://github.com/alpibrusl/cancho/blob/main/AGENTS.md))
+- A mutation fuzzer feeds token-level edits of every program through parsing, checking and code generation, requiring no panic, a stable print-and-parse, and that what the checker accepts the backend compiles. ([fuzzer](https://github.com/alpibrusl/cancho/blob/main/crates/cancho/tests/fuzz.rs), [design](https://github.com/alpibrusl/cancho/blob/main/docs/fuzzing.md))
+- Tests are checked by breaking what they cover and watching them fail. ([CONTRIBUTING](https://github.com/alpibrusl/cancho/blob/main/CONTRIBUTING.md), [differential testing](https://github.com/alpibrusl/cancho/blob/main/docs/differential.md))
+- With every build going through the compiler written in cancho, 697 of 704 conformance tests pass (measured 2026-10-15, macOS aarch64). ([bootstrap record](https://alpibrusl.github.io/cancho/bootstrap.html))
+
+### Still being established
+
+- The compiler written in cancho refuses 256 of the 333 programs that must be refused, with the same rule as the Rust one. It is not the default. ([epic #491](https://github.com/alpibrusl/cancho/issues/491))
+- Hash stability is not a contract yet: the canonical-AST document is “proposed”, and 39% of this repository’s own historical revisions do not type-check under today’s build. ([canonical AST](https://github.com/alpibrusl/cancho/blob/main/docs/canonical-ast.md), [hash stability](https://github.com/alpibrusl/cancho/blob/main/docs/hash-stability.md))
+- A cancho program has one network bound shared by listening and connecting, so a proxy’s authority report cannot say which upstreams it reaches; cancho-gateway enforces its compiled-in list by exact match and tests it, but the compiler does not vouch for it. ([cancho-gateway](https://github.com/alpibrusl/cancho-gateway))
+- The TLS stack is not independently reviewed (stated in cancho-fetch’s README). ([cancho-fetch](https://github.com/alpibrusl/cancho-fetch))
+- Not evaluated: whether agents do better with cancho-tools than with the usual tools. That needs an agent-in-the-loop evaluation that has not been run. ([cancho#228](https://github.com/alpibrusl/cancho/issues/228))
+- Pre-1.0, supported on linux-x86_64 and darwin-aarch64 only, and its own README says it is not a usable language yet. ([README](https://github.com/alpibrusl/cancho#readme))
+
+Counted at cancho 1d4c44e, 2026-10-20. Each line links its evidence; a claim found false is corrected here, in place.
+
 ## Ecosystem
 
 Stages: `working` = Does what its README claims.; `alpha` = Runs, may change, not for production.; `early` = Built and tested, with named gaps.; `built` = Code exists and is documented; its README does not name a stage.; `design` = A design or plan; little or nothing is built.
