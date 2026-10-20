@@ -16,7 +16,7 @@ The ecosystem as JSON: https://alpibrusl.github.io/cancho-www/data/ecosystem.jso
 
 - [cancho-ui](https://github.com/alpibrusl/cancho-ui) (built): A UI language whose compiler knows what each component is allowed to do. Builds JavaScript and DOM. Page: https://alpibrusl.github.io/cancho-ui/
 - [cancho-hooks](https://github.com/alpibrusl/cancho-hooks) (alpha): Webhook delivery: on disk before the 202, signed, retried, dead-lettered and replayable. Page: https://alpibrusl.github.io/cancho-hooks/
-- [cancho-cache](https://github.com/alpibrusl/cancho-cache) (alpha): Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena. Page: https://alpibrusl.github.io/cancho-cache/
+- [cancho-cache](https://github.com/alpibrusl/cancho-cache) (alpha): Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena.
 - [cancho-gateway](https://github.com/alpibrusl/cancho-gateway) (design): An auditable HTTP/1.1 reverse proxy: a fixed upstream set proven by the authority report. Page: https://alpibrusl.github.io/cancho-gateway/
 - [cancho-mqtt](https://github.com/alpibrusl/cancho-mqtt) (design): An MQTT 3.1.1 broker: one thread, one poller, bounded memory. Page: https://alpibrusl.github.io/cancho-mqtt/
 - [cancho-dns](https://github.com/alpibrusl/cancho-dns) (design): A forwarding and caching DNS resolver: bounded parser, fixed arena. Page: https://alpibrusl.github.io/cancho-dns/

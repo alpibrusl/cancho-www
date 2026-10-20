@@ -39,7 +39,7 @@ Stages: `working` = Does what its README claims.; `alpha` = Runs, may change, no
 ### Services
 
 - [cancho-hooks](https://github.com/alpibrusl/cancho-hooks) `alpha`: Webhook delivery: on disk before the 202, signed, retried, dead-lettered and replayable. Not for production yet. Page: https://alpibrusl.github.io/cancho-hooks/
-- [cancho-cache](https://github.com/alpibrusl/cancho-cache) `alpha`: Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena. Authority: no FFI; authority report checked in CI. 38 of Redis 7.0's commands; not a Redis replacement. Page: https://alpibrusl.github.io/cancho-cache/
+- [cancho-cache](https://github.com/alpibrusl/cancho-cache) `alpha`: Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena. Authority: no FFI; authority report checked in CI. 38 of Redis 7.0's commands; not a Redis replacement.
 - [cancho-gateway](https://github.com/alpibrusl/cancho-gateway) `design`: An auditable HTTP/1.1 reverse proxy: a fixed upstream set proven by the authority report. Page: https://alpibrusl.github.io/cancho-gateway/
 - [cancho-mqtt](https://github.com/alpibrusl/cancho-mqtt) `design`: An MQTT 3.1.1 broker: one thread, one poller, bounded memory. Page: https://alpibrusl.github.io/cancho-mqtt/
 - [cancho-dns](https://github.com/alpibrusl/cancho-dns) `design`: A forwarding and caching DNS resolver: bounded parser, fixed arena. Page: https://alpibrusl.github.io/cancho-dns/
