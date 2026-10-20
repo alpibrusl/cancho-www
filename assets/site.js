@@ -175,14 +175,15 @@
   function map(data) {
     var svg = $('#map-svg');
     if (!svg) return;
-    var W = 1200, H = 800;
+    var W = 1300, H = 800;
     var spots = {
-      cancho: [260, 500], 'cancho-ui': [470, 650],
-      'cancho-cache': [500, 250], 'cancho-hooks': [640, 330], 'cancho-gateway': [790, 250], 'cancho-mqtt': [930, 330], 'cancho-dns': [1060, 250], 'cancho-oci': [1120, 340],
-      'cancho-schema': [520, 480], 'cancho-web': [690, 540], 'cancho-pg': [850, 480], 'cancho-log': [1000, 540], 'cancho-stats': [1100, 460], 'cancho-ml': [1110, 575],
-      'cancho-tools': [600, 735], 'cancho-table': [770, 735], 'cancho-robot': [940, 735], 'cancho-gpu': [1090, 725]
+      cancho: [260, 500], 'cancho-ui': [230, 705],
+      'cancho-forge': [400, 255], 'cancho-cache': [560, 330], 'cancho-hooks': [700, 250], 'cancho-gateway': [850, 330], 'cancho-mqtt': [990, 250], 'cancho-dns': [1120, 330], 'cancho-oci': [1225, 250],
+      'cancho-schema': [560, 480], 'cancho-web': [740, 545], 'cancho-pg': [900, 480], 'cancho-log': [1050, 545], 'cancho-stats': [1180, 470], 'cancho-ml': [1205, 595], 'cancho-mqtt-client': [410, 610],
+      'cancho-tools': [520, 770], 'cancho-table': [680, 770], 'cancho-client-gen': [850, 770], 'cancho-code': [600, 860], 'cancho-fetch': [770, 860],
+      'cancho-robot': [1030, 770], 'cancho-gpu': [1170, 770], 'cancho-hdl': [1100, 860]
     };
-    var regions = [['language', 'La Pedriza', 80, 330], ['service', 'Services', 440, 150], ['library', 'Libraries', 440, 395], ['tool', 'Tools', 560, 628], ['edge', 'Edge', 900, 628]];
+    var regions = [['language', 'La Pedriza', 80, 330], ['service', 'Services', 440, 150], ['library', 'Libraries', 440, 400], ['tool', 'Tools', 400, 725], ['edge', 'Edge', 925, 735]];
     var cg = el('g', {}, svg);
     for (var k = 0; k < 9; k++) {
       var rr = R.rng(100 + k), d = 'M0,' + (120 + k * 82);

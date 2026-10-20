@@ -119,10 +119,10 @@
 <section id="ecosystem">
   <p class="eyebrow">The ecosystem</p>
   <h2>A field of boulders.</h2>
-  <p class="sub">Everything in <code>alpibrusl/cancho-*</code> that is public and described. A filled rock is code that exists; a dashed outline is a design not yet set in place. Click a rock.</p>
+  <p class="sub">Every public <code>alpibrusl/cancho-*</code> repository. A filled rock is code that exists; a dashed outline is a design not yet set in place. Click a rock.</p>
   <div class="chips" id="map-chips" role="group" aria-label="Filter the map"></div>
   <div class="mapwrap">
-    <div class="map"><svg id="map-svg" viewBox="0 90 1200 710" role="group" aria-label="Map of the cancho ecosystem"></svg></div>
+    <div class="map"><svg id="map-svg" viewBox="0 90 1300 820" role="group" aria-label="Map of the cancho ecosystem"></svg></div>
     <aside class="detail" id="detail" aria-live="polite"></aside>
   </div>
   <div class="legend">
@@ -153,6 +153,12 @@
   <li><a href="https://github.com/alpibrusl/cancho-table">cancho-table</a> (built): Select, filter, group and aggregate CSV/TSV for agents; bounded, exact, byte-stable.</li>
   <li><a href="https://github.com/alpibrusl/cancho-robot">cancho-robot</a> (design): A robot arm controller: the Feetech servo bus, SO-101 kinematics and a safety core every motion goes through.</li>
   <li><a href="https://github.com/alpibrusl/cancho-gpu">cancho-gpu</a> (built): A compiler for lex-gpu&#x27;s .lx tile kernels to CUDA C and Metal, written in cancho.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-code">cancho-code</a> (built): An AI coding assistant that proves its work: the cancho compiler checks every piece the model writes, and a task is done only when the compiler and the task&#x27;s own examples say so.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-forge">cancho-forge</a> (built): An agent-run software company you can audit: state, budgets, approvals and evidence are kept by the runtime, and a worker cannot accept its own work.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-hdl">cancho-hdl</a> (built): One .chw file declares the software/hardware boundary (registers, fields, interrupts, DMA); it is checked, and a C header, device tree, SystemVerilog RTL and CMSIS-SVD are generated from it.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-client-gen">cancho-client-gen</a> (built): Reads the OpenAPI 3.1 document that cancho-web generates and writes strictly typed clients; the contract, both ways.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-fetch">cancho-fetch</a> (design): An agent-safe fetch: HTTP and HTTPS to a fixed, built-in list of hosts, with the list in the binary&#x27;s authority row instead of a flag.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-mqtt-client">cancho-mqtt-client</a> (design): An MQTT 3.1.1 client library: connect, publish, subscribe, will, QoS 0 and 1, and a reconnect with bounded backoff. The other half of cancho-mqtt.</li>
   </ul></details>
   <!-- eco:end -->
 </section>
