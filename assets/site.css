@@ -423,3 +423,21 @@ nav { margin-left: auto; gap: 1.3rem; }
 @media (prefers-reduced-motion: reduce) { .chain li { animation: none; } .chain li:not(:last-child)::after { animation: none; } }
 .hero h1 { font-size: clamp(2.1rem, 4.6vw, 3.05rem); line-height: 1.02; }
 .hero .bet { margin: -.3rem 0 0; font: 600 .95rem var(--font); color: var(--accent); max-width: 34rem; }
+
+/* the way in: three routes, each a row, with copyable commands */
+.try { display: grid; gap: 1.2rem; margin-top: 2rem; }
+.try article { background: var(--surface); border-radius: 16px; padding: 1.3rem 1.4rem; box-shadow: var(--shadow), 0 0 0 1px var(--ring); display: grid; gap: 1.1rem 1.8rem; min-width: 0; }
+@media (min-width: 60rem) { .try article { grid-template-columns: 1fr 1.75fr; align-items: center; } }
+.try .tx, .try .cd { display: flex; flex-direction: column; gap: .7rem; min-width: 0; }
+.try h3 { font-size: 1.35rem; letter-spacing: -.02em; margin: 0; }
+.try p { margin: 0; font-size: .93rem; color: var(--muted); }
+.try .when { font: 600 .72rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.try .what { color: var(--fg); font-weight: 600; margin-top: .3rem; }
+.try .links { display: flex; flex-wrap: wrap; gap: .5rem; padding-top: .2rem; }
+.try .links .btn { padding: .5rem .9rem; font-size: .88rem; }
+.codebox { position: relative; background: var(--term-bg); border-radius: 12px; min-width: 0; }
+.codebox pre { margin: 0; padding: .9rem 1rem; overflow-x: auto; font: .78rem/1.6 var(--mono); color: var(--term-fg); white-space: pre; }
+.codebox code { font: inherit; background: none; padding: 0; color: inherit; }
+.codebox .copy { position: absolute; top: .45rem; right: .45rem; border: 1px solid #2d3644; background: #1a212b; color: #c3ccd8; border-radius: 8px; font: 600 .7rem var(--mono); padding: .25rem .6rem; cursor: pointer; }
+.codebox .copy:hover { border-color: #6ea3ee; color: #fff; }
+.codebox[data-copy] pre { padding-right: 4.8rem; }

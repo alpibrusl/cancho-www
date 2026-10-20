@@ -6,9 +6,9 @@
   "stages": {
     "working": "Does what its README claims.",
     "alpha": "Runs, may change, not for production.",
-    "early": "A library with named gaps.",
+    "early": "Built and tested, with named gaps.",
     "built": "Code exists and is documented; its README does not name a stage.",
-    "design": "A design, not built yet."
+    "design": "A design or plan; little or nothing is built."
   },
   "kinds": {
     "language": "Language and compiler",
@@ -53,46 +53,52 @@
       "name": "cancho-cache",
       "kind": "service",
       "stage": "alpha",
-      "summary": "Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena.",
+      "summary": "Redis-compatible cache over RESP2 and RESP3: strings and hashes, expiry and LRU eviction, in a fixed arena.",
       "url": "https://github.com/alpibrusl/cancho-cache",
       "page": "https://alpibrusl.github.io/cancho-cache/",
-      "authority": "no FFI; authority report checked in CI",
-      "note": "38 of Redis 7.0's commands; not a Redis replacement."
+      "authority": "reads one file (/dev/urandom, for the hash seed); no FFI; checked in CI",
+      "note": "Answers 69 of Redis 7.0's 240 commands; no persistence, replication or TLS; not a Redis replacement."
     },
     {
       "id": "cancho-gateway",
       "name": "cancho-gateway",
       "kind": "service",
-      "stage": "design",
-      "summary": "An auditable HTTP/1.1 reverse proxy: a fixed upstream set proven by the authority report.",
+      "stage": "early",
+      "summary": "An HTTP/1.1 reverse proxy you can audit: strict, bounded request parsing, no FFI, a checkable authority report.",
       "url": "https://github.com/alpibrusl/cancho-gateway",
-      "page": "https://alpibrusl.github.io/cancho-gateway/"
+      "page": "https://alpibrusl.github.io/cancho-gateway/",
+      "note": "A working slice, not a finished one. The report proves it touches no files and no foreign code; the upstream set is compiled in and enforced by exact match, but the compiler does not vouch for it."
     },
     {
       "id": "cancho-mqtt",
       "name": "cancho-mqtt",
       "kind": "service",
-      "stage": "design",
-      "summary": "An MQTT 3.1.1 broker: one thread, one poller, bounded memory.",
+      "stage": "alpha",
+      "summary": "An MQTT broker you can reason about: 3.1.1 over plain TCP, QoS 0 to 2, retained messages, wills and persistent sessions, on one thread with bounded memory.",
       "url": "https://github.com/alpibrusl/cancho-mqtt",
-      "page": "https://alpibrusl.github.io/cancho-mqtt/"
+      "page": "https://alpibrusl.github.io/cancho-mqtt/",
+      "authority": "cannot touch a file, dial out or call foreign code (proved by the compiler)",
+      "note": "Alpha, for a trusted network: plain TCP, in memory, no TLS, no long soak run."
     },
     {
       "id": "cancho-dns",
       "name": "cancho-dns",
       "kind": "service",
-      "stage": "design",
-      "summary": "A forwarding and caching DNS resolver: bounded parser, fixed arena.",
+      "stage": "early",
+      "summary": "A forwarding and caching DNS resolver: a bounded packet parser, an answer cache in a fixed arena, no FFI.",
       "url": "https://github.com/alpibrusl/cancho-dns",
-      "page": "https://alpibrusl.github.io/cancho-dns/"
+      "page": "https://alpibrusl.github.io/cancho-dns/",
+      "note": "Its README still says design stage. Built so far: the codec, a UDP and TCP server, an answer cache, a forwarder and an access list with response-rate limiting. No benchmark yet."
     },
     {
       "id": "cancho-oci",
       "name": "cancho-oci",
       "kind": "service",
-      "stage": "design",
-      "summary": "Container images without a daemon: a deterministic OCI image builder and registry client.",
-      "url": "https://github.com/alpibrusl/cancho-oci"
+      "stage": "alpha",
+      "summary": "Container images without a daemon: oci-build assembles a reproducible FROM-scratch image from static executables.",
+      "url": "https://github.com/alpibrusl/cancho-oci",
+      "authority": "no network in its authority report",
+      "note": "Alpha; oci-build works."
     },
     {
       "id": "cancho-pg",
@@ -116,14 +122,15 @@
       "id": "cancho-web",
       "name": "cancho-web",
       "kind": "library",
-      "stage": "early",
+      "stage": "alpha",
       "summary": "Typed routes, validated bodies, problem+json errors and an OpenAPI document from one declaration.",
       "url": "https://github.com/alpibrusl/cancho-web",
       "page": "https://alpibrusl.github.io/cancho-web/",
       "authority": "one thread, no FFI",
       "rests_on": [
         "cancho-schema"
-      ]
+      ],
+      "note": "The declaration half of the framework is built."
     },
     {
       "id": "cancho-log",
@@ -139,35 +146,38 @@
       "id": "cancho-stats",
       "name": "cancho-stats",
       "kind": "library",
-      "stage": "design",
-      "summary": "Statistics on tabular data as a command line an agent can read: exact sums, tests, intervals, resampling.",
+      "stage": "built",
+      "summary": "Statistics whose last digit you can check: a command line for describing data and drawing inferences, with exact sums and error bounds written before the code.",
       "url": "https://github.com/alpibrusl/cancho-stats",
-      "page": "https://alpibrusl.github.io/cancho-stats/"
+      "page": "https://alpibrusl.github.io/cancho-stats/",
+      "note": "Its page replays two real runs of stats describe."
     },
     {
       "id": "cancho-ml",
       "name": "cancho-ml",
       "kind": "library",
-      "stage": "design",
-      "summary": "Classical ML, pipelines and evaluation: deterministic, bounded, agent-first.",
+      "stage": "alpha",
+      "summary": "Classical machine learning on tabular data as a command line an agent can read: seven models, one JSON line out, or a named refusal with a repair.",
       "url": "https://github.com/alpibrusl/cancho-ml",
-      "page": "https://alpibrusl.github.io/cancho-ml/"
+      "page": "https://alpibrusl.github.io/cancho-ml/",
+      "note": "Early, alpha, not for production."
     },
     {
       "id": "cancho-tools",
       "name": "cancho-tools",
       "kind": "tool",
-      "stage": "working",
-      "summary": "Nine small tools for agents: seek, list, peek, jsonq, tally, hash, write, replace, move. JSON out, errors that name a rule.",
+      "stage": "early",
+      "summary": "Ten small tools for agents (seek, list, peek, jsonq, tally, hash, write, replace, move, archive) and one opt-in, run. JSON out, tagged refusals that often carry a repair.",
       "url": "https://github.com/alpibrusl/cancho-tools",
       "page": "https://alpibrusl.github.io/cancho-tools/",
-      "authority": "a compiler-proven authority per binary"
+      "authority": "a compiler-proven authority per binary",
+      "note": "Not claimed: that agents do better with them than with the usual tools. That evaluation has not been run."
     },
     {
       "id": "cancho-table",
       "name": "cancho-table",
       "kind": "tool",
-      "stage": "built",
+      "stage": "early",
       "summary": "Select, filter, group and aggregate CSV/TSV for agents; bounded, exact, byte-stable.",
       "url": "https://github.com/alpibrusl/cancho-table",
       "page": "https://alpibrusl.github.io/cancho-table/",
@@ -190,10 +200,10 @@
       "name": "cancho-gpu",
       "kind": "edge",
       "stage": "built",
-      "summary": "A compiler for lex-gpu's .lx tile kernels to CUDA C and Metal, written in cancho.",
+      "summary": "A compiler for typed tile kernels (.chx) to CUDA C and Metal, written in cancho; it also runs language models on a Metal GPU.",
       "url": "https://github.com/alpibrusl/cancho-gpu",
       "page": "https://alpibrusl.github.io/cancho-gpu/",
-      "note": "Byte-identical to lex-gpu's Rust emitter on every test case."
+      "note": "Per its README: Qwen2.5-0.5B and a 27B model agree with reference implementations."
     },
     {
       "id": "cancho-code",

@@ -30,7 +30,7 @@
   <a class="brand" href="#top"><img src="logo-mark.png" width="32" height="32" alt="">cancho</a>
   <span class="prever">Pre-1.0 · alpha</span>
   <nav aria-label="Sections">
-    <a href="#trust" class="opt">Trust</a><a href="#ecosystem" class="opt">Ecosystem</a><a href="#proof" class="opt">Proof</a><a href="#demo" class="opt">Demo</a><a href="#agents" class="opt">Agents</a><a href="https://alpibru.com/manifesto" class="opt">Manifesto</a><a href="https://alpibrusl.github.io/cancho/" class="opt">Docs</a>
+    <a href="#try" class="opt">Try it</a><a href="#trust" class="opt">Trust</a><a href="#ecosystem" class="opt">Ecosystem</a><a href="#proof" class="opt">Proof</a><a href="#demo" class="opt">Demo</a><a href="#agents" class="opt">Agents</a><a href="https://alpibru.com/manifesto" class="opt">Manifesto</a><a href="https://alpibrusl.github.io/cancho/" class="opt">Docs</a>
   </nav>
   <div class="hright">
     <span class="switch" role="group" aria-label="View this page as">
@@ -38,7 +38,7 @@
     </span>
     <a class="ghbtn" href="https://github.com/alpibrusl/cancho"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .6l2.2 4.6 5 .7-3.6 3.5.9 5L8 12l-4.5 2.4.9-5L.8 5.9l5-.7z"/></svg>GitHub</a>
     <details class="menu"><summary aria-label="Menu"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></summary>
-      <div><a href="#trust">Trust</a><a href="#ecosystem">Ecosystem</a><a href="#proof">Proof</a><a href="#demo">Demo</a><a href="#agents">Agents</a><a href="https://alpibru.com/manifesto">Manifesto</a><a href="https://alpibrusl.github.io/cancho/">Docs</a><a href="https://github.com/alpibrusl/cancho">GitHub</a></div>
+      <div><a href="#try">Try it</a><a href="#trust">Trust</a><a href="#ecosystem">Ecosystem</a><a href="#proof">Proof</a><a href="#demo">Demo</a><a href="#agents">Agents</a><a href="https://alpibru.com/manifesto">Manifesto</a><a href="https://alpibrusl.github.io/cancho/">Docs</a><a href="https://github.com/alpibrusl/cancho">GitHub</a></div>
     </details>
   </div>
 </div></header>
@@ -52,7 +52,7 @@
     <h1>Tools built for agents.<br><em>Not adapted from humans.</em></h1>
     <p class="lead"><b>cancho</b> is a programming language and toolchain for software built by AI agents and checked by machines. Programs declare what they can do, dependencies have stable identities, and the compiler returns structured evidence that other tools can read and check.</p>
     <p class="bet">The bet: you should not have to read what an agent wrote to trust it.</p>
-    <div class="cta"><a class="btn primary" href="#demo">Watch the demo →</a><a class="btn ghost" href="#trust">How trust works</a><a class="btn text" href="https://alpibru.com/manifesto">Read the manifesto</a></div>
+    <div class="cta"><a class="btn primary" href="#try">Try it on a real task →</a><a class="btn ghost" href="#demo">Watch the demo</a><a class="btn text" href="https://alpibru.com/manifesto">Read the manifesto</a></div>
     <ul class="facts"><li>No ambient authority</li><li>Content-addressed</li><li>Diagnostics as data</li></ul>
   </div>
   <div class="scene-wrap">
@@ -87,6 +87,66 @@
     <h3>Verified, not read</h3><p>The compiler answers in data: a rule tag, a position, a fix. Diagnostics, the command tree and a skill file come out of the binary for an agent to use directly.</p>
   </div>
 </div>
+
+<div class="cairn" aria-hidden="true"></div>
+
+<section id="try">
+  <p class="eyebrow">Try it</p>
+  <h2>Three ways in, from sixty seconds to a real task.</h2>
+  <p class="sub">Every command here was run before it went on this page. cancho is pre-1.0, building it needs Rust and clang, and what is not claimed is written down below.</p>
+  <div class="try">
+    <article class="reveal">
+      <div class="tx">
+        <p class="when">60 seconds · nothing to install</p>
+        <h3>See a refusal</h3>
+        <p>A program opens a file and never closes it. The compiler refuses it by a named rule; one added line fixes it.</p>
+        <div class="links"><a class="btn primary" href="#demo">Watch the recorded session</a><a class="btn ghost" href="https://github.com/alpibrusl/cancho-www/tree/main/demo/src">The two files</a></div>
+      </div>
+      <div class="cd"><div class="codebox"><pre tabindex="0"><code>$ cancho check leak.cho --std
+leak.cho:12:9: error: `f` is still live at the end of this block; nothing consumes it
+$ echo $?
+1
+$ cancho check fixed.cho --std     # one line added: file_close(f);
+$ echo $?
+0</code></pre></div></div>
+    </article>
+    <article class="reveal">
+      <div class="tx">
+        <p class="when">5 minutes · Rust and clang</p>
+        <h3>Run the compiler</h3>
+        <p>The first <code>run</code> builds the compiler written in cancho once. Green on linux-x86_64 and darwin-aarch64. <code>authority</code> is the one to try on something you did not write.</p>
+        <div class="links"><a class="btn ghost" href="https://github.com/alpibrusl/cancho#building">Build instructions</a><a class="btn ghost" href="https://alpibrusl.github.io/cancho/">Docs</a></div>
+      </div>
+      <div class="cd"><div class="codebox" data-copy><pre tabindex="0"><code>git clone https://github.com/alpibrusl/cancho &amp;&amp; cd cancho
+cargo build -p cancho --release
+./target/release/cancho run examples/hello.cho --std
+./target/release/cancho authority examples/tally.cho --std</code></pre></div><div class="codebox"><pre tabindex="0"><code>Hello, world!
+performs
+    io_read
+    io_write
+never touches
+    the filesystem
+    the network
+    the heap
+    the command line
+    foreign code
+(output shortened)</code></pre></div></div>
+    </article>
+    <article class="reveal">
+      <div class="tx">
+        <p class="when">A real task · an agent does the work</p>
+        <h3>Give it to an agent</h3>
+        <p>The first line prints the page an agent should read; the rest is its loop: check (a rule tag, not a sentence), see what the program can reach, run the tests. Or paste <a href="https://github.com/alpibrusl/cancho-code/blob/main/docs/agent-prompt.md">cancho-code’s agent prompt</a> into Claude Code or Codex: it installs everything and proves the install with a test that needs no key.</p>
+        <div class="links"><a class="btn ghost" href="https://github.com/alpibrusl/cancho-code">cancho-code</a><a class="btn ghost" href="https://alpibrusl.github.io/cancho-tools/">The ten tools</a></div>
+      </div>
+      <div class="cd"><div class="codebox" data-copy><pre tabindex="0"><code>cancho agent-guidelines &gt; AGENTS.md
+cancho check src/*.cho --std --output json
+cancho authority src/*.cho --std
+cancho test tests/*.cho --std</code></pre></div><p class="what">What an agent sees when two of them collide, from <a href="https://alpibrusl.github.io/cancho-tools/">cancho-tools</a>:</p><div class="codebox"><pre tabindex="0"><code>{&quot;rule&quot;:&quot;precondition.hash-mismatch&quot;,&quot;hint&quot;:&quot;re-read the file, then decide&quot;, ...}</code></pre></div></div>
+    </article>
+  </div>
+  <p class="note">Not claimed: that agents do better with cancho-tools than with the usual tools. That needs an agent-in-the-loop evaluation that has not been run (<a href="https://github.com/alpibrusl/cancho/issues/228">cancho#228</a>). cancho-code reports its own measured results, with their conditions, in its README.</p>
+</section>
 
 <div class="cairn" aria-hidden="true"></div>
 
@@ -204,21 +264,21 @@
   <li><a href="https://github.com/alpibrusl/cancho">cancho</a> · <a href="https://alpibrusl.github.io/cancho/">page</a> (built): The language and its Rust compiler. A second compiler, written in cancho, is being checked against it.</li>
   <li><a href="https://github.com/alpibrusl/cancho-ui">cancho-ui</a> · <a href="https://alpibrusl.github.io/cancho-ui/">page</a> (built): A UI language whose compiler knows what each component is allowed to do. Builds JavaScript and DOM.</li>
   <li><a href="https://github.com/alpibrusl/cancho-hooks">cancho-hooks</a> · <a href="https://alpibrusl.github.io/cancho-hooks/">page</a> (alpha): Webhook delivery: on disk before the 202, signed, retried, dead-lettered and replayable.</li>
-  <li><a href="https://github.com/alpibrusl/cancho-cache">cancho-cache</a> · <a href="https://alpibrusl.github.io/cancho-cache/">page</a> (alpha): Redis-compatible string cache over RESP2/RESP3, expiry and LRU in a fixed arena.</li>
-  <li><a href="https://github.com/alpibrusl/cancho-gateway">cancho-gateway</a> · <a href="https://alpibrusl.github.io/cancho-gateway/">page</a> (design): An auditable HTTP/1.1 reverse proxy: a fixed upstream set proven by the authority report.</li>
-  <li><a href="https://github.com/alpibrusl/cancho-mqtt">cancho-mqtt</a> · <a href="https://alpibrusl.github.io/cancho-mqtt/">page</a> (design): An MQTT 3.1.1 broker: one thread, one poller, bounded memory.</li>
-  <li><a href="https://github.com/alpibrusl/cancho-dns">cancho-dns</a> · <a href="https://alpibrusl.github.io/cancho-dns/">page</a> (design): A forwarding and caching DNS resolver: bounded parser, fixed arena.</li>
-  <li><a href="https://github.com/alpibrusl/cancho-oci">cancho-oci</a> (design): Container images without a daemon: a deterministic OCI image builder and registry client.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-cache">cancho-cache</a> · <a href="https://alpibrusl.github.io/cancho-cache/">page</a> (alpha): Redis-compatible cache over RESP2 and RESP3: strings and hashes, expiry and LRU eviction, in a fixed arena.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-gateway">cancho-gateway</a> · <a href="https://alpibrusl.github.io/cancho-gateway/">page</a> (early): An HTTP/1.1 reverse proxy you can audit: strict, bounded request parsing, no FFI, a checkable authority report.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-mqtt">cancho-mqtt</a> · <a href="https://alpibrusl.github.io/cancho-mqtt/">page</a> (alpha): An MQTT broker you can reason about: 3.1.1 over plain TCP, QoS 0 to 2, retained messages, wills and persistent sessions, on one thread with bounded memory.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-dns">cancho-dns</a> · <a href="https://alpibrusl.github.io/cancho-dns/">page</a> (early): A forwarding and caching DNS resolver: a bounded packet parser, an answer cache in a fixed arena, no FFI.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-oci">cancho-oci</a> (alpha): Container images without a daemon: oci-build assembles a reproducible FROM-scratch image from static executables.</li>
   <li><a href="https://github.com/alpibrusl/cancho-pg">cancho-pg</a> (early): PostgreSQL client: v3 protocol, SCRAM-SHA-256, extended queries, TLS, non-blocking pool.</li>
   <li><a href="https://github.com/alpibrusl/cancho-schema">cancho-schema</a> (early): Schemas as data: validation, problem+json errors and JSON Schema 2020-12 from one value.</li>
-  <li><a href="https://github.com/alpibrusl/cancho-web">cancho-web</a> · <a href="https://alpibrusl.github.io/cancho-web/">page</a> (early): Typed routes, validated bodies, problem+json errors and an OpenAPI document from one declaration.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-web">cancho-web</a> · <a href="https://alpibrusl.github.io/cancho-web/">page</a> (alpha): Typed routes, validated bodies, problem+json errors and an OpenAPI document from one declaration.</li>
   <li><a href="https://github.com/alpibrusl/cancho-log">cancho-log</a> (early): A durable, segmented, append-only log with crash-safe recovery that cuts off a torn tail.</li>
-  <li><a href="https://github.com/alpibrusl/cancho-stats">cancho-stats</a> · <a href="https://alpibrusl.github.io/cancho-stats/">page</a> (design): Statistics on tabular data as a command line an agent can read: exact sums, tests, intervals, resampling.</li>
-  <li><a href="https://github.com/alpibrusl/cancho-ml">cancho-ml</a> · <a href="https://alpibrusl.github.io/cancho-ml/">page</a> (design): Classical ML, pipelines and evaluation: deterministic, bounded, agent-first.</li>
-  <li><a href="https://github.com/alpibrusl/cancho-tools">cancho-tools</a> · <a href="https://alpibrusl.github.io/cancho-tools/">page</a> (working): Nine small tools for agents: seek, list, peek, jsonq, tally, hash, write, replace, move. JSON out, errors that name a rule.</li>
-  <li><a href="https://github.com/alpibrusl/cancho-table">cancho-table</a> · <a href="https://alpibrusl.github.io/cancho-table/">page</a> (built): Select, filter, group and aggregate CSV/TSV for agents; bounded, exact, byte-stable.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-stats">cancho-stats</a> · <a href="https://alpibrusl.github.io/cancho-stats/">page</a> (built): Statistics whose last digit you can check: a command line for describing data and drawing inferences, with exact sums and error bounds written before the code.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-ml">cancho-ml</a> · <a href="https://alpibrusl.github.io/cancho-ml/">page</a> (alpha): Classical machine learning on tabular data as a command line an agent can read: seven models, one JSON line out, or a named refusal with a repair.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-tools">cancho-tools</a> · <a href="https://alpibrusl.github.io/cancho-tools/">page</a> (early): Ten small tools for agents (seek, list, peek, jsonq, tally, hash, write, replace, move, archive) and one opt-in, run. JSON out, tagged refusals that often carry a repair.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-table">cancho-table</a> · <a href="https://alpibrusl.github.io/cancho-table/">page</a> (early): Select, filter, group and aggregate CSV/TSV for agents; bounded, exact, byte-stable.</li>
   <li><a href="https://github.com/alpibrusl/cancho-robot">cancho-robot</a> · <a href="https://alpibrusl.github.io/cancho-robot/">page</a> (design): A robot arm controller: the Feetech servo bus, SO-101 kinematics and a safety core every motion goes through.</li>
-  <li><a href="https://github.com/alpibrusl/cancho-gpu">cancho-gpu</a> · <a href="https://alpibrusl.github.io/cancho-gpu/">page</a> (built): A compiler for lex-gpu&#x27;s .lx tile kernels to CUDA C and Metal, written in cancho.</li>
+  <li><a href="https://github.com/alpibrusl/cancho-gpu">cancho-gpu</a> · <a href="https://alpibrusl.github.io/cancho-gpu/">page</a> (built): A compiler for typed tile kernels (.chx) to CUDA C and Metal, written in cancho; it also runs language models on a Metal GPU.</li>
   <li><a href="https://github.com/alpibrusl/cancho-code">cancho-code</a> · <a href="https://alpibrusl.github.io/cancho-code/">page</a> (built): An AI coding assistant that proves its work: the cancho compiler checks every piece the model writes, and a task is done only when the compiler and the task&#x27;s own examples say so.</li>
   <li><a href="https://github.com/alpibrusl/cancho-forge">cancho-forge</a> · <a href="https://alpibrusl.github.io/cancho-forge/">page</a> (built): An agent-run software company you can audit: state, budgets, approvals and evidence are kept by the runtime, and a worker cannot accept its own work.</li>
   <li><a href="https://github.com/alpibrusl/cancho-hdl">cancho-hdl</a> · <a href="https://alpibrusl.github.io/cancho-hdl/">page</a> (built): One .chw file declares the software/hardware boundary (registers, fields, interrupts, DMA); it is checked, and a C header, device tree, SystemVerilog RTL and CMSIS-SVD are generated from it.</li>
