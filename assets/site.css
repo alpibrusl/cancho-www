@@ -6,7 +6,7 @@
   --ink: #16283b; --accent: #185fa5; --accent-fg: #ffffff; --accent-soft: #ebf3fc;
   --good: #0f7b5f; --warn: #8a4b0a; --warn-bg: #f9efd9; --warn-line: #d9a441; --bad: #b91c1c; --bad-bg: #fdeceb;
   --g1: #f1eee8; --g2: #cfcac0; --g3: #8f8a80; --rock-line: #6f6a60; --lichen: #b9a24a; --shrub: #1c3040;
-  --sky: #e5edf6; --ridge1: #d4dbe2; --ridge2: #b5c0cb;
+  --sky: #e5edf6; --ridge0: #dfe6ee; --ridge1: #ccd5de; --ridge2: #aebbc8; --cloud-o: .6;
   --ring: transparent; --shadow: 0 1px 2px rgba(18, 20, 23, .05), 0 10px 28px -14px rgba(18, 20, 23, .16);
   --font: "Plus Jakarta Sans Variable", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -18,7 +18,7 @@
     --ink: #0a121a; --accent: #6ea3ee; --accent-fg: #0a1220; --accent-soft: #14233a;
     --good: #4fd1a5; --warn: #f1c577; --warn-bg: #1c1810; --warn-line: #7e6126; --bad: #ff7a72; --bad-bg: #2a1413;
     --g1: #8a93a1; --g2: #566070; --g3: #2c3441; --rock-line: #0b1016; --lichen: #8f8a46; --shrub: #060b10;
-    --sky: #101a28; --ridge1: #15202e; --ridge2: #1b2a3c;
+    --sky: #101a28; --ridge0: #121c29; --ridge1: #16222f; --ridge2: #1c2b3d; --cloud-o: .05;
     --ring: #222b36; --shadow: none;
   }
 }
@@ -88,7 +88,19 @@ code { font-family: var(--mono); font-size: .9em; background: var(--soft); paddi
 .sun-wrap { transform-box: fill-box; transform-origin: center; animation: sunrise 1.8s cubic-bezier(.2, .8, .2, 1) both, breathe 7s ease-in-out 2s infinite; }
 @keyframes sunrise { from { transform: translateY(70px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes breathe { 50% { transform: scale(1.03); } }
-.ridge1 { fill: var(--ridge1); } .ridge2 { fill: var(--ridge2); }
+.ridge0 { fill: var(--ridge0); } .ridge1 { fill: var(--ridge1); } .ridge2 { fill: var(--ridge2); }
+.ground { fill: var(--shrub); opacity: .9; }
+.pine rect, .pine ellipse { fill: color-mix(in srgb, var(--shrub) 62%, var(--ridge2)); }
+.rock-speck { fill: url(#speck); opacity: .7; }
+.rock-shade { fill: url(#shade); }
+.rock-ground { fill: #000; opacity: .22; }
+.rock.design .rock-speck, .rock.design .rock-shade { display: none; }
+.cloud { fill: #fff; opacity: var(--cloud-o, .5); animation: drift 38s ease-in-out infinite alternate; animation-delay: calc(var(--i) * -9s); }
+@keyframes drift { to { transform: translateX(36px); } }
+.bird { fill: none; stroke: var(--rock-line); stroke-width: 1.6; stroke-linecap: round; opacity: .6; }
+.birds { animation: glide 26s linear infinite alternate; }
+.birds.b2 { animation-duration: 34s; animation-direction: alternate-reverse; }
+@keyframes glide { from { transform: translate(0, 0); } 50% { transform: translate(60px, 10px); } to { transform: translate(110px, -6px); } }
 .drop { transform-box: fill-box; transform-origin: 50% 100%; animation: settle 1.1s cubic-bezier(.3, 1.35, .5, 1) both; animation-delay: var(--d, 0s); }
 @keyframes settle { 0% { transform: translateY(-420px) rotate(var(--r, -6deg)); opacity: 0; } 12% { opacity: 1; } 70% { transform: translateY(0) rotate(0); } 82% { transform: translateY(-8px); } 100% { transform: none; } }
 .glint { animation: glint 6s ease-in-out infinite; }

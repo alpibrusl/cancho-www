@@ -6,54 +6,24 @@
   document.documentElement.classList.add('js');
   var $ = function (s, c) { return (c || document).querySelector(s); };
 
-  /* ---------- hero: boulders settle, the sun comes up ---------- */
+  /* ---------- hero: boulders settle, the sun comes up (the drawing is assets/scene.js) ---------- */
   function hero() {
     var svg = $('#scene-svg');
     if (!svg) return;
-    var r = R.rng(7);
-    var L = function (k, cls) { return el('g', { class: 'layer', style: '--k:' + k }, svg); };
-    var far = L(6);
-    el('g', { class: 'sun-wrap' }, far).appendChild(el('circle', { cx: 330, cy: 235, r: 175, class: 'sun' }));
-    R.ridge(L(10), r, 640, 600, 400, 70, 'ridge1');
-    R.ridge(L(16), r, 640, 600, 450, 60, 'ridge2');
-    var mid = L(24);
-    var ground = el('path', { d: 'M-40,600 L-40,560 Q160,548 320,556 T680,552 L680,600Z', class: 'shrub' }, mid);
-    ground.setAttribute('opacity', '.9');
-    var fg = L(34);
-    var order = [
-      // seed, x, baseY, rx, ry, delay (bottom of the pile first)
-      ['yelmo', 330, 560, 250, 205, 0.1, -3],
-      ['left', 150, 448, 92, 66, 0.55, -8],
-      ['right', 520, 486, 82, 58, 0.7, 7],
-      ['top', 318, 262, 84, 66, 1.05, 9],
-      ['cap', 332, 162, 40, 32, 1.35, -12],
-      ['f1', 78, 566, 72, 46, 0.9, 6],
-      ['f2', 540, 572, 88, 48, 0.8, -5],
-      ['f3', 462, 578, 38, 26, 1.2, 10]
-    ];
-    order.forEach(function (o) {
-      var holder = el('g', {}, fg);
-      var inner = el('g', { class: 'drop', style: '--d:' + o[5] + 's;--r:' + o[6] + 'deg' }, holder);
-      R.rock(inner, { seed: o[0], x: o[1], baseY: o[2], rx: o[3], ry: o[4], n: o[3] > 150 ? 16 : 12, jitter: o[3] > 150 ? 0.07 : 0.13, cracks: o[3] > 150 ? 4 : 2, lichen: o[3] > 150 ? 8 : 3 });
-    });
-    [[196, 566, 30], [40, 572, 24], [612, 566, 26], [440, 568, 18]].forEach(function (s, i) {
-      var g = el('g', { class: 'drop', style: '--d:' + (1.5 + i * 0.1) + 's' }, fg);
-      [[0, 0, 1], [-.7, 3, .8], [.7, 4, .75]].forEach(function (c) { el('circle', { cx: s[0] + c[0] * s[2], cy: s[1] - s[2] * .5 + c[1], r: s[2] * c[2], class: 'shrub' }, g); });
-    });
-    if (!reduced) {
-      var box = $('.scene'), ticking = false;
-      window.addEventListener('pointermove', function (e) {
-        if (ticking) return; ticking = true;
-        requestAnimationFrame(function () {
-          ticking = false;
-          var b = box.getBoundingClientRect();
-          if (b.bottom < 0 || b.top > innerHeight) return;
-          svg.style.setProperty('--px', ((e.clientX / innerWidth - 0.5) * -2).toFixed(3));
-          svg.style.setProperty('--py', ((e.clientY / innerHeight - 0.5) * -2).toFixed(3));
-        });
-      }, { passive: true });
-      svg.querySelectorAll('.layer').forEach(function (l) { l.style.setProperty('--px', 0); });
-    }
+    window.Scene.draw(svg);
+    if (reduced) return;
+    var box = $('.scene'), ticking = false;
+    svg.querySelectorAll('.layer').forEach(function (l) { l.style.setProperty('--px', 0); });
+    window.addEventListener('pointermove', function (e) {
+      if (ticking) return; ticking = true;
+      requestAnimationFrame(function () {
+        ticking = false;
+        var b = box.getBoundingClientRect();
+        if (b.bottom < 0 || b.top > innerHeight) return;
+        svg.style.setProperty('--px', ((e.clientX / innerWidth - 0.5) * -2).toFixed(3));
+        svg.style.setProperty('--py', ((e.clientY / innerHeight - 0.5) * -2).toFixed(3));
+      });
+    }, { passive: true });
   }
 
   /* ---------- cairn dividers ---------- */

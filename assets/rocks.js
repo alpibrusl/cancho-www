@@ -47,15 +47,38 @@
     return d + 'Z';
   }
 
-  /* rock(parent, {seed, x, baseY, rx, ry}) draws a boulder whose flat base sits on baseY. Returns the group. */
+  /* Shared gradients and patterns, injected once so every page (and the share-card renderer) draws the same granite. */
+  function ensureDefs() {
+    if (document.getElementById('rocks-defs')) return;
+    var svg = el('svg', { id: 'rocks-defs', class: 'defs', 'aria-hidden': 'true', focusable: 'false' }, document.body);
+    var d = el('defs', {}, svg);
+    var gr = el('linearGradient', { id: 'gr', x1: 0, y1: 0, x2: 1, y2: 1 }, d);
+    [[0, 'var(--g1)'], [0.55, 'var(--g2)'], [1, 'var(--g3)']].forEach(function (s) { el('stop', { offset: s[0], style: 'stop-color:' + s[1] }, gr); });
+    var sh = el('radialGradient', { id: 'shade', cx: 0.3, cy: 0.22, r: 0.95 }, d);
+    [[0, 0], [0.55, 0], [1, 0.38]].forEach(function (s) { el('stop', { offset: s[0], 'stop-color': '#0a1424', 'stop-opacity': s[1] }, sh); });
+    var halo = el('radialGradient', { id: 'halo' }, d);
+    el('stop', { offset: 0.55, style: 'stop-color:var(--accent);stop-opacity:.28' }, halo);
+    el('stop', { offset: 1, style: 'stop-color:var(--accent);stop-opacity:0' }, halo);
+    // feldspar and mica: a tile of flecks, in the user space of whichever rock uses it
+    var pat = el('pattern', { id: 'speck', width: 56, height: 56, patternUnits: 'userSpaceOnUse' }, d);
+    var r = rng(11), cols = ['rgba(30,30,34,.38)', 'rgba(255,255,255,.55)', 'rgba(176,132,98,.5)', 'rgba(30,30,34,.25)'];
+    for (var i = 0; i < 34; i++) {
+      el('circle', { cx: (r() * 56).toFixed(1), cy: (r() * 56).toFixed(1), r: (0.5 + r() * 1.3).toFixed(2), fill: cols[i % cols.length] }, pat);
+    }
+  }
+
+  /* rock(parent, {seed, x, baseY, rx, ry, shadow}) draws a boulder whose flat base sits on baseY. Returns the group. */
   function rock(parent, o) {
     var r = rng(typeof o.seed === 'string' ? hash(o.seed) : o.seed);
     var rx = o.rx, ry = o.ry, flat = 0.78;
     var g = el('g', { transform: 'translate(' + o.x + ',' + (o.baseY - ry * flat) + ')' }, parent);
+    if (o.shadow) el('ellipse', { cx: rx * 0.12, cy: ry * flat, rx: rx * 1.08, ry: Math.max(4, ry * 0.13), class: 'rock-ground' }, g);
     var body = el('g', {}, g);
     var pts = outline(r, rx, ry, o.n || 12, o.jitter == null ? 0.13 : o.jitter, flat);
     var d = smooth(pts);
     el('path', { d: d, class: 'rock-shape' }, body);
+    el('path', { d: d, class: 'rock-speck' }, body);
+    el('path', { d: d, class: 'rock-shade' }, body);
     el('path', { d: d, class: 'rock-hl', transform: 'translate(' + (-rx * 0.1) + ',' + (-ry * 0.14) + ') scale(.78 .7)' }, body);
     var cracks = o.cracks == null ? 2 : o.cracks;
     for (var i = 0; i < cracks; i++) {
@@ -85,5 +108,6 @@
     return el('path', { d: d + 'L' + w + ',' + h + 'Z', class: cls }, parent);
   }
 
-  window.Rocks = { rock: rock, ridge: ridge, rng: rng, hash: hash, el: el, NS: NS };
+  if (document.body) ensureDefs();
+  window.Rocks = { ensureDefs: ensureDefs, rock: rock, ridge: ridge, rng: rng, hash: hash, el: el, NS: NS };
 })();
