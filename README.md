@@ -34,6 +34,6 @@ CI (on pull requests and before every deploy) fails if the generated files are s
 
 ## Deploying
 
-`.github/workflows/pages.yml` deploys `_site/` to GitHub Pages on push to `main`, at `alpibrusl.github.io/cancho-www/` (all links are relative).
+`.github/workflows/pages.yml` deploys `_site/` to GitHub Pages on push to `main`, at `cancho.dev` (all links are relative, so it also works under `alpibrusl.github.io/cancho-www/`).
 
-Custom domain, once bought (planned: `cancho.dev`): add `echo "<domain>" > _site/CNAME` to `scripts/build_site.sh`, point the apex at GitHub Pages (A records 185.199.108.153, .109.153, .110.153, .111.153; AAAA 2606:50c0:8000::153 to 8003::153; `www` CNAME to `alpibrusl.github.io`), then set the custom domain and enforce HTTPS in Pages settings. Update `<link rel="canonical">`, `og:url` and `og:image` in `index.html`, and `site` in `data/ecosystem.json` (it feeds the URLs in the generated `agents.md` and `llms.txt`; run `scripts/gen_agent_files.py`).
+Custom domain: **cancho.dev** (registered at OVHcloud). The page, `og:url`, `og:image`, the canonical link, the share card and the URLs in `agents.md` / `llms.txt` (`site` in `data/ecosystem.json`) all use it. DNS, at the registrar: apex `A` records 185.199.108.153, .109.153, .110.153, .111.153; `AAAA` 2606:50c0:8000::153 to 8003::153; `www` as a `CNAME` to `alpibrusl.github.io`. Then, in the repository's Settings > Pages, set the custom domain to `cancho.dev` and tick Enforce HTTPS once the certificate is issued. The other projects' landing pages stay on `alpibrusl.github.io/<repo>/`.
