@@ -475,3 +475,20 @@ nav { margin-left: auto; gap: 1.3rem; }
 .demo-text summary small { color: var(--muted); font-weight: 400; }
 .demo-text pre.code { margin-top: .8rem; max-height: 28rem; overflow: auto; }
 .demo-text pre.code { background: var(--term-bg); color: var(--term-fg); border-radius: 12px; padding: 1rem 1.1rem; font: .8rem/1.6 var(--mono); white-space: pre; }
+
+/* the walk: a hiker on the map and a recorded session beside it */
+.demo { margin-top: 1rem; border-top: 1px dashed var(--ring); padding-top: .9rem; }
+.demo-head { display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; }
+.demo-head strong { font: 700 .82rem var(--mono); }
+.demo .walk { padding: .35rem .8rem; font-size: .82rem; }
+.term { margin-top: .6rem; background: #14100f; color: #f0e6da; border-radius: 10px; padding: .7rem .8rem; font: 500 .74rem/1.5 var(--mono); max-height: 17rem; overflow: auto; }
+.term div { white-space: pre-wrap; overflow-wrap: anywhere; }
+.t-note { color: #a89a8c; margin-top: .5rem; } .t-note:first-child { margin-top: 0; }
+.t-cmd { color: #fff; } .t-out { color: #e8b9a6; }
+.nodemo, .demo .fine { color: var(--muted); font-size: .78rem; }
+.map svg .walk-path { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 2 6; stroke-linecap: round; opacity: .6; }
+.map svg .hiker-dot { fill: var(--accent); stroke: #fff; stroke-width: 2.5; }
+.map svg .hiker-halo { fill: none; stroke: var(--accent); stroke-width: 2; opacity: .5; animation: hk 1.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+.map svg .hiker.rest .hiker-halo { animation-duration: 2.8s; }
+@keyframes hk { from { transform: scale(.5); opacity: .8; } to { transform: scale(1.7); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .map svg .hiker-halo { animation: none; } }

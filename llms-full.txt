@@ -144,6 +144,7 @@ Record: https://alpibrusl.github.io/cancho/bootstrap.html
 ## Machine-readable
 
 - https://alpibrusl.github.io/cancho-www/data/ecosystem.json: every project above as JSON
+- https://alpibrusl.github.io/cancho-www/data/demos.json: recorded command sessions (real output) for the projects that have one
 - https://alpibrusl.github.io/cancho-www/llms.txt and https://alpibrusl.github.io/cancho-www/llms-full.txt
 
 ## Example: a leak, refused by a named rule

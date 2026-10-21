@@ -124,6 +124,7 @@ def agents_md():
         "## Machine-readable",
         "",
         f"- {site}data/ecosystem.json: every project above as JSON",
+        f"- {site}data/demos.json: recorded command sessions (real output) for the projects that have one",
         f"- {site}llms.txt and {site}llms-full.txt",
         "",
     ]
