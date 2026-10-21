@@ -1,0 +1,47 @@
+{
+  "cancho": {
+    "title": "A leaked file, refused by name",
+    "steps": [
+      {
+        "note": "It opens a file and never closes it. The compiler refuses:",
+        "cmd": "cancho check leak.cho --std",
+        "out": "leak.cho:12:9: error: `f` is still live at the end of this block; nothing consumes it\n            match open_read(c, \"/tmp/notes.txt\") {\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+      },
+      {
+        "note": "The refusal is data an agent can match on:",
+        "cmd": "cancho check leak.cho --std --output json | grep '\"rule\"'",
+        "out": "      \"rule\": \"linear-value-unconsumed\","
+      },
+      {
+        "note": "One added line fixes it, and the program may now run:",
+        "cmd": "diff leak.cho fixed.cho; cancho build fixed.cho --std -o notes && ./notes",
+        "out": "13a14\n>                 file_close(f);\nopened it, closed it"
+      },
+      {
+        "note": "What may it do? The types say:",
+        "cmd": "cancho authority fixed.cho --std",
+        "out": "performs\n    fs_read(\"/tmp\")\n    io_write\nnever touches\n    the network\n    the heap\n    the command line\n    signals\n    other programs\n    foreign code"
+      }
+    ]
+  },
+  "cancho-ui": {
+    "title": "A component that asks for the clock",
+    "steps": [
+      {
+        "note": "Delete `requires Clock;` and the compiler refuses:",
+        "cmd": "cancho-ui check clock_bad.cui; echo \"exit $?\"",
+        "out": "error[capability-missing] at clock_bad.cui:15:21: component `Clock` performs `clock.now` which requires the `Clock` capability, but `requires Clock` is not declared\nexit 1"
+      },
+      {
+        "note": "With the declaration it is accepted:",
+        "cmd": "cancho-ui check clock.cui; echo \"exit $?\"",
+        "out": "exit 0"
+      },
+      {
+        "note": "Ask what it may reach, as data:",
+        "cmd": "cancho-ui inspect effects clock.cui Clock | grep '\"capability\"'",
+        "out": "      \"capability\": \"Clock\",\n      \"capability\": \"Clock\","
+      }
+    ]
+  }
+}

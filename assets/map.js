@@ -66,7 +66,8 @@
     return el('path', { d: d, class: cls }, parent);
   }
 
-  function draw(data) {
+  function draw(data, demos) {
+    demos = demos || {};
     var svg = $('#map-svg');
     if (!svg) return;
     var defs = el('defs', {}, svg);
@@ -166,7 +167,75 @@
       rocks.push(g);
     });
 
+
+    /* The walk: a hiker leaves the car park, the camera follows to the rock, and the recorded session types out beside it. */
+    var vb0 = svg.getAttribute('viewBox'), walking = 0, reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function vbTo(to, ms, done) {
+      var from = svg.getAttribute('viewBox').split(' ').map(Number), t0 = null;
+      if (reduce) { svg.setAttribute('viewBox', to.join(' ')); if (done) done(); return; }
+      (function f(t) {
+        if (t0 === null) t0 = t;
+        var k = Math.min(1, (t - t0) / ms), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+        svg.setAttribute('viewBox', from.map(function (v, i) { return (v + (to[i] - v) * e).toFixed(1); }).join(' '));
+        if (k < 1) requestAnimationFrame(f); else if (done) done();
+      })(performance.now());
+    }
+    function resetView() { walking++; var h = svg.querySelector('.hiker'); if (h) h.remove(); vbTo(vb0.split(' ').map(Number), 500); }
+    function demoUI(id) {
+      var d = demos[id], q = pos[id];
+      var box = document.createElement('div'); box.className = 'demo';
+      var head = document.createElement('div'); head.className = 'demo-head';
+      var t = document.createElement('strong'); t.textContent = d.title; head.appendChild(t);
+      var go = document.createElement('button'); go.type = 'button'; go.className = 'btn primary walk'; go.textContent = 'Walk here ▸'; head.appendChild(go);
+      var back = document.createElement('button'); back.type = 'button'; back.className = 'btn ghost walk'; back.textContent = 'Whole map'; back.addEventListener('click', resetView); head.appendChild(back);
+      var term = document.createElement('div'); term.className = 'term'; term.setAttribute('role', 'log'); term.setAttribute('aria-label', 'Recorded session for ' + id);
+      var note = document.createElement('p'); note.className = 'fine'; note.textContent = 'A recorded run of the real tools, replayed. scripts/record_demos.py writes it.';
+      box.appendChild(head); box.appendChild(term); box.appendChild(note); detail.appendChild(box);
+      function line(cls, text) { var l = document.createElement('div'); l.className = cls; l.textContent = text; term.appendChild(l); return l; }
+      function showAll() {
+        term.textContent = '';
+        d.steps.forEach(function (st) { line('t-note', '# ' + st.note); line('t-cmd', '$ ' + st.cmd); if (st.out) line('t-out', st.out); });
+      }
+      showAll();
+      go.addEventListener('click', function () {
+        var me = ++walking; resetViewHiker();
+        term.textContent = '';
+        go.disabled = true;
+        var path = el('path', { d: 'M' + (PARKING[0] + 12) + ',' + (PARKING[1] + 30) + 'Q' + ((PARKING[0] + q.x) / 2) + ',' + (Math.max(PARKING[1], q.y) + 70) + ' ' + q.x + ',' + (q.y + 6), fill: 'none', class: 'walk-path' }, svg);
+        var hk = el('g', { class: 'hiker' }, svg);
+        el('circle', { r: 7, class: 'hiker-dot' }, hk); el('circle', { r: 14, class: 'hiker-halo' }, hk);
+        var len = path.getTotalLength(), w = 460, h = w * 810 / 1300;
+        vbTo([Math.max(0, q.x - w / 2), Math.max(100, q.y - h * .6), w, h], reduce ? 0 : 1600);
+        function step(t0) {
+          return function f(t) {
+            if (me !== walking) return;
+            var k = reduce ? 1 : Math.min(1, (t - t0) / 1600), pt = path.getPointAtLength(len * k);
+            hk.setAttribute('transform', 'translate(' + pt.x + ',' + pt.y + ')');
+            if (k < 1) requestAnimationFrame(f); else { path.remove(); typeAll(me); }
+          };
+        }
+        requestAnimationFrame(function (t) { step(t)(t); });
+        function resetViewHiker() { var o = svg.querySelector('.hiker'); if (o) o.remove(); var wp = svg.querySelector('.walk-path'); if (wp) wp.remove(); }
+        function typeAll(me) {
+          var i = 0;
+          (function next() {
+            if (me !== walking) return;
+            if (i >= d.steps.length) { go.disabled = false; go.textContent = 'Walk again ▸'; var hh = svg.querySelector('.hiker'); if (hh) hh.classList.add('rest'); return; }
+            var st = d.steps[i++];
+            line('t-note', '# ' + st.note);
+            var c = line('t-cmd', '$ '), n = 0;
+            (function tick() {
+              if (me !== walking) return;
+              if (n < st.cmd.length) { n += reduce ? st.cmd.length : 2; c.textContent = '$ ' + st.cmd.slice(0, n); setTimeout(tick, 22); }
+              else { setTimeout(function () { if (st.out) line('t-out', st.out); term.scrollTop = term.scrollHeight; setTimeout(next, reduce ? 0 : 700); }, reduce ? 0 : 250); }
+            })();
+          })();
+        }
+      });
+    }
+
     function select(id) {
+      if (walking) resetView();
       rocks.forEach(function (g) { g.classList.toggle('sel', g.getAttribute('data-id') === id); });
       var p = pos[id].p;
       detail.textContent = '';
@@ -178,6 +247,7 @@
       row('Stage', data.stages[p.stage]); row('Authority', p.authority); row('Note', p.note);
       if (p.rests_on) row('Rests on', p.rests_on.join(', '));
       detail.appendChild(dl);
+      if (demos[id]) demoUI(id); else { var nd = document.createElement('p'); nd.className = 'nodemo'; nd.textContent = 'No recorded session for this one yet.'; detail.appendChild(nd); }
       var links = document.createElement('div'); links.className = 'links';
       var a = document.createElement('a'); a.className = 'btn primary'; a.href = p.url; a.textContent = 'Repository'; links.appendChild(a);
       if (p.page) { var b = document.createElement('a'); b.className = 'btn ghost'; b.href = p.page; b.textContent = 'Landing page'; links.appendChild(b); }
