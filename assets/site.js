@@ -256,6 +256,6 @@
     });
   }
   hero(); cairns(); authority(); agents(); observers(); copyButtons();
-  fetch('data/ecosystem.json').then(function (r) { return r.json(); }).then(function (data) { window.CanchoMap.draw(data); proof(data); proofAnim(); })
+  Promise.all([fetch('data/ecosystem.json').then(function (r) { return r.json(); }), fetch('data/demos.json').then(function (r) { return r.json(); }).catch(function () { return {}; })]).then(function (rs) { var data = rs[0]; window.CanchoMap.draw(data, rs[1]); proof(data); proofAnim(); })
     .catch(function () { var m = $('#map-fallback'); if (m) m.open = true; });
 })();
