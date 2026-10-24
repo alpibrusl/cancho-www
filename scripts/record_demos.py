@@ -3,7 +3,7 @@
 
     python3 scripts/record_demos.py <cancho-binary> <cancho-ui-binary> <path-to-a-cancho-ui-checkout> [<session.json of a trail>...]
 
-A trail is a session recorded by another repo (cancho-examples/door-sensors/record.py) that visits several rocks; it
+A trail is a session recorded by another repo (cancho-examples/<name>/record.py) that visits several rocks; it
 is copied in as `trail:<name>`.
 
 A project with no entry has no recorded session yet, and the map says so. Run again after a change to what the commands print.
@@ -76,8 +76,8 @@ for extra in sys.argv[4:]:
     demos["trail:" + path.parent.name] = {
         "title": trail["title"],
         "route": trail["route"],
-        "summary": "Readings arrive over MQTT, are kept in a cache, and are summarised by table. Every stage is a cancho binary except three small Python stand-ins.",
-        "source": "A recorded run of the real tools, replayed; the sensors, the bridge and the MQTT client are Python stand-ins (cancho-mqtt-client is on the map as design).",
+        "summary": trail["summary"],
+        "source": trail["source"],
         "steps": trail["steps"],
     }
 (ROOT / "data" / "demos.json").write_text(json.dumps(demos, indent=2, ensure_ascii=False) + "\n")
