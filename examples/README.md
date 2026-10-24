@@ -29,3 +29,31 @@ Each tool is built as its own README says, at the compiler revision its own mani
     python3 scripts/record_demos.py <cancho> <cancho-ui> <cancho-ui checkout> examples/shop-energy/session.json
 
 The recorder needs the built tools, so CI does not run it; the recorded `session.json` is what is checked in.
+
+## late-parcels
+
+A small courier's lateness model, from data to deploy and back again. It needs no API key and no network: every step
+is a real run of a cancho tool on the machine (plus `curl` as the caller and a little shell).
+
+1. `table` drops three scanner dropouts, `stats` describes the parcels (a histogram of distances).
+2. `ml fit` fits a logistic model and scores it on the fifth of the rows it holds out (accuracy 0.9375, ROC-AUC 0.982).
+3. **Deploy:** `ml-serve` serves it. `/health` names the model file by SHA-256; `--bind all` is refused without a token
+   file (`serve.no-token`); a distance written as text is refused with a pointer at the field (`ml.schema.mismatch`).
+4. **The seam:** `clientgen` is asked for a typed client from the server's own OpenAPI document and refuses it. The
+   record schema lists the target column as an open value (`"late": {}`) and the generator models only typed schemas.
+   All nine OpenAPI documents in `cancho-ml/docs/serving/` are refused the same way. The example shows the refusal as it
+   is; it does not edit the document. (Related: `cancho-client-gen`'s `scripts/build.sh` builds only `clientgen.cho`
+   and fails with "no module `model`"; its CI lists all six source files, and so does `record.py`.)
+5. **After deploy:** the server's access log (a line per request, no payload) is counted with `tally`.
+6. **The world moves:** next month is the rainy season. `stats` shows the rain share doubling; `ml eval` on the new
+   labels drops accuracy to 0.853 (recall 0.81).
+7. **Retrain and redeploy:** `table` splits the new month, `ml fit` retrains on last month plus the first 200 new
+   parcels, and on the last 100 the old model scores 0.83 against 0.89 for the retrained one. `ml-serve` is restarted
+   with it and `/health` shows a different model SHA-256.
+
+**The data is synthetic.** `make_data.py` writes `parcels.csv` (400 parcels) and `next.csv` (300) from fixed formulas, with
+no randomness; the new month is built to drift (longer trips, more rain, rain delays more). Nothing here measures a
+real courier, and the 0.83 to 0.89 gap is one 100-row comparison, not a benchmark.
+
+    python3 examples/late-parcels/record.py <table-dir> <stats-dir> <ml-dir> <clientgen> <cancho-tools-dir>
+    python3 scripts/record_demos.py <cancho> <cancho-ui> <cancho-ui checkout> examples/shop-energy/session.json examples/late-parcels/session.json
