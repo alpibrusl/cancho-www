@@ -200,6 +200,41 @@
         })(t0);
       });
     }
+    /* A chart in the panel, drawn from the numbers a tool printed (the recorder copies them into the session). */
+    function chartBox(c) {
+      var W = 240, H = 176, L = 28, R = 8, T = 30, B = 32, pw = W - L - R, ph = H - T - B;
+      var box = document.createElement('div'); box.className = 't-chart';
+      var svg2 = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', class: 'chart' }, box);
+      function fmt(v) { return Math.abs(v) >= 100 ? v.toFixed(0) : (Math.round(v * 10) / 10).toString(); }
+      el('text', { x: 4, y: 13, class: 'ch-title' }, svg2).textContent = c.short || c.title;
+      var sum;
+      if (c.type === 'histogram') {
+        var mx = Math.max.apply(null, c.counts), n = c.counts.length, bw = pw / n;
+        c.counts.forEach(function (k, i) {
+          var h = mx ? (ph * k) / mx : 0;
+          el('rect', { x: (L + i * bw + 1).toFixed(1), y: (T + ph - h).toFixed(1), width: (bw - 2).toFixed(1), height: h.toFixed(1), class: 'ch-bar' }, svg2);
+          if (k) el('text', { x: (L + i * bw + bw / 2).toFixed(1), y: (T + ph - h - 3).toFixed(1), class: 'ch-n', style: 'text-anchor:middle' }, svg2).textContent = k;
+        });
+        el('path', { d: 'M' + L + ',' + (T + ph) + 'H' + (L + pw), class: 'ch-axis' }, svg2);
+        [0, n].forEach(function (i) { el('text', { x: L + i * bw, y: H - 14, class: 'ch-tick', style: 'text-anchor:' + (i ? 'end' : 'start') }, svg2).textContent = fmt(c.edges[i]); });
+        el('text', { x: L + pw / 2, y: H - 3, class: 'ch-tick', style: 'text-anchor:middle' }, svg2).textContent = c.unit + ', ' + n + ' equal bins; bar = count';
+        sum = c.title + ': ' + c.counts.join(', ') + ' readings in each of ' + n + ' bins from ' + fmt(c.edges[0]) + ' to ' + fmt(c.edges[n]) + ' ' + c.unit + '.';
+      } else {
+        var vals = c.points.reduce(function (a, p) { return a.concat(p); }, []), lo = Math.floor(Math.min.apply(null, vals) * 2) / 2, hi = Math.ceil(Math.max.apply(null, vals) * 2) / 2;
+        function X(v) { return L + ((v - lo) / (hi - lo)) * pw; } function Y(v) { return T + ph - ((v - lo) / (hi - lo)) * ph; }
+        el('path', { d: 'M' + L + ',' + T + 'V' + (T + ph) + 'H' + (L + pw), class: 'ch-axis' }, svg2);
+        el('path', { d: 'M' + X(lo) + ',' + Y(lo) + 'L' + X(hi) + ',' + Y(hi), class: 'ch-diag' }, svg2);
+        c.points.forEach(function (p) { el('circle', { cx: X(p[0]).toFixed(1), cy: Y(p[1]).toFixed(1), r: 3.2, class: 'ch-dot' }, svg2); });
+        [lo, hi].forEach(function (v) {
+          el('text', { x: X(v), y: H - 14, class: 'ch-tick', style: 'text-anchor:' + (v === lo ? 'start' : 'end') }, svg2).textContent = fmt(v);
+          el('text', { x: L - 4, y: Y(v) + 3, class: 'ch-tick', style: 'text-anchor:end' }, svg2).textContent = fmt(v);
+        });
+        el('text', { x: L + pw / 2, y: H - 3, class: 'ch-tick', style: 'text-anchor:middle' }, svg2).textContent = 'actual ' + c.unit + ' across, predicted up';
+        sum = c.title + ': ' + c.points.length + ' points; the dashed line is where predicted equals actual.';
+      }
+      svg2.setAttribute('aria-label', sum);
+      return box;
+    }
     function demoUI(key, id) {
       var d = demos[key], trail = !!d.route;
       var box = document.createElement('div'); box.className = 'demo';
@@ -211,7 +246,7 @@
       var note = document.createElement('p'); note.className = 'fine'; note.textContent = d.source || 'A recorded run of the real tools, replayed. scripts/record_demos.py writes it.';
       box.appendChild(head); box.appendChild(term); box.appendChild(note); detail.appendChild(box);
       function line(cls, text) { var l = document.createElement('div'); l.className = cls; l.textContent = text; term.appendChild(l); return l; }
-      d.steps.forEach(function (st) { if (st.note) line('t-note', '# ' + st.note); line('t-cmd', '$ ' + st.cmd); if (st.out) line('t-out', st.out); });
+      d.steps.forEach(function (st) { if (st.note) line('t-note', '# ' + st.note); line('t-cmd', '$ ' + st.cmd); if (st.out) line('t-out', st.out); if (st.chart) term.appendChild(chartBox(st.chart)); });
       go.addEventListener('click', function () {
         var me = ++walking, i = 0, here = [PARKING[0] + 12, PARKING[1] + 30], hk0 = svg.querySelector('.hiker'); if (hk0) hk0.remove();
         svg.querySelectorAll('.walk-path').forEach(function (n) { n.remove(); });
@@ -226,7 +261,7 @@
             (function tick() {
               if (me !== walking) return;
               if (n < st.cmd.length) { n += reduce ? st.cmd.length : 2; c.textContent = '$ ' + st.cmd.slice(0, n); setTimeout(tick, 22); }
-              else { setTimeout(function () { if (st.out) line('t-out', st.out); term.scrollTop = term.scrollHeight; setTimeout(next, reduce ? 0 : 700); }, reduce ? 0 : 250); }
+              else { setTimeout(function () { if (st.out) line('t-out', st.out); if (st.chart) term.appendChild(chartBox(st.chart)); term.scrollTop = term.scrollHeight; setTimeout(next, reduce ? 0 : 700); }, reduce ? 0 : 250); }
             })();
           }
           if (here.id === at) { type(); return; }
