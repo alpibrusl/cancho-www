@@ -219,6 +219,15 @@
         [0, n].forEach(function (i) { el('text', { x: L + i * bw, y: H - 14, class: 'ch-tick', style: 'text-anchor:' + (i ? 'end' : 'start') }, svg2).textContent = fmt(c.edges[i]); });
         el('text', { x: L + pw / 2, y: H - 3, class: 'ch-tick', style: 'text-anchor:middle' }, svg2).textContent = c.unit + ', ' + n + ' equal bins; bar = count';
         sum = c.title + ': ' + c.counts.join(', ') + ' readings in each of ' + n + ' bins from ' + fmt(c.edges[0]) + ' to ' + fmt(c.edges[n]) + ' ' + c.unit + '.';
+      } else if (c.type === 'bars') {
+        var bh = (ph + 14) / c.values.length;
+        c.values.forEach(function (v, i) {
+          var y = 18 + i * bh + 12;
+          el('text', { x: 4, y: y - 3, class: 'ch-tick' }, svg2).textContent = c.labels[i];
+          el('rect', { x: 4, y: y, width: Math.max(1, (W - 8 - 40) * v).toFixed(1), height: 12, class: 'ch-bar' }, svg2);
+          el('text', { x: (4 + (W - 8 - 40) * v + 4).toFixed(1), y: y + 10, class: 'ch-n' }, svg2).textContent = v.toFixed(2);
+        });
+        sum = c.title + ': ' + c.labels.map(function (l, i) { return l + ' ' + c.values[i].toFixed(2); }).join('; ') + '.';
       } else {
         var vals = c.points.reduce(function (a, p) { return a.concat(p); }, []), lo = Math.floor(Math.min.apply(null, vals) * 2) / 2, hi = Math.ceil(Math.max.apply(null, vals) * 2) / 2;
         function X(v) { return L + ((v - lo) / (hi - lo)) * pw; } function Y(v) { return T + ph - ((v - lo) / (hi - lo)) * ph; }
