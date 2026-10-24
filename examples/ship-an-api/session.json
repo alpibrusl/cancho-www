@@ -38,9 +38,9 @@
     },
     {
       "at": "cancho-client-gen",
-      "note": "The client's annotations promise a dataclass. What does it return? (A read-only call, so the service stays empty.)",
+      "note": "The client's annotations promise a dataclass. Does it return one? (A read-only call, so the service stays empty. An earlier build of clientgen returned a plain dict here; that is fixed in cancho-client-gen#15.)",
       "cmd": "seek --format text 'def listUsers' client.py; python3 -c \"import client; r = client.Client('http://127.0.0.1:18950').listUsers(limit=1); print(type(r).__name__, r)\"",
-      "out": "client.py:70:    def listUsers(self, *, limit: int | None = None, offset: int | None = None) -> Page:\ndict {'total': 0, 'items': []}"
+      "out": "client.py:79:    def listUsers(self, *, limit: int | None = None, offset: int | None = None) -> Page:\nPage Page(total=0, items=[])"
     },
     {
       "at": "cancho-client-gen",
@@ -119,7 +119,7 @@
       "at": "cancho-oci",
       "note": "Package it. A dynamically linked program is refused by rule; the static one becomes an image, built twice into two directories: the same binary gives the same image. (Two builds of the source differ by 2 bytes, so a fresh build has a new digest.)",
       "cmd": "mkdir -p root img0/blobs/sha256 img/blobs/sha256 img2/blobs/sha256; cp users-v1 root/users; oci-build --root root --out img0 --platform linux/amd64 --bin users:app/users; cp users-v2 root/users; oci-build --root root --out img --platform linux/amd64 --bin users:app/users; oci-build --root root --out img2 --platform linux/amd64 --bin users:app/users; diff -r img img2 && echo 'the two images are identical'",
-      "out": "refused: elf-dynamic (app/users)\nsha256:21caaa37c85aca18ea3eb5d218ebd8d5e56a6e04e14c55eeae8e211f2fd74ab2\nsha256:21caaa37c85aca18ea3eb5d218ebd8d5e56a6e04e14c55eeae8e211f2fd74ab2\nthe two images are identical"
+      "out": "refused: elf-dynamic (app/users)\nsha256:b7a58f0d56b285d248bc8781fa69f0e66ea7096e4bb1e64e7a8610c03da290fa\nsha256:b7a58f0d56b285d248bc8781fa69f0e66ea7096e4bb1e64e7a8610c03da290fa\nthe two images are identical"
     },
     {
       "at": "cancho-web",

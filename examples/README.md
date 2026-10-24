@@ -92,9 +92,11 @@ The service is `cancho-web`'s own `users` example; nothing here writes a service
 1. `cancho-web` builds the service (at the compiler revision it pins), and a bad request is refused with every error at
    once, each with its JSON Pointer, as problem+json. `GET /openapi.json` comes from the same declaration.
 2. `clientgen` (cancho-client-gen) reads that document, lists 5 operations and 4 components, and writes a Python client.
-3. **A seam, shown as it is:** the client annotates its responses as dataclasses (`-> Page`), but at runtime they are
-   plain `dict`s (`dict {'total': 0, 'items': []}`). Its README says the types are strict; the `cast` that makes
-   `mypy --strict` pass hides this. Not filed anywhere yet.
+3. **A seam, found here and fixed upstream:** an earlier build of `clientgen` annotated its responses as dataclasses
+   (`-> Page`) but returned plain `dict`s at runtime (`dict {'total': 0, 'items': []}`), and `mypy --strict` passed
+   because of a `cast`. That is cancho-client-gen#15: every 2xx body is now decoded strictly into its dataclass (a
+   `ResponseError` names the path otherwise). This recording uses the fixed generator, so the step prints
+   `Page Page(total=0, items=[])`.
 4. An app (the only Python on the path, a stand-in for the customer) registers 200 users through the client: 186 accepted,
    14 refused (`/age` 9 times, `/name` 5 times). `table` counts the statuses and the refused fields from what the app wrote.
 5. `stats` describes the ages the service holds (an exact histogram) and `table` counts the users over 120 (4); a column is
