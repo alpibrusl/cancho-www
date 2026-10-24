@@ -83,3 +83,34 @@ The figures are single runs on 120 and 200 rows, not benchmarks. `hash` is calle
 builtin of that name.
 
     python3 examples/model-review/record.py <table-dir> <stats-dir> <ml-dir> <cancho-tools-dir>
+## ship-an-api
+
+One declaration is a service, its OpenAPI document and the source of a typed client; an app uses it, the data it
+generates is analysed, an agent changes the contract, and the service is packaged as an image. No API key and no network.
+The service is `cancho-web`'s own `users` example; nothing here writes a service.
+
+1. `cancho-web` builds the service (at the compiler revision it pins), and a bad request is refused with every error at
+   once, each with its JSON Pointer, as problem+json. `GET /openapi.json` comes from the same declaration.
+2. `clientgen` (cancho-client-gen) reads that document, lists 5 operations and 4 components, and writes a Python client.
+3. **A seam, shown as it is:** the client annotates its responses as dataclasses (`-> Page`), but at runtime they are
+   plain `dict`s (`dict {'total': 0, 'items': []}`). Its README says the types are strict; the `cast` that makes
+   `mypy --strict` pass hides this. Not filed anywhere yet.
+4. An app (the only Python on the path, a stand-in for the customer) registers 200 users through the client: 186 accepted,
+   14 refused (`/age` 9 times, `/name` 5 times). `table` counts the statuses and the refused fields from what the app wrote.
+5. `stats` describes the ages the service holds (an exact histogram) and `table` counts the users over 120 (4); a column is
+   text to `table` unless it says `:int`, so `age > 120` would silently compare text and `age:int > 120` is right.
+6. An agent proposes a tighter limit. `replace` edits the one line of the declaration and refuses unless it matches exactly
+   once; the service is rebuilt (static, through the linker wrapper) and the served document says 120 instead of 150. The
+   generated client does not change (`client unchanged`: the limit lives in the server's schema), and a 130-year-old
+   customer, valid before, is now refused at `/age` with `maximum`.
+7. `oci-build` refuses the dynamically linked build by rule (`elf-dynamic`), accepts the static one, and builds the image
+   twice into two directories: identical. **Measured:** two builds of the *source* differ by 2 bytes, in one directory or
+   two, so the digest changes with each fresh build; the claim is that the same binary gives the same image. I have not
+   looked for the cause.
+8. `cancho authority` on the service: it may accept connections and read the clock, and never touches the filesystem,
+   signals, other programs or foreign code.
+
+**The data is synthetic.** `app.py` makes users from fixed formulas with no randomness; some are invalid on purpose and a
+few are very old but valid. Nothing here measures a real service.
+
+    python3 examples/ship-an-api/record.py --web DIR --schema DIR --compiler-checkout DIR --compiler BIN --clientgen BIN --oci DIR --table DIR --stats DIR --tools DIR
