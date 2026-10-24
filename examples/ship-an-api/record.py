@@ -87,7 +87,7 @@ try:
          f"curl -s {URL}/openapi.json > openapi.json; jsonq -p /paths --keys --format text openapi.json")
     step("cancho-client-gen", "Frontend: a typed client from the server's own document. clientgen reads it, lists what it found, and writes Python.",
          "clientgen openapi.json --check; clientgen openapi.json --model | head -3; clientgen openapi.json --python -o client.py")
-    step("cancho-client-gen", "The client's annotations promise a dataclass. What does it return? (A read-only call, so the service stays empty.)",
+    step("cancho-client-gen", "The client's annotations promise a dataclass. Does it return one? (A read-only call, so the service stays empty. An earlier build of clientgen returned a plain dict here; that is fixed in cancho-client-gen#15.)",
          f"seek --format text 'def listUsers' client.py; python3 -c \"import client; r = client.Client('http://127.0.0.1:{PORT}').listUsers(limit=1); print(type(r).__name__, r)\"")
     step("cancho-client-gen", "The app (a stand-in for whatever uses the service) registers 200 users through the client. Some are invalid on purpose.",
          f"python3 app.py http://127.0.0.1:{PORT}")

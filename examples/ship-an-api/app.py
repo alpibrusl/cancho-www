@@ -1,7 +1,6 @@
 """The 'app': a stand-in for whatever uses the service. It registers 200 users through the client that clientgen generated
-(client.py), then lists them all. The client annotates its responses as dataclasses but returns plain dicts at runtime,
-so the app reads them as dicts. It writes two CSV files for the
-analytics steps: requests.csv (what each call got) and users.csv (what the service now holds). Synthetic users: fixed
+(client.py), then lists them all. The client returns the dataclasses it annotates (User, Page), so the app reads
+attributes, not keys. It writes two CSV files for the analytics steps: requests.csv (what each call got) and users.csv (what the service now holds). Synthetic users: fixed
 formulas, no randomness; a few are invalid on purpose (an empty name, an age past 150) and a few are very old but valid.
 Not cancho: this file is the only Python on the path, and it is the customer, not the product."""
 import csv
@@ -31,10 +30,10 @@ with open("requests.csv", "w", newline="") as out:
             fields = ";".join(sorted(err["pointer"] for err in (e.problem.errors or [])))
             log.writerow([i, e.problem.status, fields])
 page = api.listUsers(limit=100)
-rows = list(page["items"])
+rows = list(page.items)
 offset = 100
-while len(rows) < page["total"]:
-    rows += api.listUsers(limit=100, offset=offset)["items"]
+while len(rows) < page.total:
+    rows += api.listUsers(limit=100, offset=offset).items
     offset += 100
 with open("users.csv", "w", newline="") as out:
     w = csv.writer(out)
