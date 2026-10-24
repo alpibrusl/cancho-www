@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Run the per-project map demos for real and write data/demos.json (the map plays it back; it never invents output).
 
-    python3 scripts/record_demos.py <cancho-binary> <cancho-ui-binary> <path-to-a-cancho-ui-checkout>
+    python3 scripts/record_demos.py <cancho-binary> <cancho-ui-binary> <path-to-a-cancho-ui-checkout> [<session.json of a trail>...]
+
+A trail is a session recorded by an example (examples/<name>/record.py) that visits several rocks; it
+is copied in as `trail:<name>`.
 
 A project with no entry has no recorded session yet, and the map says so. Run again after a change to what the commands print.
 """
@@ -67,5 +70,15 @@ demos = {
     },
 }
 shutil.rmtree(tmp)
+for extra in sys.argv[4:]:
+    path = pathlib.Path(extra).resolve()
+    trail = json.loads(path.read_text())
+    demos["trail:" + path.parent.name] = {
+        "title": trail["title"],
+        "route": trail["route"],
+        "summary": trail["summary"],
+        "source": trail["source"],
+        "steps": trail["steps"],
+    }
 (ROOT / "data" / "demos.json").write_text(json.dumps(demos, indent=2, ensure_ascii=False) + "\n")
 print("wrote data/demos.json:", ", ".join(demos))
