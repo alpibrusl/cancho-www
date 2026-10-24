@@ -53,7 +53,7 @@
       "cancho-ml"
     ],
     "summary": "A data scientist, a statistician and a data engineer pass one file between them, each with their own command line. No glue, no new package: a tool that dislikes the file says why, by rule.",
-    "source": "A recorded run of the real tools, replayed, on synthetic data (shop-energy/make_data.py): nothing here measures a real shop.",
+    "source": "A recorded run of the real tools, replayed, on synthetic data (examples/shop-energy/make_data.py): nothing here measures a real shop.",
     "steps": [
       {
         "at": "cancho-ml",

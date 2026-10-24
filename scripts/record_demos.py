@@ -3,7 +3,7 @@
 
     python3 scripts/record_demos.py <cancho-binary> <cancho-ui-binary> <path-to-a-cancho-ui-checkout> [<session.json of a trail>...]
 
-A trail is a session recorded by another repo (cancho-examples/<name>/record.py) that visits several rocks; it
+A trail is a session recorded by an example (examples/<name>/record.py) that visits several rocks; it
 is copied in as `trail:<name>`.
 
 A project with no entry has no recorded session yet, and the map says so. Run again after a change to what the commands print.
