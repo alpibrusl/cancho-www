@@ -78,13 +78,154 @@
         "at": "cancho-stats",
         "note": "Statistician (stats): Same question on the clean file: exact figures, with the median.",
         "cmd": "stats describe clean.csv --cols kwh > clean.json; for k in count missing mean sd quantiles/2/value; do echo \"$k $(jsonq -p /data/columns/0/$k --format text clean.json)\"; done",
-        "out": "count 117\nmissing 0\nmean 3.1095726495726494\nsd 1.6680436575172235\nquantiles/2/value 1.86"
+        "out": "count 117\nmissing 0\nmean 3.1095726495726494\nsd 1.6680436575172235\nquantiles/2/value 1.86",
+        "chart": {
+          "type": "histogram",
+          "title": "kwh, the 117 clean readings: stats' exact histogram",
+          "short": "kWh of the 117 clean readings",
+          "unit": "kWh",
+          "edges": [
+            1.26,
+            1.679,
+            2.098,
+            2.517,
+            2.936,
+            3.355,
+            3.774,
+            4.1930000000000005,
+            4.612,
+            5.031000000000001,
+            5.45
+          ],
+          "counts": [
+            41,
+            23,
+            0,
+            0,
+            0,
+            0,
+            0,
+            7,
+            28,
+            18
+          ]
+        }
+      },
+      {
+        "at": "cancho-table",
+        "note": "Data engineer (table): The readings are in time order, so I hold out the last 24 rows and hand over the 93 before them. peek counts lines, the header included.",
+        "cmd": "table --select hour,outside_c,open,kwh --limit 93 --format csv clean.csv > train.csv; table --select hour,outside_c,open,kwh --from 93 --format csv clean.csv > test.csv; for f in train test; do echo \"$f $(peek --count-lines --lines 1:1 $f.csv | jsonq -p /data/total_lines --format text -) lines\"; done",
+        "out": "train 94 lines\ntest 25 lines"
       },
       {
         "at": "cancho-ml",
-        "note": "Data scientist (ml): Now it fits, and it holds 20% of the rows out to score on.",
-        "cmd": "ml fit --model linear --target kwh --split train=0.8 --seed 1 --output kwh.ml clean.csv > fit.json; for m in rmse mae r2; do echo \"$m $(jsonq -p /data/summary/holdout/metrics/$m --format text fit.json)\"; done",
-        "out": "rmse \"0.23287686165595048\"\nmae \"0.19628947433082047\"\nr2 \"0.978668056750003\""
+        "note": "Data scientist (ml): I fit on the 93 earlier rows and score on the 24 the model never saw.",
+        "cmd": "ml fit --model linear --target kwh --output kwh.ml train.csv > fit.json; ml eval --model-file kwh.ml test.csv > eval.json; ml predict --model-file kwh.ml test.csv > pred.json; for m in rmse mae r2; do echo \"$m $(jsonq -p /data/metrics/$m --format text eval.json)\"; done",
+        "out": "rmse \"0.31761987221668303\"\nmae \"0.29724702298628963\"\nr2 \"0.9705048728122235\"",
+        "chart": {
+          "type": "scatter",
+          "title": "The 24 held-out rows: predicted against actual",
+          "short": "Held-out rows: predicted vs actual",
+          "unit": "kWh",
+          "points": [
+            [
+              1.6,
+              1.688
+            ],
+            [
+              1.4,
+              1.69
+            ],
+            [
+              1.27,
+              1.703
+            ],
+            [
+              1.33,
+              1.686
+            ],
+            [
+              1.56,
+              1.7
+            ],
+            [
+              1.5,
+              1.696
+            ],
+            [
+              1.37,
+              1.709
+            ],
+            [
+              1.43,
+              1.692
+            ],
+            [
+              1.31,
+              1.705
+            ],
+            [
+              4.47,
+              4.789
+            ],
+            [
+              5.39,
+              4.947
+            ],
+            [
+              5.45,
+              4.96
+            ],
+            [
+              5.24,
+              4.943
+            ],
+            [
+              5.3,
+              4.956
+            ],
+            [
+              5.08,
+              4.939
+            ],
+            [
+              5.14,
+              4.952
+            ],
+            [
+              5.2,
+              4.966
+            ],
+            [
+              5.34,
+              4.948
+            ],
+            [
+              4.61,
+              4.816
+            ],
+            [
+              4.67,
+              4.799
+            ],
+            [
+              1.45,
+              1.711
+            ],
+            [
+              1.32,
+              1.725
+            ],
+            [
+              1.38,
+              1.707
+            ],
+            [
+              1.26,
+              1.721
+            ]
+          ]
+        }
       },
       {
         "at": "cancho-tools",

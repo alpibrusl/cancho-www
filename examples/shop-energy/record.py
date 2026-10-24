@@ -40,10 +40,24 @@ step("cancho-table", "Data engineer (table)", "I drop the rows with no reading, 
      "table --where \"kwh != ''\" --format csv shop.csv > clean.csv; peek --count-lines --lines 1:1 clean.csv | jsonq -p /data/total_lines --format text -")
 step("cancho-stats", "Statistician (stats)", "Same question on the clean file: exact figures, with the median.",
      "stats describe clean.csv --cols kwh > clean.json; for k in count missing mean sd quantiles/2/value; do echo \"$k $(jsonq -p /data/columns/0/$k --format text clean.json)\"; done")
-step("cancho-ml", "Data scientist (ml)", "Now it fits, and it holds 20% of the rows out to score on.",
-     "ml fit --model linear --target kwh --split train=0.8 --seed 1 --output kwh.ml clean.csv > fit.json; for m in rmse mae r2; do echo \"$m $(jsonq -p /data/summary/holdout/metrics/$m --format text fit.json)\"; done")
+SEL = "hour,outside_c,open,kwh"
+step("cancho-table", "Data engineer (table)", "The readings are in time order, so I hold out the last 24 rows and hand over the 93 before them. peek counts lines, the header included.",
+     f"table --select {SEL} --limit 93 --format csv clean.csv > train.csv; table --select {SEL} --from 93 --format csv clean.csv > test.csv; for f in train test; do echo \"$f $(peek --count-lines --lines 1:1 $f.csv | jsonq -p /data/total_lines --format text -) lines\"; done")
+step("cancho-ml", "Data scientist (ml)", "I fit on the 93 earlier rows and score on the 24 the model never saw.",
+     "ml fit --model linear --target kwh --output kwh.ml train.csv > fit.json; ml eval --model-file kwh.ml test.csv > eval.json; ml predict --model-file kwh.ml test.csv > pred.json; for m in rmse mae r2; do echo \"$m $(jsonq -p /data/metrics/$m --format text eval.json)\"; done")
 step("cancho-tools", "Reviewer (jsonq, peek)", "Before this ships: what may each tool do, the reading tools included? The compilers proved it.",
      "for t in table stats ml jsonq peek; do echo \"$t $($t introspect | jsonq -p /authority/effects --format text -)\"; done")
+def chart_data():
+    import csv
+    hist = json.loads((work / "clean.json").read_text())["data"]["columns"][0]["histogram"]
+    steps[3]["chart"] = {"type": "histogram", "title": "kwh, the 117 clean readings: stats' exact histogram", "short": "kWh of the 117 clean readings", "unit": "kWh", "edges": hist["edges"], "counts": hist["counts"]}
+    actual = [float(r["kwh"]) for r in csv.DictReader(open(work / "test.csv"))]
+    pred = [float(r[0]) for r in json.loads((work / "pred.json").read_text())["data"]["rows"]]
+    assert len(actual) == len(pred) == 24, (len(actual), len(pred))
+    steps[5]["chart"] = {"type": "scatter", "title": "The 24 held-out rows: predicted against actual", "short": "Held-out rows: predicted vs actual", "unit": "kWh", "points": [[a, round(p, 3)] for a, p in zip(actual, pred)]}
+
+
+chart_data()
 (here / "session.json").write_text(json.dumps({
     "title": "A shop's energy, passed between roles",
     "route": ["cancho-ml", "cancho-stats", "cancho-table", "cancho-ml", "cancho-tools"],
