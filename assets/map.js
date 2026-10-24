@@ -181,57 +181,69 @@
       })(performance.now());
     }
     function resetView() { walking++; var h = svg.querySelector('.hiker'); if (h) h.remove(); vbTo(vb0.split(' ').map(Number), 500); }
-    function demoUI(id) {
-      var d = demos[id], q = pos[id];
+    /* One walker for both kinds of demo. A rock's session is one stop; a trail is a route of several, and each step
+       happens at the rock it names (`at`), so the hiker walks there before the command types. */
+    function stop(from, q, me, done) {
+      var path = el('path', { d: 'M' + from[0] + ',' + from[1] + 'Q' + ((from[0] + q.x) / 2) + ',' + (Math.max(from[1], q.y) + 70) + ' ' + q.x + ',' + (q.y + 6), fill: 'none', class: 'walk-path' }, svg);
+      var hk = svg.querySelector('.hiker');
+      if (!hk) { hk = el('g', { class: 'hiker' }, svg); el('circle', { r: 7, class: 'hiker-dot' }, hk); el('circle', { r: 14, class: 'hiker-halo' }, hk); }
+      hk.classList.remove('rest');
+      var len = path.getTotalLength(), w = 460, h = w * 810 / 1300;
+      vbTo([Math.max(0, q.x - w / 2), Math.max(100, q.y - h * .6), w, h], reduce ? 0 : 1400);
+      rocks.forEach(function (g) { g.classList.toggle('sel', g.getAttribute('data-id') === q.id); });
+      requestAnimationFrame(function f0(t0) {
+        (function f(t) {
+          if (me !== walking) return;
+          var k = reduce ? 1 : Math.min(1, (t - t0) / 1400), pt = path.getPointAtLength(len * k);
+          hk.setAttribute('transform', 'translate(' + pt.x + ',' + pt.y + ')');
+          if (k < 1) requestAnimationFrame(f); else { path.remove(); hk.classList.add('rest'); done(); }
+        })(t0);
+      });
+    }
+    function demoUI(key, id) {
+      var d = demos[key], trail = !!d.route;
       var box = document.createElement('div'); box.className = 'demo';
       var head = document.createElement('div'); head.className = 'demo-head';
       var t = document.createElement('strong'); t.textContent = d.title; head.appendChild(t);
-      var go = document.createElement('button'); go.type = 'button'; go.className = 'btn primary walk'; go.textContent = 'Walk here ▸'; head.appendChild(go);
+      var go = document.createElement('button'); go.type = 'button'; go.className = 'btn primary walk'; go.textContent = trail ? 'Walk the trail ▸' : 'Walk here ▸'; head.appendChild(go);
       var back = document.createElement('button'); back.type = 'button'; back.className = 'btn ghost walk'; back.textContent = 'Whole map'; back.addEventListener('click', resetView); head.appendChild(back);
-      var term = document.createElement('div'); term.className = 'term'; term.setAttribute('role', 'log'); term.setAttribute('aria-label', 'Recorded session for ' + id);
-      var note = document.createElement('p'); note.className = 'fine'; note.textContent = 'A recorded run of the real tools, replayed. scripts/record_demos.py writes it.';
+      var term = document.createElement('div'); term.className = 'term'; term.setAttribute('role', 'log'); term.setAttribute('aria-label', 'Recorded session: ' + d.title);
+      var note = document.createElement('p'); note.className = 'fine'; note.textContent = d.source || 'A recorded run of the real tools, replayed. scripts/record_demos.py writes it.';
       box.appendChild(head); box.appendChild(term); box.appendChild(note); detail.appendChild(box);
       function line(cls, text) { var l = document.createElement('div'); l.className = cls; l.textContent = text; term.appendChild(l); return l; }
-      function showAll() {
-        term.textContent = '';
-        d.steps.forEach(function (st) { line('t-note', '# ' + st.note); line('t-cmd', '$ ' + st.cmd); if (st.out) line('t-out', st.out); });
-      }
-      showAll();
+      d.steps.forEach(function (st) { if (st.note) line('t-note', '# ' + st.note); line('t-cmd', '$ ' + st.cmd); if (st.out) line('t-out', st.out); });
       go.addEventListener('click', function () {
-        var me = ++walking; resetViewHiker();
-        term.textContent = '';
-        go.disabled = true;
-        var path = el('path', { d: 'M' + (PARKING[0] + 12) + ',' + (PARKING[1] + 30) + 'Q' + ((PARKING[0] + q.x) / 2) + ',' + (Math.max(PARKING[1], q.y) + 70) + ' ' + q.x + ',' + (q.y + 6), fill: 'none', class: 'walk-path' }, svg);
-        var hk = el('g', { class: 'hiker' }, svg);
-        el('circle', { r: 7, class: 'hiker-dot' }, hk); el('circle', { r: 14, class: 'hiker-halo' }, hk);
-        var len = path.getTotalLength(), w = 460, h = w * 810 / 1300;
-        vbTo([Math.max(0, q.x - w / 2), Math.max(100, q.y - h * .6), w, h], reduce ? 0 : 1600);
-        function step(t0) {
-          return function f(t) {
-            if (me !== walking) return;
-            var k = reduce ? 1 : Math.min(1, (t - t0) / 1600), pt = path.getPointAtLength(len * k);
-            hk.setAttribute('transform', 'translate(' + pt.x + ',' + pt.y + ')');
-            if (k < 1) requestAnimationFrame(f); else { path.remove(); typeAll(me); }
-          };
-        }
-        requestAnimationFrame(function (t) { step(t)(t); });
-        function resetViewHiker() { var o = svg.querySelector('.hiker'); if (o) o.remove(); var wp = svg.querySelector('.walk-path'); if (wp) wp.remove(); }
-        function typeAll(me) {
-          var i = 0;
-          (function next() {
-            if (me !== walking) return;
-            if (i >= d.steps.length) { go.disabled = false; go.textContent = 'Walk again ▸'; var hh = svg.querySelector('.hiker'); if (hh) hh.classList.add('rest'); return; }
-            var st = d.steps[i++];
-            line('t-note', '# ' + st.note);
+        var me = ++walking, i = 0, here = [PARKING[0] + 12, PARKING[1] + 30], hk0 = svg.querySelector('.hiker'); if (hk0) hk0.remove();
+        svg.querySelectorAll('.walk-path').forEach(function (n) { n.remove(); });
+        term.textContent = ''; go.disabled = true;
+        (function next() {
+          if (me !== walking) return;
+          if (i >= d.steps.length) { go.disabled = false; go.textContent = 'Walk again ▸'; return; }
+          var st = d.steps[i++], at = st.at || id;
+          function type() {
+            if (st.note) line('t-note', '# ' + st.note);
             var c = line('t-cmd', '$ '), n = 0;
             (function tick() {
               if (me !== walking) return;
               if (n < st.cmd.length) { n += reduce ? st.cmd.length : 2; c.textContent = '$ ' + st.cmd.slice(0, n); setTimeout(tick, 22); }
               else { setTimeout(function () { if (st.out) line('t-out', st.out); term.scrollTop = term.scrollHeight; setTimeout(next, reduce ? 0 : 700); }, reduce ? 0 : 250); }
             })();
-          })();
-        }
+          }
+          if (here.id === at) { type(); return; }
+          var q = pos[at]; q.id = at;
+          stop(here, q, me, function () { here = [q.x, q.y + 6]; here.id = at; type(); });
+        })();
       });
+    }
+    /* a trail is not one rock: its panel replaces the detail, and the first rock on the route is where it starts */
+    function openTrail(key) {
+      var d = demos[key]; if (walking) resetView();
+      rocks.forEach(function (g) { g.classList.remove('sel'); });
+      detail.textContent = '';
+      var chip = document.createElement('span'); chip.className = 'chip built'; chip.textContent = 'a trail'; detail.appendChild(chip);
+      var h = document.createElement('h3'); h.textContent = d.route.join(' → '); h.className = 'trail-route'; detail.appendChild(h);
+      var s = document.createElement('p'); s.textContent = d.summary || ''; detail.appendChild(s);
+      demoUI(key, d.route[0]);
     }
 
     function select(id) {
@@ -247,7 +259,7 @@
       row('Stage', data.stages[p.stage]); row('Authority', p.authority); row('Note', p.note);
       if (p.rests_on) row('Rests on', p.rests_on.join(', '));
       detail.appendChild(dl);
-      if (demos[id]) demoUI(id); else { var nd = document.createElement('p'); nd.className = 'nodemo'; nd.textContent = 'No recorded session for this one yet.'; detail.appendChild(nd); }
+      if (demos[id]) demoUI(id, id); else { var nd = document.createElement('p'); nd.className = 'nodemo'; nd.textContent = 'No recorded session for this one yet.'; detail.appendChild(nd); }
       var links = document.createElement('div'); links.className = 'links';
       var a = document.createElement('a'); a.className = 'btn primary'; a.href = p.url; a.textContent = 'Repository'; links.appendChild(a);
       if (p.page) { var b = document.createElement('a'); b.className = 'btn ghost'; b.href = p.page; b.textContent = 'Landing page'; links.appendChild(b); }
@@ -278,6 +290,9 @@
     var only = document.createElement('button'); only.type = 'button'; only.textContent = 'Only what exists'; only.setAttribute('aria-pressed', 'false'); only.style.marginLeft = 'auto';
     only.addEventListener('click', function () { state.only = !state.only; only.setAttribute('aria-pressed', state.only ? 'true' : 'false'); apply(); });
     chips.appendChild(only);
+    Object.keys(demos).filter(function (k) { return demos[k].route; }).forEach(function (k) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'trail-btn'; b.textContent = 'Trail: ' + demos[k].title; b.addEventListener('click', function () { openTrail(k); }); chips.insertBefore(b, only);
+    });
     var counts = { built: 0, design: 0 };
     data.projects.forEach(function (p) { counts[p.stage === 'design' ? 'design' : 'built']++; });
     $('#map-count').textContent = counts.built + ' built, ' + counts.design + ' still on paper';
