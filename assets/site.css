@@ -494,3 +494,12 @@ nav { margin-left: auto; gap: 1.3rem; }
 @media (prefers-reduced-motion: reduce) { .map svg .hiker-halo { animation: none; } }
 .chips .trail-btn { border-style: dashed; }
 .detail h3.trail-route { font-size: .95rem; overflow-wrap: anywhere; }
+/* charts in the walk's terminal: drawn from numbers the tools printed */
+.t-chart { margin: .5rem 0 .2rem; background: var(--surface); border-radius: 8px; padding: .35rem .4rem; }
+.t-chart svg { width: 100%; height: auto; display: block; }
+.ch-title { font: 600 10px var(--mono); fill: var(--fg); }
+.ch-n, .ch-tick { font: 500 9px var(--mono); fill: var(--muted); }
+.ch-axis { fill: none; stroke: var(--muted); stroke-width: 1; }
+.ch-bar { fill: var(--accent); opacity: .85; }
+.ch-dot { fill: var(--accent); opacity: .8; stroke: var(--surface); stroke-width: 1; }
+.ch-diag { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 3; }
