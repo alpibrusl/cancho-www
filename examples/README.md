@@ -41,7 +41,8 @@ is a real run of a cancho tool on the machine (plus `curl` as the caller and a l
    file (`serve.no-token`); a distance written as text is refused with a pointer at the field (`ml.schema.mismatch`).
 4. **The seam:** `clientgen` is asked for a typed client from the server's own OpenAPI document and refuses it. The
    record schema lists the target column as an open value (`"late": {}`) and the generator models only typed schemas.
-   All nine OpenAPI documents in `cancho-ml/docs/serving/` are refused the same way. The example shows the refusal as it
+   All nine OpenAPI documents in `cancho-ml/docs/serving/` are refused (two causes, measured: empty schemas `{}`
+   and `type: [T, "null"]` arrays; both removed from a copy, all nine pass). Filed as alpibrusl/cancho-ml#95. The example shows the refusal as it
    is; it does not edit the document. (Related: `cancho-client-gen`'s `scripts/build.sh` builds only `clientgen.cho`
    and fails with "no module `model`"; its CI lists all six source files, and so does `record.py`.)
 5. **After deploy:** the server's access log (a line per request, no payload) is counted with `tally`.
@@ -57,3 +58,28 @@ real courier, and the 0.83 to 0.89 gap is one 100-row comparison, not a benchmar
 
     python3 examples/late-parcels/record.py <table-dir> <stats-dir> <ml-dir> <clientgen> <cancho-tools-dir>
     python3 scripts/record_demos.py <cancho> <cancho-ui> <cancho-ui checkout> examples/shop-energy/session.json examples/late-parcels/session.json
+
+## model-review
+
+A teammate's agent retrains a model and claims a big gain; a reviewer who never reads the training code checks the claim
+using only the tools' structured answers. No API key and no network.
+
+1. `stats` compares the frozen holdout with the training data (churn rate 0.59 against 0.53, same mean tenure).
+2. The teammate's two runs are tracked with `ml fit --track`. `ml runs list` and `ml runs compare` show what changed:
+   400 training rows became 480, and the claimed accuracy (0.758 to 0.977) is `metrics_on: train`, a score on rows the
+   model was fitted to.
+3. `table --query` joins the candidate's training file to the holdout on customer id: **80** of the 200 holdout customers
+   were trained on. An `anti join` leaves the 120 customers neither side has seen.
+4. On those 120: production 0.725, the candidate 0.85 (0.895 on the leaked holdout). The gain is real and about half the claim.
+5. The teammate retrains on the training file only; `ml runs verify` replays the record (`verified: true`), and the model
+   scores 0.867 on the clean holdout.
+6. `write --if-sha256` promotes it only if production still holds the file the reviewer looked at. A second agent that
+   read production before the promotion tries to promote the old, leaked candidate and is refused
+   (`precondition.hash-mismatch`), with the hash the file holds now. An identical write is a no-op, not a conflict.
+
+**The data is synthetic.** `make_data.py` writes 600 customers from fixed formulas, with no randomness; the leak is built
+in (the candidate's training file is the training rows plus 80 of the holdout). The review finds what was put there.
+The figures are single runs on 120 and 200 rows, not benchmarks. `hash` is called as `env hash` because bash has a
+builtin of that name.
+
+    python3 examples/model-review/record.py <table-dir> <stats-dir> <ml-dir> <cancho-tools-dir>
