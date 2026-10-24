@@ -225,9 +225,9 @@
           var y = 18 + i * bh + 12;
           el('text', { x: 4, y: y - 3, class: 'ch-tick' }, svg2).textContent = c.labels[i];
           el('rect', { x: 4, y: y, width: Math.max(1, (W - 8 - 40) * v).toFixed(1), height: 12, class: 'ch-bar' }, svg2);
-          el('text', { x: (4 + (W - 8 - 40) * v + 4).toFixed(1), y: y + 10, class: 'ch-n' }, svg2).textContent = v.toFixed(2);
+          el('text', { x: (4 + (W - 8 - 40) * v + 4).toFixed(1), y: y + 10, class: 'ch-n' }, svg2).textContent = String(Math.round(v * 1000) / 1000);
         });
-        sum = c.title + ': ' + c.labels.map(function (l, i) { return l + ' ' + c.values[i].toFixed(2); }).join('; ') + '.';
+        sum = c.title + ': ' + c.labels.map(function (l, i) { return l + ' ' + Math.round(c.values[i] * 1000) / 1000; }).join('; ') + '.';
       } else {
         var vals = c.points.reduce(function (a, p) { return a.concat(p); }, []), lo = Math.floor(Math.min.apply(null, vals) * 2) / 2, hi = Math.ceil(Math.max.apply(null, vals) * 2) / 2;
         function X(v) { return L + ((v - lo) / (hi - lo)) * pw; } function Y(v) { return T + ph - ((v - lo) / (hi - lo)) * ph; }

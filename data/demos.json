@@ -393,6 +393,103 @@
       }
     ]
   },
+  "trail:model-review": {
+    "title": "Trust a model change you didn't write",
+    "route": [
+      "cancho-stats",
+      "cancho-ml",
+      "cancho-table",
+      "cancho-ml",
+      "cancho-tools"
+    ],
+    "summary": "A teammate's agent retrains a model and claims a big gain. A reviewer who never reads the training code checks the claim with run records, a join on customer ids, a clean holdout and a guarded write.",
+    "source": "A recorded run of the real tools, replayed, on synthetic data (examples/model-review/make_data.py): nothing here measures a real service.",
+    "steps": [
+      {
+        "at": "cancho-stats",
+        "note": "Reviewer: before judging a model, is the frozen holdout like the data it will be judged against? Compare the churn rate and tenure.",
+        "cmd": "for f in train holdout; do stats describe $f.csv --cols tenure_months,churned > $f.json; echo \"$f: churn rate $(jsonq -p /data/columns/1/mean --format text $f.json), mean tenure $(jsonq -p /data/columns/0/mean --format text $f.json)\"; done",
+        "out": "train: churn rate 0.59, mean tenure 30.5\nholdout: churn rate 0.53, mean tenure 30.5"
+      },
+      {
+        "at": "cancho-ml",
+        "note": "Teammate's agent: the model in production uses tenure only. I trained a forest on every feature, and tracked both runs. (The PR's claim: accuracy 0.977 against 0.758.)",
+        "cmd": "ml fit --model logistic --target churned --drop id,monthly_spend,tickets_90d --track runs --output prod/model.ml train.csv > /dev/null; ml fit --model forest --task classification --target churned --drop id --track runs --output cand.ml candidate_train.csv > /dev/null; ml runs list runs > runs.json; echo \"$(ls runs | wc -l) run records\"",
+        "out": "2 run records"
+      },
+      {
+        "at": "cancho-ml",
+        "note": "Reviewer: what do the run records say about each run?",
+        "cmd": "for i in 0 1; do echo \"$(jsonq -p /data/runs/$i/model --format text runs.json) trained on $(jsonq -p /data/runs/$i/train_rows --format text runs.json) rows, scored on $(jsonq -p /data/runs/$i/metrics_on --format text runs.json)\"; done",
+        "out": "\"logistic\" trained on 400 rows, scored on \"train\"\n\"forest\" trained on 480 rows, scored on \"train\""
+      },
+      {
+        "at": "cancho-ml",
+        "note": "Compare them: the inputs that differ, and the headline numbers. The new model had 80 more training rows, and the 0.977 is a score on training data.",
+        "cmd": "A=$(jsonq -p /data/runs/0/id --format text runs.json | tr -d '\"'); B=$(jsonq -p /data/runs/1/id --format text runs.json | tr -d '\"'); ml runs compare runs $A $B > cmp.json; echo \"training rows $(jsonq -p /data/inputs/3/a --format text cmp.json) -> $(jsonq -p /data/inputs/3/b --format text cmp.json)\"; echo \"accuracy $(jsonq -p /data/metrics/0/a --format text cmp.json) -> $(jsonq -p /data/metrics/0/b --format text cmp.json)\"",
+        "out": "training rows 400 -> 480\naccuracy \"0.7575\" -> \"0.9770833333333333\""
+      },
+      {
+        "at": "cancho-table",
+        "note": "Where did the 80 extra rows come from? A join on customer id: how many of the candidate's training customers are in the frozen holdout?",
+        "cmd": "table --query \"select count(*) as overlap from 'candidate_train.csv' as a inner join 'holdout.csv' as b on a.id = b.id\" | jsonq -p /data/rows/0/0 --format text -",
+        "out": "\"80\""
+      },
+      {
+        "at": "cancho-table",
+        "note": "So 80 of the 200 holdout customers were trained on. An anti join leaves the customers neither model has seen.",
+        "cmd": "table --query \"select b.id, b.tenure_months, b.monthly_spend, b.tickets_90d, b.churned from 'holdout.csv' as b anti join 'candidate_train.csv' as a on b.id = a.id\" --format csv > clean_holdout.csv; peek --count-lines --lines 1:1 clean_holdout.csv | jsonq -p /data/total_lines --format text -",
+        "out": "121"
+      },
+      {
+        "at": "cancho-ml",
+        "note": "Score on customers it never saw. The honest gain is smaller than the claim, but it is real.",
+        "cmd": "echo \"production, clean holdout            $(ml eval --model-file prod/model.ml clean_holdout.csv --drop id,monthly_spend,tickets_90d | jsonq -p /data/metrics/accuracy --format text -)\"; echo \"candidate, full holdout (leaked)     $(ml eval --model-file cand.ml holdout.csv --drop id | jsonq -p /data/metrics/accuracy --format text -)\"; echo \"candidate, clean holdout             $(ml eval --model-file cand.ml clean_holdout.csv --drop id | jsonq -p /data/metrics/accuracy --format text -)\"",
+        "out": "production, clean holdout            \"0.725\"\ncandidate, full holdout (leaked)     \"0.895\"\ncandidate, clean holdout             \"0.85\"",
+        "chart": {
+          "type": "bars",
+          "title": "Accuracy: the claim against what the review found",
+          "short": "Accuracy (0 to 1)",
+          "labels": [
+            "the claim (on training rows)",
+            "candidate, holdout with the leak",
+            "candidate, clean holdout",
+            "production, clean holdout"
+          ],
+          "values": [
+            0.9770833333333333,
+            0.895,
+            0.85,
+            0.725
+          ]
+        }
+      },
+      {
+        "at": "cancho-ml",
+        "note": "Teammate's agent: retrained on the training file only, tracked. Reviewer: the run record can be replayed, and the clean holdout is the test.",
+        "cmd": "ml fit --model forest --task classification --target churned --drop id --track runs --output cand2.ml train.csv > fit3.json; R=$(jsonq -p /data/run/id --format text fit3.json | tr -d '\"'); echo \"replay verifies: $(ml runs verify runs $R | jsonq -p /data/verified --format text -)\"; echo \"clean holdout accuracy $(ml eval --model-file cand2.ml clean_holdout.csv --drop id | jsonq -p /data/metrics/accuracy --format text -)\"",
+        "out": "replay verifies: true\nclean holdout accuracy \"0.8666666666666667\""
+      },
+      {
+        "at": "cancho-tools",
+        "note": "Promote it, guarded: the write only happens if production still holds the file the reviewer looked at.",
+        "cmd": "H=$(env hash --root prod model.ml --format text | cut -d' ' -f1); write --root prod --if-sha256 $H --stdin model.ml < cand2.ml > promote.json; echo \"promoted: $(jsonq -p /data/changed --format text promote.json), now $(jsonq -p /data/after_sha256 --format text promote.json)\"; echo $H > old_hash.txt",
+        "out": "promoted: true, now \"ae1cb0e81748429d3843cad44b8b4e8347a9db84ece7817d4947f0fa746d90c7\""
+      },
+      {
+        "at": "cancho-tools",
+        "note": "Another agent, which read production before this promotion, tries to promote the original, leaked candidate. The write is refused, and says what the file holds now.",
+        "cmd": "write --root prod --if-sha256 $(cat old_hash.txt) --stdin model.ml < cand.ml > stale.json; jsonq -p /error/rule --format text stale.json; jsonq -p /error/detail/actual_sha256 --format text stale.json",
+        "out": "\"precondition.hash-mismatch\"\n\"ae1cb0e81748429d3843cad44b8b4e8347a9db84ece7817d4947f0fa746d90c7\""
+      },
+      {
+        "at": "cancho-tools",
+        "note": "Reviewer: what may each tool do? The compilers proved it, and none of them reaches the network.",
+        "cmd": "for t in ml table stats write hash; do echo \"$t $(env $t introspect | jsonq -p /authority/effects --format text -)\"; done",
+        "out": "ml [\"args\",\"conc\",\"dir_read\",\"dir_write\",\"err_write\",\"file_read\",\"file_write\",\"fs_read\",\"heap\",\"io_read\",\"io_write\"]\ntable [\"args\",\"conc\",\"dir_read\",\"err_write\",\"file_read\",\"fs_read\",\"heap\",\"io_read\",\"io_write\"]\nstats [\"args\",\"dir_read\",\"err_write\",\"file_read\",\"fs_read\",\"heap\",\"io_write\"]\nwrite [\"args\",\"dir_read\",\"dir_write\",\"err_write\",\"file_read\",\"file_write\",\"fs_read\",\"heap\",\"io_read\",\"io_write\"]\nhash [\"args\",\"dir_read\",\"err_write\",\"file_read\",\"fs_read\",\"heap\",\"io_write\"]"
+      }
+    ]
+  },
   "trail:ship-an-api": {
     "title": "Ship an API: declare, generate a client, use it, change it, package it",
     "route": [
