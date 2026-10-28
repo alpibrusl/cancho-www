@@ -2,3 +2,6 @@ User-agent: *
 Allow: /
 
 Allow: /llms.txt
+
+# /next/ is a preview of the cancho-ui version of the page, not a second home page.
+Disallow: /next/

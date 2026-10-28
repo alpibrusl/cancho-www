@@ -39,3 +39,15 @@ CI (on pull requests and before every deploy) fails if the generated files are s
 `.github/workflows/pages.yml` deploys `_site/` to GitHub Pages on push to `main`, at `cancho.dev` (all links are relative, so it also works under `alpibrusl.github.io/cancho-www/`).
 
 Custom domain: **cancho.dev** (registered at OVHcloud). The page, `og:url`, `og:image`, the canonical link, the share card and the URLs in `agents.md` / `llms.txt` (`site` in `data/ecosystem.json`) all use it. DNS, at the registrar: apex `A` records 185.199.108.153, .109.153, .110.153, .111.153; `AAAA` 2606:50c0:8000::153 to 8003::153; `www` as a `CNAME` to `alpibrusl.github.io`. Then, in the repository's Settings > Pages, set the custom domain to `cancho.dev` and tick Enforce HTTPS once the certificate is issued. The other projects' landing pages stay on `alpibrusl.github.io/<repo>/`.
+
+## The cancho-ui version, at /next/
+
+The same home page is also written in [cancho-ui](https://github.com/alpibrusl/cancho-ui) (`docs/www-port/` there: the page, its data and files, and what it drops or changes on purpose, row by row). `scripts/build_next.sh` compiles it, at the cancho-ui commit named in `CANCHO_UI_REV`, into `_site/next/`, so it is served at `cancho.dev/next/` beside the live page. The live page does not change.
+
+It is a **preview, not a replacement**: `robots.txt` keeps crawlers out of `/next/`, its canonical link names the live page, and `docs/www-port/status.md` in cancho-ui lists what is equal, what differs on purpose, what is heavier (about 910 kB against 675 kB) and what is still open. It carries its own copy of the data, taken from a given commit of this repository, so it is out of date when `data/ecosystem.json` changes until the port is synced and `CANCHO_UI_REV` is moved; the build says so with a warning and does not fail.
+
+The build needs Rust (`cargo`) and network access to clone cancho-ui and fetch its crates. In `pages.yml` the step is allowed to fail, so the live site is deployed even if the preview cannot be built; in `checks.yml` it is not, so a pull request that breaks it is seen.
+
+```sh
+bash scripts/build_site.sh && bash scripts/build_next.sh   # then serve _site/ and open /next/
+```

@@ -14,3 +14,5 @@ jobs:
         run: python3 scripts/check_public.py
       - name: The site builds
         run: bash scripts/build_site.sh
+      - name: The cancho-ui preview builds (/next/)
+        run: bash scripts/build_next.sh
