@@ -10,7 +10,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"; cd "$ROOT"
 
-CANCHO_UI_REV="${CANCHO_UI_REV:-ada7200ec75cc7412aafb802f0e8537970435ddd}"
+CANCHO_UI_REV="${CANCHO_UI_REV:-4fc2f341791e48da38352903fc2e5be4b606c05b}"
 [ -d _site ] || { echo "_site/ is missing: run scripts/build_site.sh first" >&2; exit 1; }
 
 WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
