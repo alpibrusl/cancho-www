@@ -3,5 +3,5 @@ Allow: /
 
 Allow: /llms.txt
 
-# /next/ is a preview of the cancho-ui version of the page, not a second home page.
-Disallow: /next/
+# /classic/ is the previous version of the home page, kept as the rollback. Its canonical link names /.
+Disallow: /classic/
