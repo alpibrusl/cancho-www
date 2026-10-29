@@ -19,13 +19,11 @@ jobs:
         run: python3 scripts/gen_agent_files.py --check
       - name: Only public repositories are listed
         run: python3 scripts/check_public.py
-      - name: Build site
+      # The home page at / is built from cancho-ui at the commit pinned in scripts/build_site.sh, with the previous
+      # page beside it at /classic/. The build checks the finished tree (scripts/check_site.py) and only then puts it
+      # in place, and a failure stops the deploy: the site that is live stays as it is.
+      - name: Build the site (/, /classic/, /next/)
         run: bash scripts/build_site.sh
-      # A preview of the cancho-ui version of the page at /next/. It is optional: if it cannot be
-      # built the live site is still deployed, without it.
-      - name: Build the cancho-ui preview (/next/)
-        continue-on-error: true
-        run: bash scripts/build_next.sh
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
