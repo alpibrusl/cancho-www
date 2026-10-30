@@ -19,9 +19,9 @@ Status: **proposal, nothing applied.** Written 2026-10-30 from a survey of the r
 
 `cancho-stats` has **an empty README** (0 lines) although it is the project with the most documentation. **[read]**
 
-**What exists, by feature** (of the 25 packages plus `cancho`, `cancho-ui`, `cancho-www`; a rough scan of files and README text):
+**What exists, by feature** (all 28 repositories; a rough scan of file names and README words, by `glob` and `re`, not a reading of each page):
 
-* A landing page: 17. An agent document (`AGENTS.md`, `agents.md` or skills): 8. `llms.txt`: 8. An MCP server: 3 (`-table`, `-ml`, `-tools`). A benchmark directory or page: 9. A comparison with another tool in the README: 21, of which a measured table in 3. A stories page: 3 (stats, table, ml).
+* A landing page: 19 of 28. An agent document (`AGENTS.md`, `agents.md` or skills): 8. `llms.txt`: 9. An MCP server or an MCP design document: 4 (`-code`, `-tools`, `-ml`, `-table`). A benchmark directory or page: 11. A README that mentions a comparison with another tool (the words *versus*, *against*, *compared with*, *alternative*): 23, which says nothing about whether any of them is measured; that has to be read one by one. A stories page: 4 (stats, table, ml, and the ecosystem page).
 * Product-style READMEs state numbers with their conditions; library-style READMEs mostly state none; `cancho-ml` says plainly that **no speed is claimed** for its command line and gives the library timings with machine, load and minimum of N.
 * The agent surface of the three data tools is `NAME skill`, `NAME introspect`, an authority manifest, rule-tagged JSON refusals, and (table, ml) an MCP server. `cancho-stats` has the first four and no agent document, no `llms.txt`, no MCP server.
 
