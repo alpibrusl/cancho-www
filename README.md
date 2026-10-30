@@ -67,3 +67,5 @@ Either way, deploy is a push to `main`, and `workflow_dispatch` on `pages.yml` r
 `.github/workflows/pages.yml` builds the site (above) and deploys `_site/` to GitHub Pages on push to `main`, at `cancho.dev` (all links are relative, so it also works under `alpibrusl.github.io/cancho-www/`).
 
 Custom domain: **cancho.dev** (registered at OVHcloud). The page, `og:url`, `og:image`, the canonical link, the share card and the URLs in `agents.md` / `llms.txt` (`site` in `data/ecosystem.json`) all use it. DNS, at the registrar: apex `A` records 185.199.108.153, .109.153, .110.153, .111.153; `AAAA` 2606:50c0:8000::153 to 8003::153; `www` as a `CNAME` to `alpibrusl.github.io`. Then, in the repository's Settings > Pages, set the custom domain to `cancho.dev` and tick Enforce HTTPS once the certificate is issued. The other projects' landing pages stay on `alpibrusl.github.io/<repo>/`.
+
+The layout the tools' own landing pages share (sections, ids, header, footer, how it is checked) is written in [`docs/landing-pattern.md`](docs/landing-pattern.md); `scripts/check_landing_pattern.py` checks a home page against it.
