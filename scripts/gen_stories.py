@@ -237,18 +237,21 @@ def build(data):
     cards = [("Biology", [("stats", "Six mice against six", "exact rank and permutation tests"), ("table", "A growth plate", "exact means of replicates"), ("ml", "Tumour or normal?", "which genes matter")]),
              ("Chemistry", [("stats", "Two methods, one sample set", "correlation is not agreement"), ("table", "Burette readings", "a declared precision"), ("ml", "A calibration curve", "fit once, apply to unknowns")]),
              ("Physics", [("stats", "Same source, two detectors", "a shape the means cannot see"), ("table", "Two days of a logger", "JSON lines by the hour"), ("ml", "Two kinds of pulse", "clusters with no labels")]),
+             ("Medicine", [("stats", "Did the drug lower the blood pressure?", "a randomized trial, Holm over three endpoints"), ("stats", "No serious events: how safe is that?", "an exact interval for zero"), ("table", "Which lots are out of specification?", "batch records in exact decimals"), ("ml", "Who will come back within 30 days?", "a risk score and its threshold")]),
+             ("Marketing", [("stats", "Did the ads cause the sales?", "a randomized holdout"), ("stats", "The dashboard that was too good to be true", "selection bias"), ("table", "From the raw tables to the holdout analysis", "join, window, per-arm totals"), ("ml", "Who does the ad actually move?", "uplift on a randomized test")]),
+             ("Finance", [("stats", "How bad is a bad day?", "heavy tails, a bootstrapped quantile"), ("stats", "Six backtests, one winner", "counting what was tried"), ("table", "Month end, to the cent", "totals that must add up"), ("ml", "Whom should the bank lend to?", "a default score and a cutoff with a price")]),
              ("Social science", [("stats", "What does the town think?", "intervals for a share, ordinal tests"), ("table", "Who answered twice?", "counts and duplicates"), ("ml", "Who supports the tram line?", "a model to read")])]
     html_cards = []
     for field, items in cards:
         lis = "".join('<li><a href="%scancho-%s/stories.html">%s</a>: %s <span style="color:var(--muted)">(%s)</span></li>' % (PAGES, t_, esc(title), esc(sub), t_) for t_, title, sub in items)
         html_cards.append('<div class="card"><h3>%s</h3><ul>%s</ul></div>' % (field, lis))
-    S.append('<section class="alt story" id="s7"><div class="wrap"><h2>7 &middot; From the sciences</h2><div class="badge"><span class="lvl">go further</span></div><p>Each of the three tools has its own page of stories, in increasing complexity, with a figure for each and a section from biology, chemistry, physics and the social sciences. Every number on them is drawn from a real run, like the ones above.</p><div class="cards">%s</div></div></section>' % "".join(html_cards))
+    S.append('<section class="alt story" id="s7"><div class="wrap"><h2>7 &middot; More fields</h2><div class="badge"><span class="lvl">go further</span></div><p>Each of the three tools has its own page of stories, in increasing complexity, with a figure for each and a section from biology and medicine, chemistry, physics, the social sciences, marketing and finance. Every number on them is drawn from a real run, like the ones above.</p><div class="cards">%s</div></div></section>' % "".join(html_cards))
     return S
 
 
 def page(sections):
     nav = " ".join('<a class="opt" href="#s%d">%d</a>' % (i, i) for i in range(1, 8))
-    toc = "".join('<a href="#s%d">%d &middot; %s</a>' % (i, i, esc(nm)) for i, nm in enumerate(("Authority", "A refusal", "Three tools", "A pipeline", "Same bytes", "Campaign", "Sciences"), 1))
+    toc = "".join('<a href="#s%d">%d &middot; %s</a>' % (i, i, esc(nm)) for i, nm in enumerate(("Authority", "A refusal", "Three tools", "A pipeline", "Same bytes", "Campaign", "More fields"), 1))
     return """<!doctype html>
 <html lang="en">
 <head>
