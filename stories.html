@@ -51,8 +51,23 @@ figure.fig svg { width: 100%; height: auto; display: block; background: var(--su
 .fig .lk { fill: #fff; font: 600 12px var(--font); }
 .part { padding: 2.5rem 0 .5rem; text-align: center; border-top: 1px solid var(--line); }
 .part h2 { text-align: center; }
-.toc { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin-top: 1.2rem; }
-.toc a { text-decoration: none; border: 1px solid var(--line); border-radius: 99px; padding: .25rem .9rem; background: var(--surface); font-size: .9rem; }
+.toc { display: flex; flex-direction: column; gap: .7rem; align-items: center; margin-top: 1.2rem; }
+.tg { display: flex; flex-wrap: wrap; gap: .45rem; justify-content: center; align-items: center; }
+.tg a { text-decoration: none; border: 1px solid var(--line); border-radius: 99px; padding: .2rem .8rem; background: var(--surface); font-size: .88rem; }
+.tg a.tn { border: 0; background: none; font-weight: 700; color: var(--fg); padding-left: 0; }
+.grp { padding: 2.5rem 0 .2rem; text-align: center; border-top: 1px solid var(--line); background: var(--bg); }
+.grp h2 { text-align: center; margin: 0 0 .3rem; }
+.grp .lead { color: var(--muted); max-width: 40rem; margin: 0 auto; }
+details.dd { position: relative; }
+details.dd summary { white-space: nowrap; cursor: pointer; color: var(--muted); font-size: .93rem; list-style: none; padding: .3rem .2rem; }
+details.dd summary::-webkit-details-marker { display: none; }
+details.dd summary::after { content: " ▾"; }
+details.dd[open] summary { color: var(--fg); }
+details.dd .menu { position: absolute; right: 0; top: 2.2rem; z-index: 9; min-width: 15rem; max-height: 75vh; overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: .4rem 0; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+details.dd .menu a { display: block; padding: .25rem 1rem; color: var(--fg); }
+details.dd .menu a:hover { background: var(--soft); }
+@media (max-width: 40rem) { details.dd .menu { position: fixed; left: 8px; right: 8px; top: 3.6rem; max-height: 80vh; } }
+details.dd .menu a.gh { font-weight: 700; margin-top: .35rem; color: var(--accent); }
 .data { color: var(--muted); font-size: .9rem; text-align: center; margin-top: 1rem; }
 
 :root { --term-dim: #8b95a5; --term-acc: #8ec0ff; --term-good: #5fd3a6; --term-bad: #ff9a92; }
