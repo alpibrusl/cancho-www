@@ -2,3 +2,6 @@ User-agent: *
 Allow: /
 
 Allow: /llms.txt
+
+# /classic/ is the previous version of the home page, kept as the rollback. Its canonical link names /.
+Disallow: /classic/

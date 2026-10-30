@@ -14,5 +14,18 @@ jobs:
         run: python3 scripts/gen_stories.py --check
       - name: Only public repositories are listed
         run: python3 scripts/check_public.py
-      - name: The site builds
+      # Builds / (cancho-ui at the pinned commit), /classic/ and /next/, fails if data/ecosystem.json differs from the
+      # port's copy, and runs scripts/check_site.py on the finished tree before putting it in _site/.
+      - name: The site builds (/, /classic/, /next/)
         run: bash scripts/build_site.sh
+      - name: The built tree is sound (title, h1, canonical, links, no foreign origin, data files)
+        run: python3 scripts/check_site.py _site
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Chromium
+        run: |
+          cd "$RUNNER_TEMP" && npm install --silent playwright@1.49.1 && npx playwright install --with-deps chromium
+          echo "NODE_PATH=$RUNNER_TEMP/node_modules" >> "$GITHUB_ENV"
+      - name: The pages load in Chromium (/ and /classic/, light and dark, 1280 and 412; no foreign request, no console error)
+        run: node scripts/check_site_browser.js _site

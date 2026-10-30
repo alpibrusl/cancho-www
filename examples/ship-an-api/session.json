@@ -1,0 +1,131 @@
+{
+  "title": "Ship an API: declare, generate a client, use it, change it, package it",
+  "route": [
+    "cancho-web",
+    "cancho-client-gen",
+    "cancho-table",
+    "cancho-stats",
+    "cancho-tools",
+    "cancho-oci",
+    "cancho-web"
+  ],
+  "summary": "One declaration is the service, its OpenAPI document and the source of a typed client. An app uses it, the data it generates is analysed, an agent changes the contract, and the service is packaged as a reproducible image. Every step is a real run of a cancho tool; the seams that do not meet are shown as they are.",
+  "source": "A recorded run of the real tools, replayed, on synthetic users (examples/ship-an-api/app.py): nothing here measures a real service. cancho-web's own users example is the service.",
+  "steps": [
+    {
+      "at": "cancho-web",
+      "note": "Build the service from its one declaration (routes, bodies, errors), and start it. The compiler is the revision cancho-web pins.",
+      "cmd": "(cd cancho-web && scripts/build.sh examples/users/users.cho ../users-v1); ./users-v1 18950 2> serve.log &  curl -s localhost:18950/health",
+      "out": "{\"ok\":true}"
+    },
+    {
+      "at": "cancho-web",
+      "note": "A bad request is refused with every error at once, each with its JSON Pointer, as problem+json.",
+      "cmd": "curl -s -XPOST -H 'Content-Type: application/json' -d '{\"name\":\"\",\"age\":151}' localhost:18950/users > refusal.json; for p in /count /errors/0 /errors/1; do jsonq -p $p --format text refusal.json; done",
+      "out": "2\n{\"pointer\":\"/name\",\"code\":\"min_length\",\"detail\":\"is too short\"}\n{\"pointer\":\"/age\",\"code\":\"maximum\",\"detail\":\"is above the maximum\"}"
+    },
+    {
+      "at": "cancho-web",
+      "note": "The OpenAPI 3.1 document comes from the same declaration, so a route cannot be served and undocumented.",
+      "cmd": "curl -s localhost:18950/openapi.json > openapi.json; jsonq -p /paths --keys --format text openapi.json",
+      "out": "\"/health\"\n\"/users\"\n\"/users/{id}\""
+    },
+    {
+      "at": "cancho-client-gen",
+      "note": "Frontend: a typed client from the server's own document. clientgen reads it, lists what it found, and writes Python.",
+      "cmd": "clientgen openapi.json --check; clientgen openapi.json --model | head -3; clientgen openapi.json --python -o client.py",
+      "out": "ok 5 operations, 4 components\nget /health -> health (0 parameters, body none, 1 responses: 200=object )\nget /users -> listUsers (2 parameters, body none, 2 responses: 200=Page 422=Problem )\npost /users -> createUser (0 parameters, body NewUser, 5 responses: 201=User 400=Problem 415=Problem 422=Problem 503=Problem )"
+    },
+    {
+      "at": "cancho-client-gen",
+      "note": "The client's annotations promise a dataclass. Does it return one? (A read-only call, so the service stays empty. An earlier build of clientgen returned a plain dict here; that is fixed in cancho-client-gen#15.)",
+      "cmd": "seek --format text 'def listUsers' client.py; python3 -c \"import client; r = client.Client('http://127.0.0.1:18950').listUsers(limit=1); print(type(r).__name__, r)\"",
+      "out": "client.py:79:    def listUsers(self, *, limit: int | None = None, offset: int | None = None) -> Page:\nPage Page(total=0, items=[])"
+    },
+    {
+      "at": "cancho-client-gen",
+      "note": "The app (a stand-in for whatever uses the service) registers 200 users through the client. Some are invalid on purpose.",
+      "cmd": "python3 app.py http://127.0.0.1:18950",
+      "out": "registered 186 of 200 attempts"
+    },
+    {
+      "at": "cancho-table",
+      "note": "What did the launch traffic get back, and which fields were refused?",
+      "cmd": "table --group status --agg count --sort status --format csv requests.csv; table --where \"status = 422\" --group field --agg count --sort -count --format csv requests.csv",
+      "out": "status,count\n201,186\n422,14\nfield,count\n/age,9\n/name,5"
+    },
+    {
+      "at": "cancho-stats",
+      "note": "What does the service hold now? Ages of the registered users, and how many are over 120. (table compares text unless a column says :int.)",
+      "cmd": "stats describe users.csv --cols age > ages.json; for k in count mean max; do echo \"$k $(jsonq -p /data/columns/0/$k --format text ages.json)\"; done; echo \"older than 120: $(table --where 'age:int > 120' --agg count --format csv users.csv | tail -1)\"",
+      "out": "count 186\nmean 49.01075268817204\nmax 128.0\nolder than 120: 4",
+      "chart": {
+        "type": "histogram",
+        "title": "Ages of the users the service holds (stats' exact histogram)",
+        "short": "Ages of the registered users",
+        "unit": "years",
+        "edges": [
+          18.0,
+          29.0,
+          40.0,
+          51.0,
+          62.0,
+          73.0,
+          84.0,
+          95.0,
+          106.0,
+          117.0,
+          128.0
+        ],
+        "counts": [
+          34,
+          35,
+          33,
+          31,
+          34,
+          15,
+          0,
+          0,
+          0,
+          4
+        ]
+      }
+    },
+    {
+      "at": "cancho-tools",
+      "note": "An agent proposes a tighter limit: no age above 120. replace edits the one line of the declaration, and refuses unless it matches exactly once.",
+      "cmd": "replace --root cancho-web --old 'schema.new_int(heap, s2, 0, 150)' --new 'schema.new_int(heap, s2, 0, 120)' --expect 1 examples/users/users.cho | jsonq -p /data/replacements --format text -",
+      "out": "1"
+    },
+    {
+      "at": "cancho-web",
+      "note": "Rebuild it as a static executable (the linker wrapper adds -static) and restart. The served document now says 120.",
+      "cmd": "(cd cancho-web && CC=static-cc scripts/build.sh examples/users/users.cho ../users-v2); ./users-v2 18950 2> serve.log &  curl -s localhost:18950/openapi.json > openapi2.json; for f in openapi openapi2; do echo \"$f: max age $(jsonq -p /components/schemas/NewUser/properties/age/maximum --format text $f.json)\"; done",
+      "out": "openapi: max age 150\nopenapi2: max age 120"
+    },
+    {
+      "at": "cancho-client-gen",
+      "note": "Does the client need regenerating? The limit lives in the server's schema.",
+      "cmd": "clientgen openapi2.json --python -o client2.py; diff client.py client2.py > /dev/null && echo 'client unchanged'",
+      "out": "client unchanged"
+    },
+    {
+      "at": "cancho-web",
+      "note": "A 130-year-old customer, who was valid yesterday.",
+      "cmd": "curl -s -XPOST -H 'Content-Type: application/json' -d '{\"name\":\"Old\",\"age\":130}' localhost:18950/users > old.json; jsonq -p /errors/0 --format text old.json",
+      "out": "{\"pointer\":\"/age\",\"code\":\"maximum\",\"detail\":\"is above the maximum\"}"
+    },
+    {
+      "at": "cancho-oci",
+      "note": "Package it. A dynamically linked program is refused by rule; the static one becomes an image, built twice into two directories: the same binary gives the same image. (Two builds of the source differ by 2 bytes, so a fresh build has a new digest.)",
+      "cmd": "mkdir -p root img0/blobs/sha256 img/blobs/sha256 img2/blobs/sha256; cp users-v1 root/users; oci-build --root root --out img0 --platform linux/amd64 --bin users:app/users; cp users-v2 root/users; oci-build --root root --out img --platform linux/amd64 --bin users:app/users; oci-build --root root --out img2 --platform linux/amd64 --bin users:app/users; diff -r img img2 && echo 'the two images are identical'",
+      "out": "refused: elf-dynamic (app/users)\nsha256:b7a58f0d56b285d248bc8781fa69f0e66ea7096e4bb1e64e7a8610c03da290fa\nsha256:b7a58f0d56b285d248bc8781fa69f0e66ea7096e4bb1e64e7a8610c03da290fa\nthe two images are identical"
+    },
+    {
+      "at": "cancho-web",
+      "note": "What may the service do? The compiler proved it.",
+      "cmd": "(cd cancho-web && cancho authority examples/users/users.cho src/*.cho build/deps/*.cho --std | awk '/provably pure/{exit}{print}' | tr -s ' \\n' ' ')",
+      "out": "performs args clock conn_accept conn_read conn_write err_write heap net_in(\"\") poll never touches the filesystem signals other programs foreign code "
+    }
+  ]
+}

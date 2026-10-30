@@ -1,0 +1,191 @@
+{
+  "title": "A shop's energy, passed between roles",
+  "route": [
+    "cancho-ml",
+    "cancho-stats",
+    "cancho-table",
+    "cancho-ml",
+    "cancho-tools"
+  ],
+  "summary": "A data scientist, a statistician and a data engineer pass one file between them, each with their own command line, and cancho-tools to read what they print. No glue, no new package: a tool that dislikes the file says why, by rule.",
+  "source": "A recorded run of the real tools, replayed, on synthetic data (examples/shop-energy/make_data.py): nothing here measures a real shop.",
+  "steps": [
+    {
+      "at": "cancho-ml",
+      "note": "Data scientist (ml): I take the file as it came. The tool refuses, and names the row and the rule.",
+      "cmd": "ml fit --model linear --target kwh --output kwh.ml shop.csv > refusal.json; jsonq -p /error/rule --format text refusal.json; jsonq -p /error/detail --format text refusal.json",
+      "out": "\"ml.input.non-numeric\"\n{\"row\":17,\"name\":\"kwh\",\"reason\":\"empty\"}"
+    },
+    {
+      "at": "cancho-stats",
+      "note": "Statistician (stats): What is wrong with it? Three cells are missing in the target.",
+      "cmd": "stats describe shop.csv --cols kwh > kwh.json; for k in count missing mean; do echo \"$k $(jsonq -p /data/columns/0/$k --format text kwh.json)\"; done",
+      "out": "count 117\nmissing 3\nmean 3.1095726495726494"
+    },
+    {
+      "at": "cancho-table",
+      "note": "Data engineer (table): I drop the rows with no reading, and hand the rest on. peek counts the lines: the header and 117 rows.",
+      "cmd": "table --where \"kwh != ''\" --format csv shop.csv > clean.csv; peek --count-lines --lines 1:1 clean.csv | jsonq -p /data/total_lines --format text -",
+      "out": "118"
+    },
+    {
+      "at": "cancho-stats",
+      "note": "Statistician (stats): Same question on the clean file: exact figures, with the median.",
+      "cmd": "stats describe clean.csv --cols kwh > clean.json; for k in count missing mean sd quantiles/2/value; do echo \"$k $(jsonq -p /data/columns/0/$k --format text clean.json)\"; done",
+      "out": "count 117\nmissing 0\nmean 3.1095726495726494\nsd 1.6680436575172235\nquantiles/2/value 1.86",
+      "chart": {
+        "type": "histogram",
+        "title": "kwh, the 117 clean readings: stats' exact histogram",
+        "short": "kWh of the 117 clean readings",
+        "unit": "kWh",
+        "edges": [
+          1.26,
+          1.679,
+          2.098,
+          2.517,
+          2.936,
+          3.355,
+          3.774,
+          4.1930000000000005,
+          4.612,
+          5.031000000000001,
+          5.45
+        ],
+        "counts": [
+          41,
+          23,
+          0,
+          0,
+          0,
+          0,
+          0,
+          7,
+          28,
+          18
+        ]
+      }
+    },
+    {
+      "at": "cancho-table",
+      "note": "Data engineer (table): The readings are in time order, so I hold out the last 24 rows and hand over the 93 before them. peek counts lines, the header included.",
+      "cmd": "table --select hour,outside_c,open,kwh --limit 93 --format csv clean.csv > train.csv; table --select hour,outside_c,open,kwh --from 93 --format csv clean.csv > test.csv; for f in train test; do echo \"$f $(peek --count-lines --lines 1:1 $f.csv | jsonq -p /data/total_lines --format text -) lines\"; done",
+      "out": "train 94 lines\ntest 25 lines"
+    },
+    {
+      "at": "cancho-ml",
+      "note": "Data scientist (ml): I fit on the 93 earlier rows and score on the 24 the model never saw.",
+      "cmd": "ml fit --model linear --target kwh --output kwh.ml train.csv > fit.json; ml eval --model-file kwh.ml test.csv > eval.json; ml predict --model-file kwh.ml test.csv > pred.json; for m in rmse mae r2; do echo \"$m $(jsonq -p /data/metrics/$m --format text eval.json)\"; done",
+      "out": "rmse \"0.31761987221668303\"\nmae \"0.29724702298628963\"\nr2 \"0.9705048728122235\"",
+      "chart": {
+        "type": "scatter",
+        "title": "The 24 held-out rows: predicted against actual",
+        "short": "Held-out rows: predicted vs actual",
+        "unit": "kWh",
+        "points": [
+          [
+            1.6,
+            1.688
+          ],
+          [
+            1.4,
+            1.69
+          ],
+          [
+            1.27,
+            1.703
+          ],
+          [
+            1.33,
+            1.686
+          ],
+          [
+            1.56,
+            1.7
+          ],
+          [
+            1.5,
+            1.696
+          ],
+          [
+            1.37,
+            1.709
+          ],
+          [
+            1.43,
+            1.692
+          ],
+          [
+            1.31,
+            1.705
+          ],
+          [
+            4.47,
+            4.789
+          ],
+          [
+            5.39,
+            4.947
+          ],
+          [
+            5.45,
+            4.96
+          ],
+          [
+            5.24,
+            4.943
+          ],
+          [
+            5.3,
+            4.956
+          ],
+          [
+            5.08,
+            4.939
+          ],
+          [
+            5.14,
+            4.952
+          ],
+          [
+            5.2,
+            4.966
+          ],
+          [
+            5.34,
+            4.948
+          ],
+          [
+            4.61,
+            4.816
+          ],
+          [
+            4.67,
+            4.799
+          ],
+          [
+            1.45,
+            1.711
+          ],
+          [
+            1.32,
+            1.725
+          ],
+          [
+            1.38,
+            1.707
+          ],
+          [
+            1.26,
+            1.721
+          ]
+        ]
+      }
+    },
+    {
+      "at": "cancho-tools",
+      "note": "Reviewer (jsonq, peek): Before this ships: what may each tool do, the reading tools included? The compilers proved it.",
+      "cmd": "for t in table stats ml jsonq peek; do echo \"$t $($t introspect | jsonq -p /authority/effects --format text -)\"; done",
+      "out": "table [\"args\",\"conc\",\"dir_read\",\"err_write\",\"file_read\",\"fs_read\",\"heap\",\"io_read\",\"io_write\"]\nstats [\"args\",\"dir_read\",\"err_write\",\"file_read\",\"fs_read\",\"heap\",\"io_write\"]\nml [\"args\",\"conc\",\"dir_read\",\"dir_write\",\"err_write\",\"file_read\",\"file_write\",\"fs_read\",\"heap\",\"io_read\",\"io_write\"]\njsonq [\"args\",\"dir_read\",\"err_write\",\"file_read\",\"fs_read\",\"heap\",\"io_read\",\"io_write\"]\npeek [\"args\",\"dir_read\",\"err_write\",\"file_read\",\"fs_read\",\"heap\",\"io_write\"]"
+    }
+  ]
+}
