@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cancho: six stories across the ecosystem</title>
+<meta name="description" content="Six end-to-end examples across cancho, table, stats and ml, in increasing complexity: what a program can touch, a refusal, three tools in a row, the same bytes in any order. Every number is drawn from a real run.">
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+.hero.small { padding: 3rem 0 1rem; }
+.story { padding: 3rem 0; }
+.story .wrap { max-width: 50rem; }
+.story h2 { text-align: left; margin-bottom: .3rem; }
+.badge { display: inline-flex; gap: .4rem; flex-wrap: wrap; margin: 0 0 1rem; }
+.badge span { font: .78rem var(--mono); color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: .1rem .6rem; background: var(--surface); }
+.badge .lvl { color: var(--accent); border-color: var(--accent); }
+.said { border-left: 3px solid var(--accent); padding: .2rem 0 .2rem 1rem; margin: 1rem 0; color: var(--muted); font-style: italic; }
+.story .term { max-width: none; margin: 1rem 0; box-shadow: none; }
+.story .term pre { min-height: 0; white-space: pre; word-break: normal; font-size: .8rem; }
+.story pre .cm { color: var(--term-acc); }
+.read { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.2rem; margin: 1rem 0; }
+.read b { color: var(--accent); }
+figure.fig { margin: 1rem 0; }
+figure.fig svg { width: 100%; height: auto; display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.fig .ax { stroke: var(--muted); stroke-width: 1; }
+.fig .tk { fill: var(--muted); font: 12px var(--font); }
+.fig .lb { fill: var(--muted); font: 13px var(--font); }
+.fig .nm { fill: var(--fg); font: 600 13px var(--font); }
+.fig .wh { stroke-width: 2; } .fig .wh.pa, .fig .bx.pa { stroke: var(--accent); } .fig .wh.pb, .fig .bx.pb { stroke: var(--good); }
+.fig .bx { fill: var(--soft); stroke-width: 2; }
+.fig .md { stroke: var(--fg); stroke-width: 3; }
+.fig .mn { fill: var(--warn); }
+.fig .zero { stroke: var(--bad); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.fig .ciline { stroke: var(--accent); stroke-width: 3; }
+.fig .pt { fill: var(--accent); }
+.fig .band { stroke: var(--line); stroke-width: 1; }
+.fig .dot.pa { fill: var(--accent); opacity: .8; } .fig .dot.pb { fill: var(--good); opacity: .8; }
+.fig .ring { fill: none; stroke: var(--bad); stroke-width: 2; }
+.fig .pbar.pa { fill: var(--accent); } .fig .pbar.pb { fill: var(--good); } .fig .pbar.warn { fill: var(--warn); }
+.fig .link { stroke: var(--muted); stroke-width: 1.5; }
+.fig .raw { fill: var(--surface); stroke: var(--accent); stroke-width: 2.5; } .fig .adj { fill: var(--accent); }
+.fig .cell { fill: var(--soft); stroke: var(--line); } .fig .cell.hit { fill: var(--bad); stroke: var(--bad); }
+.fig .seg { fill: var(--good); } .fig .seg.bad { fill: var(--bad); }
+.fig .hash { fill: var(--soft); stroke: var(--good); stroke-width: 1.5; }
+.fig .hx { fill: var(--fg); font: 12px var(--mono); }
+.fig .bandci { fill: var(--accent); opacity: .18; }
+.fig .ecdfa { fill: none; stroke: var(--accent); stroke-width: 2.5; } .fig .ecdfb { fill: none; stroke: var(--good); stroke-width: 2.5; }
+.fig .gap { stroke: var(--bad); stroke-width: 3; }
+.fig .lk1 { fill: #b42d27; } .fig .lk2 { fill: #d97a52; } .fig .lk3 { fill: #c9c9c9; } .fig .lk4 { fill: #5a9bd4; } .fig .lk5 { fill: #1f5fa6; }
+.fig .lk { fill: #fff; font: 600 12px var(--font); }
+.part { padding: 2.5rem 0 .5rem; text-align: center; border-top: 1px solid var(--line); }
+.part h2 { text-align: center; }
+.toc { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin-top: 1.2rem; }
+.toc a { text-decoration: none; border: 1px solid var(--line); border-radius: 99px; padding: .25rem .9rem; background: var(--surface); font-size: .9rem; }
+.data { color: var(--muted); font-size: .9rem; text-align: center; margin-top: 1rem; }
+
+:root { --term-dim: #8b95a5; --term-acc: #8ec0ff; --term-good: #5fd3a6; --term-bad: #ff9a92; }
+header.top { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+header.top .wrap { display: flex; align-items: center; gap: 1.2rem; height: 3.4rem; }
+header.top .brand { display: inline-flex; align-items: center; gap: .5rem; font: 700 1rem var(--mono); color: var(--fg); text-decoration: none; }
+header.top nav { display: flex; gap: 1.1rem; margin-left: auto; flex-wrap: wrap; }
+header.top nav a { color: var(--muted); text-decoration: none; font-size: .93rem; }
+@media (max-width: 40rem) { header.top nav a.opt { display: none; } }
+.hero { padding: 3.2rem 0 1.5rem; text-align: center; } .hero h1 { font-size: clamp(2rem, 6vw, 3.2rem); line-height: 1.1; margin: 0 auto 1rem; letter-spacing: -.03em; max-width: 20ch; }
+.hero .sub { font-size: 1.15rem; color: var(--muted); max-width: 40rem; margin: 0 auto 1.4rem; }
+section { margin: 0; padding: 3rem 0; } section.alt { background: var(--soft); }
+h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); margin: 0 0 .6rem; letter-spacing: -.02em; }
+.lead { color: var(--muted); max-width: 40rem; margin: 0 auto 1.6rem; text-align: center; }
+.term { background: var(--term-bg); color: var(--term-fg); border-radius: 12px; border: 1px solid var(--line); overflow: hidden; }
+.term .bar { display: flex; align-items: center; gap: .4rem; padding: .55rem .8rem; border-bottom: 1px solid #1f2a30; font: .78rem var(--mono); color: var(--term-dim); }
+.term .bar i { width: .7rem; height: .7rem; border-radius: 50%; background: #2c3a41; display: inline-block; }
+.term pre { margin: 0; padding: 1rem 1.1rem; overflow-x: auto; font: .8rem/1.55 var(--mono); }
+code { font: .9em var(--mono); background: var(--soft); padding: .1em .35em; border-radius: 5px; }
+.ax { stroke: var(--muted); } .fig .ln.d1 { stroke: #9bbbe0; } .fig .ln.d2 { stroke: #6f9fd0; } .fig .ln.d3 { stroke: #4a82c0; } .fig .ln.d4 { stroke: #2b66a8; } .fig .ln.d5 { stroke: #16406e; }
+.fig .night { fill: var(--ink); opacity: .08; } .fig .efl { fill: var(--fg); font: 12px var(--mono); }
+.fig .eff.on { fill: var(--accent); } .fig .eff.off { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.fig .fbox { fill: var(--surface); stroke-width: 2; } .fig .fbox.q { stroke: var(--accent); } .fig .fbox.r { stroke: var(--bad); } .fig .fbox.ok { stroke: var(--good); }
+.fig .arrow { stroke: var(--muted); stroke-width: 1.8; marker-end: url(#ar); }
+.fig .ln { fill: none; stroke-width: 2.2; } .fig .ln.la { stroke: var(--accent); stroke-width: 2.8; }
+.fig .dot.pb { fill: var(--good); } .fig .zero { stroke: var(--bad); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.fig .ciline { stroke: var(--accent); stroke-width: 3; } .fig .pt { fill: var(--accent); }
+.fig .hash { fill: var(--soft); stroke: var(--good); stroke-width: 1.5; } .fig .hx { fill: var(--fg); font: 12px var(--mono); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; margin-top: 1.4rem; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; }
+.card h3 { margin: 0 0 .5rem; font-size: 1.02rem; } .card ul { margin: 0; padding-left: 1.1rem; } .card li { margin: .25rem 0; font-size: .94rem; }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="./"><img src="logo-mark.png" width="28" height="28" alt="">cancho</a>
+  <nav><a class="opt" href="#s1">1</a> <a class="opt" href="#s2">2</a> <a class="opt" href="#s3">3</a> <a class="opt" href="#s4">4</a> <a class="opt" href="#s5">5</a> <a class="opt" href="#s6">6</a><a href="./">Home</a><a href="https://github.com/alpibrusl/cancho">GitHub</a></nav>
+</div></header>
+<div class="wrap hero">
+  <h1>Six stories across the ecosystem.</h1>
+  <p class="sub">From what a program can touch, to a refusal by the compiler, to three tools passing one CSV along a pipe and giving the same bytes in any order. Every number and every figure comes from a real run, recorded by <code>scripts/record_stories.py</code> and drawn by <code>scripts/gen_stories.py</code>; the data are invented and the narration is checked against the numbers.</p>
+  <div class="toc"><a href="#s1">1 &middot; Authority</a><a href="#s2">2 &middot; A refusal</a><a href="#s3">3 &middot; Three tools</a><a href="#s4">4 &middot; A pipeline</a><a href="#s5">5 &middot; Same bytes</a><a href="#s6">6 &middot; Sciences</a></div>
+</div>
+<section class=" story" id="s1"><div class="wrap"><h2>1 &middot; A program says what it can touch</h2><div class="badge"><span class="lvl">the language</span><span>cancho authority</span></div><p class="said">&#8220;Before I run anything: what can this program reach?&#8221;</p><p>The compiler derives, from the source alone, what a program may do to the world, and prints it. The first program only writes to standard output. The second opens one file under <code>/tmp</code>, and says so. Neither can reach the network: the capability to do so was never handed to <code>main</code>, so there is nothing to reach with.</p><div class="term"><div class="bar"><i></i><i></i><i></i> a real run</div><pre><span class="cm">$ cancho authority hello.cho --std</span>
+performs
+    io_write
+never touches
+    the filesystem
+    the network
+    the heap
+    the command line
+    signals
+    other programs
+    foreign code</pre></div><div class="term"><div class="bar"><i></i><i></i><i></i> a real run</div><pre><span class="cm">$ cancho authority fixed.cho --std</span>
+performs
+    fs_read(&quot;/tmp&quot;)
+    io_write
+never touches
+    the network
+    the heap
+    the command line
+    signals
+    other programs
+    foreign code</pre></div><div class="read"><b>Reading it.</b> The first program performs <code>io_write</code> and &#8220;never touches the filesystem, the network, the heap&#8221;. The second adds <code>fs_read("/tmp")</code> and nothing else. These are statements about every possible run of the program, not about a test run, and the compiler is the one that makes them.</div></div></section>
+<section class="alt story" id="s2"><div class="wrap"><h2>2 &middot; The compiler says no</h2><div class="badge"><span class="lvl">the language</span><span>cancho check</span></div><p class="said">&#8220;I opened a file and forgot to close it. Does it matter?&#8221;</p><p>A resource that is opened has to be consumed. The program below opens a file and never closes it; the compiler does not warn, it refuses, and it names the value and the line.</p><div class="term"><div class="bar"><i></i><i></i><i></i> a real run</div><pre><span class="cm">$ cancho check leak.cho --std</span>
+exit 1
+leak.cho:12:9: error: `f` is still live at the end of this block; nothing consumes it
+            match open_read(c, &quot;/tmp/notes.txt&quot;) {
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre></div><figure class="fig"><svg viewBox="0 0 640 132" role="img" aria-label="A program, the compiler&#x27;s refusal, the fix and the build"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>
+<rect class="fbox q" x="20" y="20" width="124.5" height="92" rx="10"/><text class="nm" x="82.25" y="48" text-anchor="middle">leak.cho</text>
+<text class="tk" x="82.25" y="70" text-anchor="middle">opens a file,</text>
+<text class="tk" x="82.25" y="86" text-anchor="middle">never closes it</text>
+<line class="arrow" x1="148.5" y1="66" x2="174.5" y2="66"/>
+<rect class="fbox r" x="178.5" y="20" width="124.5" height="92" rx="10"/><text class="nm" x="240.75" y="48" text-anchor="middle">the compiler</text>
+<text class="tk" x="240.75" y="70" text-anchor="middle">refuses</text>
+<text class="tk" x="240.75" y="86" text-anchor="middle">exit 1</text>
+<line class="arrow" x1="307" y1="66" x2="333" y2="66"/>
+<rect class="fbox ok" x="337" y="20" width="124.5" height="92" rx="10"/><text class="nm" x="399.25" y="48" text-anchor="middle">fixed.cho</text>
+<text class="tk" x="399.25" y="70" text-anchor="middle">file_close(f)</text>
+<line class="arrow" x1="465.5" y1="66" x2="491.5" y2="66"/>
+<rect class="fbox ok" x="495.5" y="20" width="124.5" height="92" rx="10"/><text class="nm" x="557.75" y="48" text-anchor="middle">the program</text>
+<text class="tk" x="557.75" y="70" text-anchor="middle">builds and runs</text></svg></figure><div class="read"><b>Reading it.</b> The error is about a value, <code>f</code>, that is still live at the end of its block. Fixing it is one line (<code>file_close(f)</code>), and the fixed program is the one whose authority you read in story 1. Everything below is built from programs that compile under rules like this one.</div></div></section>
+<section class=" story" id="s3"><div class="wrap"><h2>3 &middot; Three tools, three authorities</h2><div class="badge"><span class="lvl">the tools</span><span>table</span><span>stats</span><span>ml</span></div><p class="said">&#8220;I am going to feed my data to three command-line tools. What may each of them do with it?&#8221;</p><p>The three tools are written in cancho, so each one has an authority row, derived by the compiler and committed in its repository (<code>manifests/*.authority.json</code>); CI fails if the built program differs from it. Here they are side by side.</p><figure class="fig"><svg viewBox="0 0 640 438" role="img" aria-label="The effects each tool may use, and the four it may not"><text class="nm" x="280" y="24" text-anchor="middle">table</text>
+<text class="nm" x="410" y="24" text-anchor="middle">stats</text>
+<text class="nm" x="540" y="24" text-anchor="middle">ml</text>
+<text class="efl" x="180" y="52" text-anchor="end">args</text>
+<circle class="eff on" cx="280" cy="48" r="6"/>
+<circle class="eff on" cx="410" cy="48" r="6"/>
+<circle class="eff on" cx="540" cy="48" r="6"/>
+<text class="efl" x="180" y="76" text-anchor="end">conc</text>
+<circle class="eff on" cx="280" cy="72" r="6"/>
+<circle class="eff off" cx="410" cy="72" r="6"/>
+<circle class="eff on" cx="540" cy="72" r="6"/>
+<text class="efl" x="180" y="100" text-anchor="end">dir_read</text>
+<circle class="eff on" cx="280" cy="96" r="6"/>
+<circle class="eff on" cx="410" cy="96" r="6"/>
+<circle class="eff on" cx="540" cy="96" r="6"/>
+<text class="efl" x="180" y="124" text-anchor="end">dir_write</text>
+<circle class="eff off" cx="280" cy="120" r="6"/>
+<circle class="eff off" cx="410" cy="120" r="6"/>
+<circle class="eff on" cx="540" cy="120" r="6"/>
+<text class="efl" x="180" y="148" text-anchor="end">err_write</text>
+<circle class="eff on" cx="280" cy="144" r="6"/>
+<circle class="eff on" cx="410" cy="144" r="6"/>
+<circle class="eff on" cx="540" cy="144" r="6"/>
+<text class="efl" x="180" y="172" text-anchor="end">file_read</text>
+<circle class="eff on" cx="280" cy="168" r="6"/>
+<circle class="eff on" cx="410" cy="168" r="6"/>
+<circle class="eff on" cx="540" cy="168" r="6"/>
+<text class="efl" x="180" y="196" text-anchor="end">file_write</text>
+<circle class="eff off" cx="280" cy="192" r="6"/>
+<circle class="eff off" cx="410" cy="192" r="6"/>
+<circle class="eff on" cx="540" cy="192" r="6"/>
+<text class="efl" x="180" y="220" text-anchor="end">fs_read</text>
+<circle class="eff on" cx="280" cy="216" r="6"/>
+<circle class="eff on" cx="410" cy="216" r="6"/>
+<circle class="eff on" cx="540" cy="216" r="6"/>
+<text class="efl" x="180" y="244" text-anchor="end">heap</text>
+<circle class="eff on" cx="280" cy="240" r="6"/>
+<circle class="eff on" cx="410" cy="240" r="6"/>
+<circle class="eff on" cx="540" cy="240" r="6"/>
+<text class="efl" x="180" y="268" text-anchor="end">io_read</text>
+<circle class="eff on" cx="280" cy="264" r="6"/>
+<circle class="eff off" cx="410" cy="264" r="6"/>
+<circle class="eff on" cx="540" cy="264" r="6"/>
+<text class="efl" x="180" y="292" text-anchor="end">io_write</text>
+<circle class="eff on" cx="280" cy="288" r="6"/>
+<circle class="eff on" cx="410" cy="288" r="6"/>
+<circle class="eff on" cx="540" cy="288" r="6"/>
+<line class="ax" x1="30" y1="302" x2="580" y2="302"/>
+<text class="efl" x="180" y="316" text-anchor="end">net_out</text>
+<circle class="eff off" cx="280" cy="312" r="6"/>
+<circle class="eff off" cx="410" cy="312" r="6"/>
+<circle class="eff off" cx="540" cy="312" r="6"/>
+<text class="efl" x="180" y="340" text-anchor="end">net_in</text>
+<circle class="eff off" cx="280" cy="336" r="6"/>
+<circle class="eff off" cx="410" cy="336" r="6"/>
+<circle class="eff off" cx="540" cy="336" r="6"/>
+<text class="efl" x="180" y="364" text-anchor="end">ffi</text>
+<circle class="eff off" cx="280" cy="360" r="6"/>
+<circle class="eff off" cx="410" cy="360" r="6"/>
+<circle class="eff off" cx="540" cy="360" r="6"/>
+<text class="efl" x="180" y="388" text-anchor="end">clock</text>
+<circle class="eff off" cx="280" cy="384" r="6"/>
+<circle class="eff off" cx="410" cy="384" r="6"/>
+<circle class="eff off" cx="540" cy="384" r="6"/>
+<text class="tk" x="30" y="422">&#9679; the tool may do it &#183; &#9675; it may not</text></svg></figure><div class="read"><b>Reading it.</b> None of the three can open a network connection, call foreign code or read a clock. <code>table</code> may read standard input and use threads; <code>stats</code> needs neither; only <code>ml</code> may write files (the model it fits). The rows are the committed manifests, read when this page was recorded; their SHA-256 begin 9df864cd29 (table), 3828120c5c (stats) and 0b66a7d07b (ml).</div></div></section>
+<section class="alt story" id="s4"><div class="wrap"><h2>4 &middot; One logger, three tools</h2><div class="badge"><span class="lvl">the pipeline</span><span>table</span><span>stats</span><span>ml</span></div><p class="said">&#8220;The logger in the hut writes a reading every five minutes, as JSON lines. Is it colder at night? And can a model tell me tomorrow&#8217;s temperatures?&#8221; &#8212; the keeper of a mountain hut</p><p>Five days of readings, 1,440 lines (<a href="demo/stories/logger.jsonl">demo/stories/logger.jsonl</a>). First <code>table</code> turns them into one row per hour, with the mean computed from exact decimals; its CSV is the input of the other two. <code>stats</code> compares the day hours with the night hours; <code>ml</code> learns the daily cycle from the first four days and predicts the fifth.</p><div class="term"><div class="bar"><i></i><i></i><i></i> a real run</div><pre><span class="cm">$ table --input-format jsonl --fields day,hour,period,temp_c --group day,hour,period \
+    --agg count,mean:temp_c:dec(2)@4 --sort day --format csv &gt; hourly.csv</span>
+day,hour,period,count,mean:temp_c
+d1,0,night,12,9.7767
+d1,1,night,12,8.9042
+d1,10,day,12,16.4350
+d1,11,day,12,18.1508
+...  (120 rows)</pre></div><figure class="fig"><svg viewBox="0 0 640 300" role="img" aria-label="Hourly mean temperature of the five days"><line class="ax" x1="70" y1="250" x2="610" y2="250"/>
+<line class="ax" x1="70" y1="250" x2="70" y2="255"/><text class="tk" x="70" y="269" text-anchor="middle">0</text>
+<line class="ax" x1="210.87" y1="250" x2="210.87" y2="255"/><text class="tk" x="210.87" y="269" text-anchor="middle">6</text>
+<line class="ax" x1="351.739" y1="250" x2="351.739" y2="255"/><text class="tk" x="351.739" y="269" text-anchor="middle">12</text>
+<line class="ax" x1="492.609" y1="250" x2="492.609" y2="255"/><text class="tk" x="492.609" y="269" text-anchor="middle">18</text>
+<line class="ax" x1="610" y1="250" x2="610" y2="255"/><text class="tk" x="610" y="269" text-anchor="middle">23</text>
+<text class="lb" x="340" y="288" text-anchor="middle">hour of the day</text>
+<line class="ax" x1="70" y1="30" x2="70" y2="250"/>
+<text class="tk" x="62" y="194" text-anchor="end">10</text>
+<text class="tk" x="62" y="144" text-anchor="end">15</text>
+<text class="tk" x="62" y="94" text-anchor="end">20</text>
+<text class="tk" x="62" y="44" text-anchor="end">25</text>
+<text class="lb" x="16" y="140" transform="rotate(-90 16 140)" text-anchor="middle">hourly mean, &#176;C</text>
+<rect class="night" x="70" y="30" width="129.13" height="220"/><rect class="night" x="527.826" y="30" width="82.1739" height="220"/>
+<polyline class="ln d1" points="70,192.233 93.4783,200.958 116.957,205.083 140.435,207.45 163.913,200.092 187.391,196.542 210.87,183.233 234.348,169.208 257.826,151.467 281.304,139.058 304.783,125.65 328.261,108.492 351.739,99.092 375.217,88.967 398.696,87.108 422.174,87.742 445.652,91.992 469.13,97.292 492.609,106.883 516.087,123.708 539.565,136.817 563.043,154.9 586.522,167.642 610,181.767"/>
+<polyline class="ln d2" points="70,189.3 93.4783,196.15 116.957,201.758 140.435,204.467 163.913,196.408 187.391,189.758 210.87,178.867 234.348,164.817 257.826,151.058 281.304,135.1 304.783,119.217 328.261,105.45 351.739,93.625 375.217,88.317 398.696,81.683 422.174,81.367 445.652,84.933 469.13,94.525 492.609,106.067 516.087,119.95 539.565,134.492 563.043,148.775 586.522,161.883 610,179.275"/>
+<polyline class="ln d3" points="70,184.95 93.4783,191.783 116.957,198.675 140.435,196.617 163.913,195.9 187.391,183.175 210.87,174.692 234.348,160.608 257.826,150.267 281.304,128.617 304.783,114.908 328.261,101.975 351.739,93.333 375.217,80.408 398.696,77.825 422.174,78.175 445.652,82.483 469.13,90.208 492.609,98.858 516.087,113.225 539.565,129.083 563.043,145.367 586.522,159.808 610,172.325"/>
+<polyline class="ln d4" points="70,181.267 93.4783,189.8 116.957,192.767 140.435,189.733 163.913,189.242 187.391,182.017 210.87,171.6 234.348,157.8 257.826,143.183 281.304,126.042 304.783,110.542 328.261,101.267 351.739,86.467 375.217,77.658 398.696,72.717 422.174,75.742 445.652,80.95 469.13,86.267 492.609,96.742 516.087,109.883 539.565,125.475 563.043,142.542 586.522,156.317 610,172.058"/>
+<polyline class="ln d5" points="70,176.217 93.4783,184.425 116.957,186.758 140.435,189.2 163.913,185.65 187.391,175.633 210.87,168.533 234.348,153.417 257.826,138.792 281.304,122.425 304.783,108.675 328.261,94.467 351.739,84.875 375.217,76.517 398.696,70.975 422.174,69.9 445.652,76.642 469.13,81.667 492.609,94.242 516.087,104.192 539.565,121.775 563.043,140.475 586.522,151.4 610,165.367"/>
+<text class="tk" x="610" y="22" text-anchor="end">five days, one line each (darker is later) &#183; shaded: the hours the logger calls night</text></svg></figure><div class="term"><div class="bar"><i></i><i></i><i></i> a real run</div><pre><span class="cm">$ stats ci diff --cols mean:temp_c --group period hourly.csv</span>
+{
+  &quot;levels&quot;: {&quot;a&quot;: &quot;day&quot;, &quot;b&quot;: &quot;night&quot;},
+  &quot;intervals&quot;: [
+    {
+      &quot;column&quot;: &quot;mean:temp_c&quot;,
+      &quot;estimate&quot;: 6.5279177142857145,
+      &quot;interval&quot;: {&quot;low&quot;: 5.540548117235059, &quot;high&quot;: 7.51528731133637, &quot;level&quot;: 0.95}
+    }
+  ]
+}</pre></div><figure class="fig"><svg viewBox="0 0 640 160" role="img" aria-label="The difference of day and night temperature with its 95% interval"><line class="ax" x1="60" y1="110" x2="610" y2="110"/>
+<line class="ax" x1="60" y1="110" x2="60" y2="115"/><text class="tk" x="60" y="129" text-anchor="middle">0</text>
+<line class="ax" x1="182.222" y1="110" x2="182.222" y2="115"/><text class="tk" x="182.222" y="129" text-anchor="middle">2</text>
+<line class="ax" x1="304.444" y1="110" x2="304.444" y2="115"/><text class="tk" x="304.444" y="129" text-anchor="middle">4</text>
+<line class="ax" x1="426.667" y1="110" x2="426.667" y2="115"/><text class="tk" x="426.667" y="129" text-anchor="middle">6</text>
+<line class="ax" x1="548.889" y1="110" x2="548.889" y2="115"/><text class="tk" x="548.889" y="129" text-anchor="middle">8</text>
+<text class="lb" x="335" y="148" text-anchor="middle">mean of the day hours minus mean of the night hours, °C</text>
+<line class="zero" x1="60" y1="30" x2="60" y2="110"/><text class="tk" x="60" y="24" text-anchor="middle">no difference</text>
+<line class="ciline" x1="398.589" y1="70" x2="519.268" y2="70"/><line class="ciline" x1="398.589" y1="62" x2="398.589" y2="78"/><line class="ciline" x1="519.268" y1="62" x2="519.268" y2="78"/>
+<circle class="pt" cx="458.928" cy="70" r="6"/><text class="tk" x="458.928" y="56" text-anchor="middle">6.53</text></svg></figure><div class="term"><div class="bar"><i></i><i></i><i></i> a real run</div><pre><span class="cm">$ ml fit --model forest --task ... forest.ml train.csv</span>
+{
+  &quot;model&quot;: &quot;forest&quot;,
+  &quot;rows&quot;: 96,
+  &quot;sha256&quot;: &quot;a371c15db1b22d686a9530a7bc3cede7a61cf0e9fa721b18abe55b5e3a500e97&quot;
+}</pre></div><div class="term"><div class="bar"><i></i><i></i><i></i> a real run</div><pre><span class="cm">$ ml eval ...  (constant, then forest)</span>
+{
+  &quot;constant&quot;: {
+    &quot;prediction&quot;: &quot;15.0083739583&quot;,
+    &quot;rmse&quot;: &quot;4.2920128795&quot;,
+    &quot;sse&quot;: &quot;442.11298939055618333336&quot;
+  },
+  &quot;forest&quot;: {
+    &quot;mae&quot;: &quot;0.9777939058904178&quot;,
+    &quot;r2&quot;: &quot;0.9429800172895739&quot;,
+    &quot;rmse&quot;: &quot;0.9976763674950616&quot;
+  }
+}</pre></div><figure class="fig"><svg viewBox="0 0 640 300" role="img" aria-label="The forest&#x27;s prediction of the last day against the measurements"><line class="ax" x1="70" y1="250" x2="610" y2="250"/>
+<line class="ax" x1="70" y1="250" x2="70" y2="255"/><text class="tk" x="70" y="269" text-anchor="middle">0</text>
+<line class="ax" x1="210.87" y1="250" x2="210.87" y2="255"/><text class="tk" x="210.87" y="269" text-anchor="middle">6</text>
+<line class="ax" x1="351.739" y1="250" x2="351.739" y2="255"/><text class="tk" x="351.739" y="269" text-anchor="middle">12</text>
+<line class="ax" x1="492.609" y1="250" x2="492.609" y2="255"/><text class="tk" x="492.609" y="269" text-anchor="middle">18</text>
+<line class="ax" x1="610" y1="250" x2="610" y2="255"/><text class="tk" x="610" y="269" text-anchor="middle">23</text>
+<text class="lb" x="340" y="288" text-anchor="middle">hour of the last day (held out)</text>
+<line class="ax" x1="70" y1="30" x2="70" y2="250"/>
+<text class="tk" x="62" y="194" text-anchor="end">10</text>
+<text class="tk" x="62" y="144" text-anchor="end">15</text>
+<text class="tk" x="62" y="94" text-anchor="end">20</text>
+<text class="tk" x="62" y="44" text-anchor="end">25</text>
+<line class="zero" x1="70" y1="139.916" x2="610" y2="139.916"/>
+<polyline class="ln la" points="70,186.664 93.4783,194.457 116.957,199.746 140.435,200.052 163.913,195.42 187.391,188.301 210.87,176.964 234.348,162.125 257.826,147.895 281.304,131.631 304.783,117.534 328.261,103.593 351.739,90.6751 375.217,83.9408 398.696,83.3398 422.174,83.4512 445.652,84.7103 469.13,90.6954 492.609,100.699 516.087,116.732 539.565,131.68 563.043,148.682 586.522,161.352 610,176.551"/>
+<circle class="dot pb" cx="70" cy="176.217" r="4"/>
+<circle class="dot pb" cx="93.4783" cy="184.425" r="4"/>
+<circle class="dot pb" cx="116.957" cy="186.758" r="4"/>
+<circle class="dot pb" cx="140.435" cy="189.2" r="4"/>
+<circle class="dot pb" cx="163.913" cy="185.65" r="4"/>
+<circle class="dot pb" cx="187.391" cy="175.633" r="4"/>
+<circle class="dot pb" cx="210.87" cy="168.533" r="4"/>
+<circle class="dot pb" cx="234.348" cy="153.417" r="4"/>
+<circle class="dot pb" cx="257.826" cy="138.792" r="4"/>
+<circle class="dot pb" cx="281.304" cy="122.425" r="4"/>
+<circle class="dot pb" cx="304.783" cy="108.675" r="4"/>
+<circle class="dot pb" cx="328.261" cy="94.467" r="4"/>
+<circle class="dot pb" cx="351.739" cy="84.875" r="4"/>
+<circle class="dot pb" cx="375.217" cy="76.517" r="4"/>
+<circle class="dot pb" cx="398.696" cy="70.975" r="4"/>
+<circle class="dot pb" cx="422.174" cy="69.9" r="4"/>
+<circle class="dot pb" cx="445.652" cy="76.642" r="4"/>
+<circle class="dot pb" cx="469.13" cy="81.667" r="4"/>
+<circle class="dot pb" cx="492.609" cy="94.242" r="4"/>
+<circle class="dot pb" cx="516.087" cy="104.192" r="4"/>
+<circle class="dot pb" cx="539.565" cy="121.775" r="4"/>
+<circle class="dot pb" cx="563.043" cy="140.475" r="4"/>
+<circle class="dot pb" cx="586.522" cy="151.4" r="4"/>
+<circle class="dot pb" cx="610" cy="165.367" r="4"/>
+<text class="nm" x="90" y="46" style="fill:var(--accent)">forest</text><text class="nm" x="150" y="46" style="fill:var(--good)">&#9679; what the logger measured</text><text class="nm" x="360" y="46" style="fill:var(--bad)">- - the mean of the other days</text></svg></figure><div class="read"><b>Reading it.</b> The day hours are 6.53 &#176;C warmer than the night hours on average, with a 95% interval from 5.54 to 7.52 (<code>test t2</code> says p = 1.0e-24). On the fifth day, which the model never saw, the forest is wrong by 0.998 &#176;C (root mean square) where the mean of the other days is wrong by 4.29: it learnt the daily cycle. Three programs, three authorities, one CSV between them.</div></div></section>
+<section class=" story" id="s5"><div class="wrap"><h2>5 &middot; The same bytes, in any order</h2><div class="badge"><span class="lvl">determinism</span><span>table</span><span>stats</span><span>ml</span></div><p class="said">&#8220;I merged two loggers&#8217; files and the lines are in another order. Will the answers change?&#8221;</p><p>The whole pipeline of story 4 again, three times: the logger&#8217;s lines in the order they were written, shuffled, and reversed. For each run, the SHA-256 of the hourly CSV, of the statistics document and of the fitted model file:</p><figure class="fig"><svg viewBox="0 0 640 344" role="img" aria-label="The digests of the answers of the same question asked with the rows in different orders"><text class="nm" x="205" y="33" text-anchor="end">as logged: hourly.csv</text><rect class="hash" x="215" y="18" width="395" height="22" rx="4"/><text class="hx" x="225" y="33">52e8d2973b9d69ada75b0adc1a449e8a54cdb05821fd0098</text>
+<text class="nm" x="205" y="67" text-anchor="end">as logged: stats test t2</text><rect class="hash" x="215" y="52" width="395" height="22" rx="4"/><text class="hx" x="225" y="67">30ed1543af587f6ec6e24c7326844797dbf72d9bf7619e22</text>
+<text class="nm" x="205" y="101" text-anchor="end">as logged: ml model file</text><rect class="hash" x="215" y="86" width="395" height="22" rx="4"/><text class="hx" x="225" y="101">a371c15db1b22d686a9530a7bc3cede7a61cf0e9fa721b18</text>
+<text class="nm" x="205" y="135" text-anchor="end">lines shuffled: hourly.csv</text><rect class="hash" x="215" y="120" width="395" height="22" rx="4"/><text class="hx" x="225" y="135">52e8d2973b9d69ada75b0adc1a449e8a54cdb05821fd0098</text>
+<text class="nm" x="205" y="169" text-anchor="end">lines shuffled: stats test t2</text><rect class="hash" x="215" y="154" width="395" height="22" rx="4"/><text class="hx" x="225" y="169">30ed1543af587f6ec6e24c7326844797dbf72d9bf7619e22</text>
+<text class="nm" x="205" y="203" text-anchor="end">lines shuffled: ml model file</text><rect class="hash" x="215" y="188" width="395" height="22" rx="4"/><text class="hx" x="225" y="203">a371c15db1b22d686a9530a7bc3cede7a61cf0e9fa721b18</text>
+<text class="nm" x="205" y="237" text-anchor="end">lines reversed: hourly.csv</text><rect class="hash" x="215" y="222" width="395" height="22" rx="4"/><text class="hx" x="225" y="237">52e8d2973b9d69ada75b0adc1a449e8a54cdb05821fd0098</text>
+<text class="nm" x="205" y="271" text-anchor="end">lines reversed: stats test t2</text><rect class="hash" x="215" y="256" width="395" height="22" rx="4"/><text class="hx" x="225" y="271">30ed1543af587f6ec6e24c7326844797dbf72d9bf7619e22</text>
+<text class="nm" x="205" y="305" text-anchor="end">lines reversed: ml model file</text><rect class="hash" x="215" y="290" width="395" height="22" rx="4"/><text class="hx" x="225" y="305">a371c15db1b22d686a9530a7bc3cede7a61cf0e9fa721b18</text></svg></figure><div class="read"><b>Reading it.</b> Nine digests, three distinct values, each repeated three times: the order of the lines changes nothing. The means are exact decimals, so adding them in another order cannot change a digit; the groups come out sorted by key; the forest&#8217;s trees draw from streams derived from a seed. (A bootstrap, by design, is a function of the file&#8217;s bytes and its seed: row order <em>does</em> matter there, and the answer says so.)</div></div></section>
+<section class="alt story" id="s6"><div class="wrap"><h2>6 &middot; From the sciences</h2><div class="badge"><span class="lvl">go further</span></div><p>Each of the three tools has its own page of stories, in increasing complexity, with a figure for each and a section from biology, chemistry, physics and the social sciences. Every number on them is drawn from a real run, like the ones above.</p><div class="cards"><div class="card"><h3>Biology</h3><ul><li><a href="https://alpibrusl.github.io/cancho-stats/stories.html">Six mice against six</a>: exact rank and permutation tests <span style="color:var(--muted)">(stats)</span></li><li><a href="https://alpibrusl.github.io/cancho-table/stories.html">A growth plate</a>: exact means of replicates <span style="color:var(--muted)">(table)</span></li><li><a href="https://alpibrusl.github.io/cancho-ml/stories.html">Tumour or normal?</a>: which genes matter <span style="color:var(--muted)">(ml)</span></li></ul></div><div class="card"><h3>Chemistry</h3><ul><li><a href="https://alpibrusl.github.io/cancho-stats/stories.html">Two methods, one sample set</a>: correlation is not agreement <span style="color:var(--muted)">(stats)</span></li><li><a href="https://alpibrusl.github.io/cancho-table/stories.html">Burette readings</a>: a declared precision <span style="color:var(--muted)">(table)</span></li><li><a href="https://alpibrusl.github.io/cancho-ml/stories.html">A calibration curve</a>: fit once, apply to unknowns <span style="color:var(--muted)">(ml)</span></li></ul></div><div class="card"><h3>Physics</h3><ul><li><a href="https://alpibrusl.github.io/cancho-stats/stories.html">Same source, two detectors</a>: a shape the means cannot see <span style="color:var(--muted)">(stats)</span></li><li><a href="https://alpibrusl.github.io/cancho-table/stories.html">Two days of a logger</a>: JSON lines by the hour <span style="color:var(--muted)">(table)</span></li><li><a href="https://alpibrusl.github.io/cancho-ml/stories.html">Two kinds of pulse</a>: clusters with no labels <span style="color:var(--muted)">(ml)</span></li></ul></div><div class="card"><h3>Social science</h3><ul><li><a href="https://alpibrusl.github.io/cancho-stats/stories.html">What does the town think?</a>: intervals for a share, ordinal tests <span style="color:var(--muted)">(stats)</span></li><li><a href="https://alpibrusl.github.io/cancho-table/stories.html">Who answered twice?</a>: counts and duplicates <span style="color:var(--muted)">(table)</span></li><li><a href="https://alpibrusl.github.io/cancho-ml/stories.html">Who supports the tram line?</a>: a model to read <span style="color:var(--muted)">(ml)</span></li></ul></div></div></div></section>
+<footer><div class="wrap" style="text-align:center;padding:1.5rem 0 2rem;color:var(--muted)">cancho &middot; <a href="./">home</a> &middot; the data are invented; the runs, the digits and the figures are real</div></footer>
+</body>
+</html>

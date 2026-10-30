@@ -1,0 +1,300 @@
+{
+ "authority": {
+  "ml": {
+   "bounded": true,
+   "effects": [
+    "args",
+    "conc",
+    "dir_read",
+    "dir_write",
+    "err_write",
+    "file_read",
+    "file_write",
+    "fs_read",
+    "heap",
+    "io_read",
+    "io_write"
+   ],
+   "foreign_symbols": [],
+   "sha256": "0b66a7d07b06fb1844590a9367aac02fdedb0e70d002c73e34454a44e466770f"
+  },
+  "stats": {
+   "bounded": true,
+   "effects": [
+    "args",
+    "dir_read",
+    "err_write",
+    "file_read",
+    "fs_read",
+    "heap",
+    "io_write"
+   ],
+   "foreign_symbols": [],
+   "sha256": "3828120c5cfa1b2d400b5a27c96aa7e74b28dd72fd9e1bddf5bdb81909155c6e"
+  },
+  "table": {
+   "bounded": true,
+   "effects": [
+    "args",
+    "conc",
+    "dir_read",
+    "err_write",
+    "file_read",
+    "fs_read",
+    "heap",
+    "io_read",
+    "io_write"
+   ],
+   "foreign_symbols": [],
+   "sha256": "9df864cd29556d5dc05cbbd3e01b8c6b919a967a0a4f8fbc906313c58a926392"
+  }
+ },
+ "generated_by": "scripts/record_stories.py",
+ "pipeline": {
+  "digests": {
+   "hourly.csv": "52e8d2973b9d69ada75b0adc1a449e8a54cdb05821fd0098e319f303ceb20db0",
+   "ml eval": "b5a87d90630c6c390b6c2c049153b88b1a5838a634e46a5a6888c85104187d83",
+   "ml model file": "a371c15db1b22d686a9530a7bc3cede7a61cf0e9fa721b18abe55b5e3a500e97",
+   "stats test t2": "30ed1543af587f6ec6e24c7326844797dbf72d9bf7619e2230079456c42d20d2"
+  },
+  "ml": {
+   "constant": {
+    "rows": 96
+   },
+   "eval_c": {
+    "metrics": {
+     "prediction": "15.0083739583",
+     "rmse": "4.2920128795",
+     "sse": "442.11298939055618333336"
+    },
+    "model": "constant",
+    "on": "other",
+    "rows": 24,
+    "task": "regression"
+   },
+   "eval_constant": [
+    "eval",
+    "--model-file",
+    "base.ml",
+    "--drop",
+    "day,count,period",
+    "test.csv"
+   ],
+   "eval_f": {
+    "metrics": {
+     "mae": "0.9777939058904178",
+     "r2": "0.9429800172895739",
+     "rmse": "0.9976763674950616"
+    },
+    "model": "forest",
+    "on": "other",
+    "out_of_range": {
+     "cells": 0,
+     "columns": [],
+     "rows": 0
+    },
+    "rows": 24,
+    "task": "regression",
+    "unknown_categories": 0
+   },
+   "eval_forest": [
+    "eval",
+    "--model-file",
+    "forest.ml",
+    "--drop",
+    "day,count,period",
+    "test.csv"
+   ],
+   "fit_forest": [
+    "fit",
+    "--model",
+    "forest",
+    "--task",
+    "regression",
+    "--trees",
+    "60",
+    "--max-depth",
+    "6",
+    "--seed",
+    "1",
+    "--drop",
+    "day,count,period",
+    "--target",
+    "mean:temp_c",
+    "--output",
+    "forest.ml",
+    "train.csv"
+   ],
+   "forest": {
+    "rows": 96,
+    "sha256": "a371c15db1b22d686a9530a7bc3cede7a61cf0e9fa721b18abe55b5e3a500e97"
+   },
+   "predictions": [
+    10.333583884920637,
+    9.554338393518517,
+    17.246596107503606,
+    18.640722542833803,
+    19.932489976988936,
+    20.60592174721335,
+    20.666023767229692,
+    20.654883558896355,
+    20.528974635206257,
+    19.930463460333957,
+    18.930104257733003,
+    17.326759182539682,
+    9.025437680163162,
+    15.83203497420635,
+    14.131838391534387,
+    12.864841121031743,
+    11.344871074735448,
+    8.994813229766338,
+    9.458048506161237,
+    10.16985896518759,
+    11.303585020502647,
+    12.78751509920635,
+    14.210468046296292,
+    15.836872634920633
+   ]
+  },
+  "stats": {
+   "args_ci": [
+    "ci",
+    "diff",
+    "--cols",
+    "mean:temp_c",
+    "--group",
+    "period"
+   ],
+   "args_t2": [
+    "test",
+    "t2",
+    "--cols",
+    "mean:temp_c",
+    "--group",
+    "period"
+   ],
+   "ci": {
+    "ci": "diff",
+    "group": "period",
+    "intervals": [
+     {
+      "column": "mean:temp_c",
+      "estimate": 6.5279177142857145,
+      "interval": {
+       "estimate": 6.5279177142857145,
+       "high": 7.51528731133637,
+       "level": 0.95,
+       "low": 5.540548117235059,
+       "of": "difference of means",
+       "rounding": "double"
+      },
+      "n": {
+       "a": 70,
+       "b": 50
+      }
+     }
+    ],
+    "level": 0.95,
+    "levels": {
+     "a": "day",
+     "b": "night"
+    },
+    "rows": 120,
+    "variance": "welch"
+   },
+   "raw": "{\"ok\":true,\"command\":\"stats\",\"schema\":\"stats.v1\",\"data\":{\"test\":\"t2\",\"group\":\"period\",\"levels\":{\"a\":\"day\",\"b\":\"night\"},\"rows\":120,\"level\":0.95,\"variance\":\"welch\",\"adjustment\":\"none\",\"tests\":[{\"column\":\"mean:temp_c\",\"statistic\":13.092684472812113,\"df\":117.76757537136173,\"p_value\":1.0069583854349542e-24,\"p_method\":\"t\",\"effect_size\":{\"name\":\"cohen_d\",\"value\":2.3103265339949313},\"interval\":{\"of\":\"difference of means\",\"level\":0.95,\"estimate\":6.5279177142857145,\"low\":5.540548117235059,\"high\":7.51528731133637,\"rounding\":\"double\"},\"n\":{\"a\":70,\"b\":50},\"method\":\"welch\",\"assumptions\":{\"variance_ratio\":1.8025957662032526}}]},\"meta\":{\"version\":\"0.1.0\"}}\n{\"ok\":true,\"command\":\"stats\",\"schema\":\"stats.v1\",\"data\":{\"ci\":\"diff\",\"group\":\"period\",\"levels\":{\"a\":\"day\",\"b\":\"night\"},\"rows\":120,\"level\":0.95,\"variance\":\"welch\",\"intervals\":[{\"column\":\"mean:temp_c\",\"estimate\":6.5279177142857145,\"interval\":{\"of\":\"difference of means\",\"level\":0.95,\"estimate\":6.5279177142857145,\"low\":5.540548117235059,\"high\":7.51528731133637,\"rounding\":\"double\"},\"n\":{\"a\":70,\"b\":50}}]},\"meta\":{\"version\":\"0.1.0\"}}\n",
+   "t2": {
+    "adjustment": "none",
+    "group": "period",
+    "level": 0.95,
+    "levels": {
+     "a": "day",
+     "b": "night"
+    },
+    "rows": 120,
+    "test": "t2",
+    "tests": [
+     {
+      "assumptions": {
+       "variance_ratio": 1.8025957662032526
+      },
+      "column": "mean:temp_c",
+      "df": 117.76757537136173,
+      "effect_size": {
+       "name": "cohen_d",
+       "value": 2.3103265339949313
+      },
+      "interval": {
+       "estimate": 6.5279177142857145,
+       "high": 7.51528731133637,
+       "level": 0.95,
+       "low": 5.540548117235059,
+       "of": "difference of means",
+       "rounding": "double"
+      },
+      "method": "welch",
+      "n": {
+       "a": 70,
+       "b": 50
+      },
+      "p_method": "t",
+      "p_value": 1.0069583854349542e-24,
+      "statistic": 13.092684472812113
+     }
+    ],
+    "variance": "welch"
+   }
+  },
+  "table": {
+   "args": [
+    "--input-format",
+    "jsonl",
+    "--fields",
+    "day,hour,period,temp_c",
+    "--group",
+    "day,hour,period",
+    "--agg",
+    "count,mean:temp_c:dec(2)@4",
+    "--sort",
+    "day",
+    "--format",
+    "csv"
+   ],
+   "csv": "day,hour,period,count,mean:temp_c\nd1,0,night,12,9.7767\nd1,1,night,12,8.9042\nd1,10,day,12,16.4350\nd1,11,day,12,18.1508\nd1,12,day,12,19.0908\nd1,13,day,12,20.1033\nd1,14,day,12,20.2892\nd1,15,day,12,20.2258\nd1,16,day,12,19.8008\nd1,17,day,12,19.2708\nd1,18,day,12,18.3117\nd1,19,day,12,16.6292\nd1,2,night,12,8.4917\nd1,20,night,12,15.3183\nd1,21,night,12,13.5100\nd1,22,night,12,12.2358\nd1,23,night,12,10.8233\nd1,3,night,12,8.2550\nd1,4,night,12,8.9908\nd1,5,night,12,9.3458\nd1,6,day,12,10.6767\nd1,7,day,12,12.0792\nd1,8,day,12,13.8533\nd1,9,day,12,15.0942\nd2,0,night,12,10.0700\nd2,1,night,12,9.3850\nd2,10,day,12,17.0783\nd2,11,day,12,18.4550\nd2,12,day,12,19.6375\nd2,13,day,12,20.1683\nd2,14,day,12,20.8317\nd2,15,day,12,20.8633\nd2,16,day,12,20.5067\nd2,17,day,12,19.5475\nd2,18,day,12,18.3933\nd2,19,day,12,17.0050\nd2,2,night,12,8.8242\nd2,20,night,12,15.5508\nd2,21,night,12,14.1225\nd2,22,night,12,12.8117\nd2,23,night,12,11.0725\nd2,3,night,12,8.5533\nd2,4,night,12,9.3592\nd2,5,night,12,10.0242\nd2,6,day,12,11.1133\nd2,7,day,12,12.5183\nd2,8,day,12,13.8942\nd2,9,day,12,15.4900\nd3,0,night,12,10.5050\nd3,1,night,12,9.8217\nd3,10,day,12,17.5092\nd3,11,day,12,18.8025\nd3,12,day,12,19.6667\nd3,13,day,12,20.9592\nd3,14,day,12,21.2175\nd3,15,day,12,21.1825\nd3,16,day,12,20.7517\nd3,17,day,12,19.9792\nd3,18,day,12,19.1142\nd3,19,day,12,17.6775\nd3,2,night,12,9.1325\nd3,20,night,12,16.0917\nd3,21,night,12,14.4633\nd3,22,night,12,13.0192\nd3,23,night,12,11.7675\nd3,3,night,12,9.3383\nd3,4,night,12,9.4100\nd3,5,night,12,10.6825\nd3,6,day,12,11.5308\nd3,7,day,12,12.9392\nd3,8,day,12,13.9733\nd3,9,day,12,16.1383\nd4,0,night,12,10.8733\nd4,1,night,12,10.0200\nd4,10,day,12,17.9458\nd4,11,day,12,18.8733\nd4,12,day,12,20.3533\nd4,13,day,12,21.2342\nd4,14,day,12,21.7283\nd4,15,day,12,21.4258\nd4,16,day,12,20.9050\nd4,17,day,12,20.3733\nd4,18,day,12,19.3258\nd4,19,day,12,18.0117\nd4,2,night,12,9.7233\nd4,20,night,12,16.4525\nd4,21,night,12,14.7458\nd4,22,night,12,13.3683\nd4,23,night,12,11.7942\nd4,3,night,12,10.0267\nd4,4,night,12,10.0758\nd4,5,night,12,10.7983\nd4,6,day,12,11.8400\nd4,7,day,12,13.2200\nd4,8,day,12,14.6817\nd4,9,day,12,16.3958\nd5,0,night,12,11.3783\nd5,1,night,12,10.5575\nd5,10,day,12,18.1325\nd5,11,day,12,19.5533\nd5,12,day,12,20.5125\nd5,13,day,12,21.3483\nd5,14,day,12,21.9025\nd5,15,day,12,22.0100\nd5,16,day,12,21.3358\nd5,17,day,12,20.8333\nd5,18,day,12,19.5758\nd5,19,day,12,18.5808\nd5,2,night,12,10.3242\nd5,20,night,12,16.8225\nd5,21,night,12,14.9525\nd5,22,night,12,13.8600\nd5,23,night,12,12.4633\nd5,3,night,12,10.0800\nd5,4,night,12,10.4350\nd5,5,night,12,11.4367\nd5,6,day,12,12.1467\nd5,7,day,12,13.6583\nd5,8,day,12,15.1208\nd5,9,day,12,16.7575\n",
+   "file": "logger.jsonl"
+  },
+  "test_csv": "day,hour,period,count,mean:temp_c\nd5,0,night,12,11.3783\nd5,1,night,12,10.5575\nd5,10,day,12,18.1325\nd5,11,day,12,19.5533\nd5,12,day,12,20.5125\nd5,13,day,12,21.3483\nd5,14,day,12,21.9025\nd5,15,day,12,22.0100\nd5,16,day,12,21.3358\nd5,17,day,12,20.8333\nd5,18,day,12,19.5758\nd5,19,day,12,18.5808\nd5,2,night,12,10.3242\nd5,20,night,12,16.8225\nd5,21,night,12,14.9525\nd5,22,night,12,13.8600\nd5,23,night,12,12.4633\nd5,3,night,12,10.0800\nd5,4,night,12,10.4350\nd5,5,night,12,11.4367\nd5,6,day,12,12.1467\nd5,7,day,12,13.6583\nd5,8,day,12,15.1208\nd5,9,day,12,16.7575\n"
+ },
+ "pipeline_reversed_digests": {
+  "hourly.csv": "52e8d2973b9d69ada75b0adc1a449e8a54cdb05821fd0098e319f303ceb20db0",
+  "ml eval": "b5a87d90630c6c390b6c2c049153b88b1a5838a634e46a5a6888c85104187d83",
+  "ml model file": "a371c15db1b22d686a9530a7bc3cede7a61cf0e9fa721b18abe55b5e3a500e97",
+  "stats test t2": "30ed1543af587f6ec6e24c7326844797dbf72d9bf7619e2230079456c42d20d2"
+ },
+ "pipeline_shuffled_digests": {
+  "hourly.csv": "52e8d2973b9d69ada75b0adc1a449e8a54cdb05821fd0098e319f303ceb20db0",
+  "ml eval": "b5a87d90630c6c390b6c2c049153b88b1a5838a634e46a5a6888c85104187d83",
+  "ml model file": "a371c15db1b22d686a9530a7bc3cede7a61cf0e9fa721b18abe55b5e3a500e97",
+  "stats test t2": "30ed1543af587f6ec6e24c7326844797dbf72d9bf7619e2230079456c42d20d2"
+ },
+ "programs": {
+  "fixed": {
+   "authority": "performs\n    fs_read(\"/tmp\")\n    io_write\nnever touches\n    the network\n    the heap\n    the command line\n    signals\n    other programs\n    foreign code",
+   "check_exit": 0,
+   "check_out": "",
+   "source": "// Open a file.\nimport std.io;\n\nfn main(world: World) -> [] int {\n    let Split { io, ffi, fs, heap, args } = split(world);\n    release(args);\n    release(ffi);\n    release(heap);\n    var status = 1;\n    let tmp = narrow(fs, \"/tmp\");\n    borrow tmp as &c in {\n        match open_read(c, \"/tmp/notes.txt\") {\n            Opened::Ok(f) => {\n                file_close(f);\n                status = 0;\n            }\n            Opened::Failed(e) => {\n            }\n        }\n    }\n    release(tmp);\n    borrow mut io as &!i in {\n        if status == 0 {\n            io.write_all(i, \"opened it, closed it\\n\");\n        } else {\n            io.write_all(i, \"no such file\\n\");\n        }\n    }\n    release(io);\n    return status;\n}\n"
+  },
+  "hello": {
+   "authority": "performs\n    io_write\nnever touches\n    the filesystem\n    the network\n    the heap\n    the command line\n    signals\n    other programs\n    foreign code",
+   "check_exit": 0,
+   "check_out": "",
+   "source": "// Say hello.\nimport std.io;\n\nfn main(world: World) -> [] int {\n    let Split { io, ffi, fs, heap, args } = split(world);\n    release(args);\n    release(ffi);\n    release(fs);\n    release(heap);\n    borrow mut io as &!i in {\n        io.write_all(i, \"hello\\n\");\n    }\n    release(io);\n    return 0;\n}\n"
+  },
+  "leak": {
+   "authority": "",
+   "check_exit": 1,
+   "check_out": "leak.cho:12:9: error: `f` is still live at the end of this block; nothing consumes it\n            match open_read(c, \"/tmp/notes.txt\") {\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+   "source": "// Open a file.\nimport std.io;\n\nfn main(world: World) -> [] int {\n    let Split { io, ffi, fs, heap, args } = split(world);\n    release(args);\n    release(ffi);\n    release(heap);\n    var status = 1;\n    let tmp = narrow(fs, \"/tmp\");\n    borrow tmp as &c in {\n        match open_read(c, \"/tmp/notes.txt\") {\n            Opened::Ok(f) => {\n                status = 0;\n            }\n            Opened::Failed(e) => {\n            }\n        }\n    }\n    release(tmp);\n    borrow mut io as &!i in {\n        if status == 0 {\n            io.write_all(i, \"opened it, closed it\\n\");\n        } else {\n            io.write_all(i, \"no such file\\n\");\n        }\n    }\n    release(io);\n    return status;\n}\n"
+  }
+ }
+}
