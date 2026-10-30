@@ -129,6 +129,16 @@ One kit, one template per kind. A template is the README skeleton of 2.2 with th
 
 The kind is a line in the README, next to the tier, and the checker applies the template of that kind.
 
+### 2.10 Show before telling
+
+The human half of a README leads with pictures and keeps its paragraphs short. **[choice]**
+
+* **Tier 1 needs at least two visuals in the README, tier 2 one.** A visual is a figure, a plot, a screenshot, or a video poster that links to the recording. Every one has **alt text that says what it shows**, and the file exists (`kit.visual-missing`, `kit.image-missing`, `kit.image-alt-missing` in cancho-kit).
+* **Figures are generated, never drawn by hand.** The stories pages already draw their figures from real runs; the figures a README shows are exported from the same generators as standalone SVG files (`docs/figures/NAME.svg`: the styles inside, a light and a dark scheme, a background of their own so they read on any page) and checked with the stories page (`gen_stories.py --check`). A figure in a README therefore cannot disagree with the numbers of the page it comes from.
+* **Videos are posters.** GitHub's README strips the video element, so a recording is an image that links to the file or to the project page. A recording is a real terminal session, replayed with its transcript, as `cancho-table` and `cancho-ml` already have; a package without one uses figures and says nothing about a video.
+* **Text is cut where a picture or a table says it.** The *What is special* section is a table (claim, evidence, what it does not cover), not paragraphs; a comparison is a table; the long reference sections move to `docs/` (the checker warns when a README is over 220 lines, and does not fail it, because moving a section out of a README that other checks read is a change of its own).
+* Alt text and captions say what the picture shows and what to conclude from it, in a sentence; they do not repeat the surrounding text.
+
 ## 3. Where the packages stand against it
 
 First wave, the four tier-1 packages:
