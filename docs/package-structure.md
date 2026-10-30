@@ -53,17 +53,19 @@ scripts/check_*.py   the checks of this kit
 
 ### 2.2 README sections, in this order
 
-1. **Name, one sentence, stage.** The promise in a line, and the stage: `design`, `built` or `measured`.
-2. **One complete flow.** A real run of ten lines or fewer: input, command, output, and a refusal with its repair.
+1. **Name, one sentence, kind, tier, stage.** The promise in a line, then `> **Kind:** cli · **Tier:** 1 · **Stage:** built` (stage: `design`, `built` or `measured`).
+2. **One complete flow.** A real run of ten lines or fewer: input, command, output, and a refusal with its repair. Printed by a script, never typed.
 3. **What is special.** Three or four points, each with its evidence and **what it does not cover** (the digits, not the model; the plan, not the question). The cancho points are the same everywhere and are the reason to use a cancho package: *the authority row* (what the program can reach, derived by the compiler, committed and checked), *refusals are data* (a rule tag, an exit code, a repair), *exactness and same bytes* where a sum decides, *pinned dependencies, never copied*.
-4. **For humans, for agents.** Two short columns, side by side: the human path (quick start, the landing page, the stories) and the agent path (`skill`, `introspect`, MCP, `AGENTS.md`).
+4. **For humans, for agents.** Two short columns, side by side: the human path (the landing page, the stories) and the agent path (`skill`, `introspect`, MCP, `AGENTS.md`, `llms.txt`).
 5. **Quick start.** Two minutes, copy-paste.
-6. **Examples.** Three basic ones, then a link to the cases.
-7. **Compared with.** Two or three alternatives (2.5).
-8. **How fast.** Three to five numbers (2.7), or the sentence *no speed is claimed*.
-9. **Use it with an AI agent.** The configuration and a link to the transcript (2.6).
-10. **What exists, what cannot yet.** Built, designed and not built, refused on purpose.
+6. **Examples.** Three basic ones, then a link to the cases (2.4).
+7. **Use it with an AI agent.** The configuration and a scripted session (2.6).
+8. **Compared with.** Two or three alternatives (2.5), with a column for where this one is worse.
+9. **What exists, what cannot yet.** Built, designed and not built, refused on purpose.
+10. **How fast.** Three to five numbers (2.7), or the sentence *No speed is claimed.*
 11. **Learn more, Contributing, Licence.**
+
+The order was fixed to match the two READMEs that already follow most of it (`cancho-ml`, `cancho-table`: agent, then what it cannot do, then how fast), so that they need two sections added, not a rewrite. The checker is `scripts/check_package_kit.py` in cancho-kit.
 
 A library replaces *One complete flow* with a ten-line program and *For agents* with how an agent writes code against it (the compiler's JSON diagnostics, `cancho check`, `inspect`).
 
@@ -143,10 +145,9 @@ The biggest single gap is the empty `cancho-stats` README; the biggest shared ga
 ## 4. Decisions
 
 1. **Adopt the kit for the first wave** (stats, table, ml, tools) and tiers 2 and 3 afterwards? **[open]**
-2. **Where the shared parts live.** Two different things, two homes: **[choice, recommended]**
+2. **Where the shared parts live. Decided: `cancho-kit`** (created by the maintainer; first commit: the checker with its tests, the `cli` and `library` templates, CLAUDE.md). Two different things, two homes:
    * **The standard** (this document, `landing-pattern.md`, the case list `data/cases.json`, the ecosystem list with each project's stage and tier) belongs in **`cancho-www`**: it already holds `data/ecosystem.json` as the one source of truth about the projects, and it is the published view. It is documentation, not a dependency, so nothing pins it.
-   * **The mechanism** (the templates, the checker, the generators such as `storylib`, the agent-transcript driver) belongs where packages can **pin it by commit**, as they already pin the contract package: a `kit/` directory beside `contract/` in **`cancho-tools`**, or a repository of its own (`cancho-kit`) if keeping the file tools and the kit apart matters more than one fewer repository. A `cancho new KIND` command in the compiler would be the natural front end later; it would read the pinned kit, not carry it, so the compiler's gates and release cadence stay out of the documentation. Not in `cancho-ui`: it is a second language and a possible renderer for interactive demos, and it has no server-side rendering for static pages (see `cancho-stats/docs/stories-in-cancho.md`).
-   Neither `cancho-tools` nor a new repository is writable from the session that wrote this; creating or choosing it is the maintainer's step.
+   * **The mechanism** (the templates, the checker, the generators such as `storylib`, the agent-transcript driver) belongs where packages can **pin it by commit**: **`cancho-kit`**. `cancho-tools` stays what it is: a **cli** package (tier 1, checked against the cli template like the others) that also holds the `contract/` package every cli pins, which is a runtime library and not part of this kit. A `cancho new KIND` command in the compiler would be the natural front end later; it would read the pinned kit, not carry it, so the compiler's gates and release cadence stay out of the documentation. Not in `cancho-ui`: it is a second language and a possible renderer for interactive demos, and it has no server-side rendering for static pages (see `cancho-stats/docs/stories-in-cancho.md`).
 3. **Whether the libraries adopt the library variant** or are left as they are until they have users. **[open]**
 4. **The nine private repositories** were not read; whether the kit applies to them is the maintainer's call. **[open]**
 
