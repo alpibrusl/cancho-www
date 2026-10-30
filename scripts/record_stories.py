@@ -78,6 +78,47 @@ def pipeline(lines, work):
     return out
 
 
+def campaign(users, purchases, work):
+    """the autumn campaign: the experiment tool's per-user export, the shop's purchases; the answers every artefact the page shows"""
+    out = {}
+    (work / "users.csv").write_text("user_id,arm,bought\n" + "".join("%d,%s,%d\n" % u for u in users))
+    (work / "purchases.csv").write_text("purchase_id,user_id,date,amount\n" + "".join("%d,%d,%s,%s\n" % p for p in purchases))
+    (work / "arms.csv").write_text("user_id,arm\n" + "".join("%d,%s\n" % (u[0], u[1]) for u in users))
+    t = [table, "--root", work]
+    a1 = ["--join", "arms.csv", "--on", "user_id", "--where", "date:date >= 2026-09-01", "--group", "arm", "--agg", "count,distinct:user_id,sum:amount:dec(2)", "--sort", "arm", "--format", "csv", "purchases.csv"]
+    a2 = ["--group", "arm", "--agg", "count,sum:bought", "--sort", "arm", "--format", "csv", "users.csv"]
+    tot = run(t + a1, work).stdout
+    exp = run(t + a2, work).stdout
+    out["table"] = {"args_totals": a1[:-1], "file_totals": "purchases.csv", "csv_totals": tot, "args_export": a2[:-1], "file_export": "users.csv", "csv_export": exp}
+    s1 = ["--cols", "bought", "--success", "1", "--group", "arm"]
+    ci = run([stats, "ci", "prop"] + s1 + ["--root", work, "users.csv"], work).stdout
+    tp = run([stats, "test", "prop"] + s1 + ["--root", work, "users.csv"], work).stdout
+    out["stats"] = {"args_ci": ["ci", "prop"] + s1, "args_test": ["test", "prop"] + s1, "ci": json.loads(ci)["data"], "test": json.loads(tp)["data"]}
+    out["digests"] = {"totals": hashlib.sha256(tot.encode()).hexdigest(), "export": hashlib.sha256(exp.encode()).hexdigest(), "stats ci prop": hashlib.sha256(ci.encode()).hexdigest(), "stats test prop": hashlib.sha256(tp.encode()).hexdigest()}
+    return out
+
+
+def campaign_data(seed=11):
+    """8000 users, alternately shown the ads or held out; 6.2% and 5.0% buy in September; some bought in August too (before the start)"""
+    r = random.Random(seed)
+    users, purchases = [], []
+    pid = 0
+    for u in range(1, 8001):
+        arm = "ads" if u % 2 == 0 else "holdout"
+        bought = 0
+        if r.random() < (0.062 if arm == "ads" else 0.05):
+            bought = 1
+            for _ in range(1 + (r.random() < 0.15)):
+                pid += 1
+                purchases.append((pid, u, "2026-09-%02d" % r.randint(1, 28), "%.2f" % r.lognormvariate(3.7, 0.6)))
+        if r.random() < 0.03:
+            pid += 1
+            purchases.append((pid, u, "2026-08-%02d" % r.randint(1, 31), "%.2f" % r.lognormvariate(3.7, 0.6)))
+        users.append((u, arm, bought))
+    purchases.sort(key=lambda p: (p[2], p[0]))
+    return users, [(i,) + p[1:] for i, p in enumerate(purchases, 1)]
+
+
 def main():
     work = pathlib.Path(tempfile.mkdtemp())
     (work / "bin").mkdir()
@@ -104,6 +145,13 @@ def main():
         entry["check_out"] = (c.stdout + c.stderr).replace(str(src), "%s.cho" % name).strip()
         progs[name] = entry
     result["programs"] = progs
+    users, purchases = campaign_data()
+    result["campaign"] = campaign(users, purchases, pathlib.Path(tempfile.mkdtemp()))
+    sp = list(purchases)
+    random.Random(4).shuffle(sp)
+    result["campaign_shuffled_digests"] = campaign(users, sp, pathlib.Path(tempfile.mkdtemp()))["digests"]
+    sp.reverse()
+    result["campaign_reversed_digests"] = campaign(list(reversed(users)), sp, pathlib.Path(tempfile.mkdtemp()))["digests"]
     # what each tool can touch: the manifests they commit
     auth = {}
     for name, repo in (("table", table_repo), ("stats", stats_repo), ("ml", ml_repo)):

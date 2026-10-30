@@ -49,6 +49,165 @@
    "sha256": "9df864cd29556d5dc05cbbd3e01b8c6b919a967a0a4f8fbc906313c58a926392"
   }
  },
+ "campaign": {
+  "digests": {
+   "export": "df898f4ca41a11b58de52dfa41ebf490660bbb377a1de686c986a3f85204922f",
+   "stats ci prop": "87ca2257380a7180e5920eb4aa088f57395f1c088861d45b93bfbbaaaaa81603",
+   "stats test prop": "b6b6387865347c4b664006ab8fd35f38559091e5adf244d8d1b2f60e53a70389",
+   "totals": "6f195d202f378be3f1a8f1faf40cb7a8ff506c4c3430dbcc087a2b8c532c2e0c"
+  },
+  "stats": {
+   "args_ci": [
+    "ci",
+    "prop",
+    "--cols",
+    "bought",
+    "--success",
+    "1",
+    "--group",
+    "arm"
+   ],
+   "args_test": [
+    "test",
+    "prop",
+    "--cols",
+    "bought",
+    "--success",
+    "1",
+    "--group",
+    "arm"
+   ],
+   "ci": {
+    "ci": "prop",
+    "group": "arm",
+    "intervals": [
+     {
+      "column": "bought",
+      "estimate": 0.0135,
+      "interval": {
+       "estimate": 0.0135,
+       "high": 0.02360737411150906,
+       "level": 0.95,
+       "low": 0.0034427799706339673,
+       "method": "newcombe",
+       "of": "difference of proportions",
+       "rounding": "double"
+      },
+      "levels": {
+       "a": "ads",
+       "b": "holdout"
+      },
+      "n": {
+       "a": {
+        "n": 4000,
+        "successes": 250
+       },
+       "b": {
+        "n": 4000,
+        "successes": 196
+       },
+       "missing": 0
+      }
+     }
+    ],
+    "level": 0.95,
+    "success": "1"
+   },
+   "test": {
+    "adjustment": "none",
+    "group": "arm",
+    "level": 0.95,
+    "success": "1",
+    "test": "prop",
+    "tests": [
+     {
+      "assumptions": {
+       "pooled": 0.05575
+      },
+      "column": "bought",
+      "df": null,
+      "effect_size": {
+       "name": "cohen_h",
+       "rounding": "double",
+       "value": 0.05894397211009711
+      },
+      "interval": {
+       "estimate": 0.0135,
+       "high": 0.02360737411150906,
+       "level": 0.95,
+       "low": 0.0034427799706339673,
+       "method": "newcombe",
+       "of": "difference of proportions",
+       "rounding": "double"
+      },
+      "levels": {
+       "a": "ads",
+       "b": "holdout"
+      },
+      "method": "two-sample z (pooled)",
+      "n": {
+       "a": {
+        "n": 4000,
+        "successes": 250
+       },
+       "b": {
+        "n": 4000,
+        "successes": 196
+       },
+       "missing": 0
+      },
+      "p_method": "normal",
+      "p_value": 0.008504000827229921,
+      "statistic": 2.631375542038577
+     }
+    ]
+   }
+  },
+  "table": {
+   "args_export": [
+    "--group",
+    "arm",
+    "--agg",
+    "count,sum:bought",
+    "--sort",
+    "arm",
+    "--format",
+    "csv"
+   ],
+   "args_totals": [
+    "--join",
+    "arms.csv",
+    "--on",
+    "user_id",
+    "--where",
+    "date:date >= 2026-09-01",
+    "--group",
+    "arm",
+    "--agg",
+    "count,distinct:user_id,sum:amount:dec(2)",
+    "--sort",
+    "arm",
+    "--format",
+    "csv"
+   ],
+   "csv_export": "arm,count,sum:bought\nads,4000,250\nholdout,4000,196\n",
+   "csv_totals": "arm,count,distinct:user_id,sum:amount\nads,285,250,13812.61\nholdout,228,196,11682.33\n",
+   "file_export": "users.csv",
+   "file_totals": "purchases.csv"
+  }
+ },
+ "campaign_reversed_digests": {
+  "export": "df898f4ca41a11b58de52dfa41ebf490660bbb377a1de686c986a3f85204922f",
+  "stats ci prop": "87ca2257380a7180e5920eb4aa088f57395f1c088861d45b93bfbbaaaaa81603",
+  "stats test prop": "b6b6387865347c4b664006ab8fd35f38559091e5adf244d8d1b2f60e53a70389",
+  "totals": "6f195d202f378be3f1a8f1faf40cb7a8ff506c4c3430dbcc087a2b8c532c2e0c"
+ },
+ "campaign_shuffled_digests": {
+  "export": "df898f4ca41a11b58de52dfa41ebf490660bbb377a1de686c986a3f85204922f",
+  "stats ci prop": "87ca2257380a7180e5920eb4aa088f57395f1c088861d45b93bfbbaaaaa81603",
+  "stats test prop": "b6b6387865347c4b664006ab8fd35f38559091e5adf244d8d1b2f60e53a70389",
+  "totals": "6f195d202f378be3f1a8f1faf40cb7a8ff506c4c3430dbcc087a2b8c532c2e0c"
+ },
  "generated_by": "scripts/record_stories.py",
  "pipeline": {
   "digests": {

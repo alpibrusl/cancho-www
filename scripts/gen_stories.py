@@ -81,12 +81,12 @@ def fig_hourly(rows):
     return svg(300, "\n".join(body), "Hourly mean temperature of the five days")
 
 
-def fig_interval(est, lo_, hi_):
-    ax, sx = axis(60, 610, 110, 0, 9, [0, 2, 4, 6, 8], "mean of the day hours minus mean of the night hours, °C")
-    body = [ax, '<line class="zero" x1="%g" y1="30" x2="%g" y2="110"/><text class="tk" x="%g" y="24" text-anchor="middle">no difference</text>' % (sx(0), sx(0), sx(0))]
+def fig_interval(est, lo_, hi_, xlo=0, xhi=9, ticks=(0, 2, 4, 6, 8), label="mean of the day hours minus mean of the night hours, °C", aria="The difference of day and night temperature with its 95% interval", zero="no difference"):
+    ax, sx = axis(60, 610, 110, xlo, xhi, list(ticks), label)
+    body = [ax, '<line class="zero" x1="%g" y1="30" x2="%g" y2="110"/><text class="tk" x="%g" y="24" text-anchor="middle">%s</text>' % (sx(0), sx(0), sx(0), zero)]
     body.append('<line class="ciline" x1="%g" y1="70" x2="%g" y2="70"/><line class="ciline" x1="%g" y1="62" x2="%g" y2="78"/><line class="ciline" x1="%g" y1="62" x2="%g" y2="78"/>' % (sx(lo_), sx(hi_), sx(lo_), sx(lo_), sx(hi_), sx(hi_)))
     body.append('<circle class="pt" cx="%g" cy="70" r="6"/><text class="tk" x="%g" y="56" text-anchor="middle">%.2f</text>' % (sx(est), sx(est), est))
-    return svg(160, "\n".join(body), "The difference of day and night temperature with its 95% interval")
+    return svg(160, "\n".join(body), aria)
 
 
 def fig_forecast(actual, forest, base):
@@ -205,6 +205,34 @@ def build(data):
         ["<p>The whole pipeline of story 4 again, three times: the logger&#8217;s lines in the order they were written, shuffled, and reversed. For each run, the SHA-256 of the hourly CSV, of the statistics document and of the fitted model file:</p>",
          fig_hashes(hr),
          '<div class="read"><b>Reading it.</b> Nine digests, three distinct values, each repeated three times: the order of the lines changes nothing. The means are exact decimals, so adding them in another order cannot change a digit; the groups come out sorted by key; the forest&#8217;s trees draw from streams derived from a seed. (A bootstrap, by design, is a function of the file&#8217;s bytes and its seed: row order <em>does</em> matter there, and the answer says so.)</div>']))
+    # 6 marketing ----------------------------------------------------------------------------------------------
+    C = data["campaign"]
+    tot = [r.split(",") for r in C["table"]["csv_totals"].strip().split("\n")]
+    exp = [r.split(",") for r in C["table"]["csv_export"].strip().split("\n")]
+    buyers = {r[0]: int(r[2]) for r in tot[1:]}
+    exported = {r[0]: int(r[2]) for r in exp[1:]}
+    claim(buyers == exported and set(buyers) == {"ads", "holdout"}, "story 6: the buyers counted from the purchases are the buyers of the experiment tool's export, in each arm")
+    ci6 = C["stats"]["ci"]["intervals"][0]
+    tp6 = C["stats"]["test"]["tests"][0]
+    claim(ci6["interval"]["low"] > 0 and tp6["p_value"] < 0.01 and ci6["levels"] == {"a": "ads", "b": "holdout"}, "story 6: the lift is positive, its interval excludes zero and the test is below 0.01")
+    c0, c1, c2 = C["digests"], data["campaign_shuffled_digests"], data["campaign_reversed_digests"]
+    claim(c0 == c1 == c2, "story 6: the totals and the statistics are the same bytes whatever the order of the purchases and of the users")
+    ch = []
+    for label, d in (("as exported", c0), ("shuffled", c1), ("reversed", c2)):
+        for k in ("totals", "stats ci prop"):
+            ch.append(("%s: %s" % (label, k), d[k][:48]))
+    S.append(story(6, "Did the campaign work, and can finance check it?", "marketing", ["table", "stats"],
+        "&#8220;Finance counts buyers from the purchase ledger, the growth team counts them from the experiment tool. Do they agree, and is the lift real?&#8221; &#8212; the analyst who has to sign the report",
+        ["<p>Two sources, one question. <code>table</code> joins the shop&#8217;s purchases to the arm of each user, leaves out what was bought before the campaign started (a <code>--where</code> on the date), and counts distinct buyers and the exact revenue per arm. The experiment tool&#8217;s export has one row per user with a 0 or 1; <code>table</code> adds that column up. If the two ledgers differ by one buyer, the report does not go out.</p>",
+         term("table " + " ".join(C["table"]["args_totals"]) + " " + C["table"]["file_totals"], C["table"]["csv_totals"].rstrip("\n")),
+         term("table " + " ".join(C["table"]["args_export"]) + " " + C["table"]["file_export"], C["table"]["csv_export"].rstrip("\n")),
+         "<p>They agree, arm by arm. Now the experiment itself, with the export as input: the difference in conversion between the arm shown the ad and the held-out arm, with its interval (the Newcombe one, for a difference of two proportions), and the test.</p>",
+         term("stats " + " ".join(C["stats"]["args_ci"]) + " users.csv", pretty({"estimate": ci6["estimate"], "interval": {k: ci6["interval"][k] for k in ("method", "low", "high")}})),
+         term("stats " + " ".join(C["stats"]["args_test"]) + " users.csv", pretty({k: tp6[k] for k in ("statistic", "p_value", "p_method")})),
+         fig_interval(ci6["estimate"] * 100, ci6["interval"]["low"] * 100, ci6["interval"]["high"] * 100, -1, 3, (-1, 0, 1, 2, 3), "extra buyers per 100 users shown the ad (95% interval)", "The difference in conversion with its 95% interval", "no effect"),
+         '<p>And for the file that goes to finance: the SHA-256 of the exact totals and of the statistics document, with the purchases in the order exported, shuffled, and reversed (with the users reversed as well):</p>',
+         fig_hashes(ch),
+         '<div class="read"><b>Reading it.</b> Both counts of buyers agree: %d in the arm shown the ad and %d in the held-out arm. The ad adds %s points of conversion (95%% interval %s to %s, p = %s). Six digests, two distinct values, each repeated three times: another order of the same rows is the same report, byte for byte. The cancho-stats page goes on to revenue, to the dashboard that overstates the lift, and to a regional experiment; cancho-ml to who the ad moves.</div>' % (buyers["ads"], buyers["holdout"], num(ci6["estimate"] * 100, 2), num(ci6["interval"]["low"] * 100, 2), num(ci6["interval"]["high"] * 100, 2), num(tp6["p_value"], 3))]))
     # the tour -----------------------------------------------------------------------------------------------
     cards = [("Biology", [("stats", "Six mice against six", "exact rank and permutation tests"), ("table", "A growth plate", "exact means of replicates"), ("ml", "Tumour or normal?", "which genes matter")]),
              ("Chemistry", [("stats", "Two methods, one sample set", "correlation is not agreement"), ("table", "Burette readings", "a declared precision"), ("ml", "A calibration curve", "fit once, apply to unknowns")]),
@@ -214,20 +242,20 @@ def build(data):
     for field, items in cards:
         lis = "".join('<li><a href="%scancho-%s/stories.html">%s</a>: %s <span style="color:var(--muted)">(%s)</span></li>' % (PAGES, t_, esc(title), esc(sub), t_) for t_, title, sub in items)
         html_cards.append('<div class="card"><h3>%s</h3><ul>%s</ul></div>' % (field, lis))
-    S.append('<section class="alt story" id="s6"><div class="wrap"><h2>6 &middot; From the sciences</h2><div class="badge"><span class="lvl">go further</span></div><p>Each of the three tools has its own page of stories, in increasing complexity, with a figure for each and a section from biology, chemistry, physics and the social sciences. Every number on them is drawn from a real run, like the ones above.</p><div class="cards">%s</div></div></section>' % "".join(html_cards))
+    S.append('<section class="alt story" id="s7"><div class="wrap"><h2>7 &middot; From the sciences</h2><div class="badge"><span class="lvl">go further</span></div><p>Each of the three tools has its own page of stories, in increasing complexity, with a figure for each and a section from biology, chemistry, physics and the social sciences. Every number on them is drawn from a real run, like the ones above.</p><div class="cards">%s</div></div></section>' % "".join(html_cards))
     return S
 
 
 def page(sections):
-    nav = " ".join('<a class="opt" href="#s%d">%d</a>' % (i, i) for i in range(1, 7))
-    toc = "".join('<a href="#s%d">%d &middot; %s</a>' % (i, i, esc(nm)) for i, nm in enumerate(("Authority", "A refusal", "Three tools", "A pipeline", "Same bytes", "Sciences"), 1))
+    nav = " ".join('<a class="opt" href="#s%d">%d</a>' % (i, i) for i in range(1, 8))
+    toc = "".join('<a href="#s%d">%d &middot; %s</a>' % (i, i, esc(nm)) for i, nm in enumerate(("Authority", "A refusal", "Three tools", "A pipeline", "Same bytes", "Campaign", "Sciences"), 1))
     return """<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>cancho: six stories across the ecosystem</title>
-<meta name="description" content="Six end-to-end examples across cancho, table, stats and ml, in increasing complexity: what a program can touch, a refusal, three tools in a row, the same bytes in any order. Every number is drawn from a real run.">
+<title>cancho: seven stories across the ecosystem</title>
+<meta name="description" content="Seven end-to-end examples across cancho, table, stats and ml, in increasing complexity: what a program can touch, a refusal, three tools in a row, the same bytes in any order, and a marketing campaign checked by two ledgers. Every number is drawn from a real run.">
 <meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="assets/site.css">
 <style>%s%s</style>
@@ -238,7 +266,7 @@ def page(sections):
   <nav>%s<a href="./">Home</a><a href="https://github.com/alpibrusl/cancho">GitHub</a></nav>
 </div></header>
 <div class="wrap hero">
-  <h1>Six stories across the ecosystem.</h1>
+  <h1>Seven stories across the ecosystem.</h1>
   <p class="sub">From what a program can touch, to a refusal by the compiler, to three tools passing one CSV along a pipe and giving the same bytes in any order. Every number and every figure comes from a real run, recorded by <code>scripts/record_stories.py</code> and drawn by <code>scripts/gen_stories.py</code>; the data are invented and the narration is checked against the numbers.</p>
   <div class="toc">%s</div>
 </div>
