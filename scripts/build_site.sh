@@ -26,10 +26,13 @@ fail() { echo "build_site: $*" >&2; exit 1; }
 
 python3 scripts/gen_agent_files.py
 
+python3 scripts/gen_stories.py --check
+
 # 1. The classic page, as it has always been assembled: every URL in it is relative, so it works under /classic/ as is.
 C="$WORK/classic"
 mkdir -p "$C/demo" "$C/data"
-cp index.html og.png agents.md llms.txt llms-full.txt robots.txt logo.png logo-mark.png "$C/"
+cp index.html stories.html og.png agents.md llms.txt llms-full.txt robots.txt logo.png logo-mark.png "$C/"
+mkdir -p "$C/demo/stories" && cp demo/stories/logger.jsonl "$C/demo/stories/"
 cp -r assets "$C/assets"
 cp data/ecosystem.json data/demos.json "$C/data/"
 cp demo/demo.mp4 demo/demo.webm demo/poster.png demo/demo.cast "$C/demo/"
