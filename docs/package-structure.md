@@ -112,6 +112,21 @@ Every number in a README has its conditions beside it: the machine, threads, loa
 
 `scripts/check_package_kit.py` (shared, run by hand across repositories as `check_landing_pattern.py` is, and by each package's CI for its own files): the files of 2.1 for its tier, the README sections of 2.2 in order, the tier line, every relative link, every quoted number present in the recorded benchmark output, and the stories `--check`. **[open]** where the shared checker lives (see 4).
 
+### 2.9 Kinds and templates
+
+One kit, one template per kind. A template is the README skeleton of 2.2 with the sections that do not apply replaced, the files of 2.1 that apply, and the checks. **[choice]**
+
+| kind | examples | what changes from the CLI template |
+|---|---|---|
+| **cli** (the default) | stats, table, ml, tools, opt, fetch | all of 2.2: introspect, skill, MCP, stories, comparison with the usual tools |
+| **library** | pg, mqtt-client, log, cache, schema, web | *One complete flow* is a ten-line program; *For agents* is how an agent writes code against it (the compiler's JSON diagnostics, `inspect`); the comparison is with the usual client of the language; no stories required, an examples directory is |
+| **service** | gateway, mqtt, hooks, oci, dns, robot | adds *Deploy* (flags, ports, the authority row it needs), *Operate* (health, logs, limits) and load numbers with conditions; the agent example is an operator agent |
+| **platform** | gpu, hdl, quantum | as a service, plus the oracle or reference each result is checked against |
+| **language** | cancho, cancho-ui | not a package: a reference, a grammar or spec, the diagnostics contract, a prompt for agents (`cancho-ui` has one), the comparison with other languages (`cancho` has `against-c-and-rust.md`), and a gallery; the *What is special* section is the authority and effects rule |
+| **site** | cancho-www | the ecosystem list, the standard, the cases |
+
+The kind is a line in the README, next to the tier, and the checker applies the template of that kind.
+
 ## 3. Where the packages stand against it
 
 First wave, the four tier-1 packages:
@@ -128,7 +143,10 @@ The biggest single gap is the empty `cancho-stats` README; the biggest shared ga
 ## 4. Decisions
 
 1. **Adopt the kit for the first wave** (stats, table, ml, tools) and tiers 2 and 3 afterwards? **[open]**
-2. **Where the shared parts live**: the README skeleton, the checker, the agent-transcript driver, `storylib` (today copied four times), `cases.json`. Candidates: `cancho-tools` (it already holds the pinned contract package) or a new `cancho-kit`. Neither is among this session's writable repositories; see `cancho-stats/docs/stories-in-cancho.md` for the cancho-port of the generators. **[open]**
+2. **Where the shared parts live.** Two different things, two homes: **[choice, recommended]**
+   * **The standard** (this document, `landing-pattern.md`, the case list `data/cases.json`, the ecosystem list with each project's stage and tier) belongs in **`cancho-www`**: it already holds `data/ecosystem.json` as the one source of truth about the projects, and it is the published view. It is documentation, not a dependency, so nothing pins it.
+   * **The mechanism** (the templates, the checker, the generators such as `storylib`, the agent-transcript driver) belongs where packages can **pin it by commit**, as they already pin the contract package: a `kit/` directory beside `contract/` in **`cancho-tools`**, or a repository of its own (`cancho-kit`) if keeping the file tools and the kit apart matters more than one fewer repository. A `cancho new KIND` command in the compiler would be the natural front end later; it would read the pinned kit, not carry it, so the compiler's gates and release cadence stay out of the documentation. Not in `cancho-ui`: it is a second language and a possible renderer for interactive demos, and it has no server-side rendering for static pages (see `cancho-stats/docs/stories-in-cancho.md`).
+   Neither `cancho-tools` nor a new repository is writable from the session that wrote this; creating or choosing it is the maintainer's step.
 3. **Whether the libraries adopt the library variant** or are left as they are until they have users. **[open]**
 4. **The nine private repositories** were not read; whether the kit applies to them is the maintainer's call. **[open]**
 
