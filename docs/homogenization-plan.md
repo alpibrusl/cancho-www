@@ -18,7 +18,7 @@ The kit checker (`scripts/check_package_kit.py` in cancho-kit) was run over the 
 | cancho-mqtt-client, -opt | 9 | 28 / 36 | no |
 | cancho-quantum | 10 | 79 | yes |
 
-The problems are of three kinds: sections missing (mostly *For humans, for agents*, *Compared with*, *Use it with an AI agent*, and the kind line), files missing (`AGENTS.md`, `llms.txt`), and the order of sections. Nine packages (diff, fetch, log, mqtt-client, oci, opt, pg, schema, tools) have **no landing page**; the 13 that have one (cache, client-gen, code, dns, forge, gateway, gpu, hdl, hooks, mqtt, quantum, robot, web) **none follows the pattern** (the required ids and a Stories link are missing from every one): each has its own design. The three done (stats, table, ml) conform.
+The problems are of three kinds: sections missing (mostly *For humans, for agents*, *Compared with*, *Use it with an AI agent*, and the kind line), files missing (`AGENTS.md`, `llms.txt`), and the order of sections. Nine packages (diff, fetch, log, mqtt-client, oci, opt, pg, schema, tools) have **no landing page**; the 13 that have one (cache, client-gen, code, dns, forge, gateway, gpu, hdl, hooks, mqtt, quantum, robot, web) **none passes the pattern check** (each lacks a Stories link and three to five of the five required section ids (`stories`, `how`, `results`, `try`, `docs`)): each has its own design. The three done (stats, table, ml) conform.
 
 ## 2. Waves **[choice]**
 
@@ -36,7 +36,7 @@ Each wave is merged before the next starts, so that what is learned (the templat
 
 ## 3. The landing pages: generate, or keep **[open]**
 
-`render_landing.py` renders a page from a `landing.json` in the pattern's layout; to change the look of every page, change one stylesheet and re-render. That is the "easy to change" the standard asks for. But 13 packages have hand-written pages with their own designs (the `web`, `gpu`, `hooks` pages are rich: animations, a switch, diagrams). Proposal:
+`render_landing.py` renders a page from a `landing.json` in the pattern's layout; to change the look of every page, change one stylesheet and re-render. That is the "easy to change" the standard asks for. But 13 packages have hand-written pages with their own designs (some may have features a manifest cannot express; that has not been read page by page). Proposal:
 
 * a package **with no page** gets a generated one (nine packages);
 * a package **with a page that fails the pattern** adopts the generated layout *unless its page has a feature the renderer lacks that the maintainer wants to keep*; in that case the page keeps its design and gains the required ids and the Stories link (the two things the checker needs), which is a small edit;
