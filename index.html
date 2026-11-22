@@ -93,7 +93,7 @@
 <section id="try">
   <p class="eyebrow">Try it</p>
   <h2>Three ways in, from sixty seconds to a real task.</h2>
-  <p class="sub">Every command here was run before it went on this page. cancho is pre-1.0, building it needs Rust and clang, and what is not claimed is written down below. Want a longer walk? <a href="stories.html">Six stories across the ecosystem</a>: what a program can touch, a refusal, and three tools passing one CSV along a pipe.</p>
+  <p class="sub">Every command here was run before it went on this page. cancho is pre-1.0, running it needs clang, and what is not claimed is written down below. Want a longer walk? <a href="stories.html">Six stories across the ecosystem</a>: what a program can touch, a refusal, and three tools passing one CSV along a pipe.</p>
   <div class="try">
     <article class="reveal">
       <div class="tx">
@@ -112,15 +112,15 @@ $ echo $?
     </article>
     <article class="reveal">
       <div class="tx">
-        <p class="when">5 minutes · Rust and clang</p>
+        <p class="when">5 minutes · clang</p>
         <h3>Run the compiler</h3>
-        <p><code>check</code> only checks; <code>run</code> builds and executes. The first <code>run</code> builds the compiler written in cancho once. Green on linux-x86_64 and darwin-aarch64. <code>authority</code> is the one to try on something you did not write.</p>
-        <div class="links"><a class="btn ghost" href="https://github.com/alpibrusl/cancho#building">Build instructions</a><a class="btn ghost" href="https://alpibrusl.github.io/cancho/">Docs</a></div>
+        <p><code>check</code> only checks; <code>run</code> builds and executes. The compiler is a single file, written in cancho; the gate is green on linux-x86_64 and darwin-aarch64. <code>authority</code> is the one to try on something you did not write.</p>
+        <div class="links"><a class="btn ghost" href="https://github.com/alpibrusl/cancho#install">Install</a><a class="btn ghost" href="https://alpibrusl.github.io/cancho/">Docs</a></div>
       </div>
-      <div class="cd"><div class="codebox" data-copy><pre tabindex="0"><code>git clone https://github.com/alpibrusl/cancho &amp;&amp; cd cancho
-cargo build -p cancho --release
-./target/release/cancho run examples/hello.cho --std
-./target/release/cancho authority examples/tally.cho --std</code></pre></div><div class="codebox"><pre tabindex="0"><code>Hello, world!
+      <div class="cd"><div class="codebox" data-copy><pre tabindex="0"><code>curl -fsSL https://raw.githubusercontent.com/alpibrusl/cancho/main/scripts/install.sh | sh
+git clone https://github.com/alpibrusl/cancho &amp;&amp; cd cancho
+cancho run examples/hello.cho --std
+cancho authority examples/tally.cho --std</code></pre></div><div class="codebox"><pre tabindex="0"><code>Hello, world!
 performs
     io_read
     io_write
@@ -233,10 +233,10 @@ cancho test tests/*.cho --std</code></pre></div><p class="what">What an agent se
     <li>Every checked code block in AGENTS.md is a fixture; changing a rule name to a wrong one turns the suite red (checked by doing it). <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/AGENTS.md">AGENTS.md</a></span></li>
     <li>A mutation fuzzer feeds token-level edits of every program through parsing, checking and code generation, requiring no panic, a stable print-and-parse, and that what the checker accepts the backend compiles. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/crates/cancho/tests/fuzz.rs">fuzzer</a> <a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/fuzzing.md">design</a></span></li>
     <li>Tests are checked by breaking what they cover and watching them fail. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/CONTRIBUTING.md">CONTRIBUTING</a> <a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/differential.md">differential testing</a></span></li>
-    <li>With every build going through the compiler written in cancho, 697 of 704 conformance tests pass (measured 2026-10-15, macOS aarch64). <span class="evs"><a class="ev" href="https://alpibrusl.github.io/cancho/bootstrap.html">bootstrap record</a></span></li>
+    <li>The gate builds the compiler from the committed seed, requires it to reproduce itself byte for byte, and passes 130 programs that must be accepted and 391 that must be refused by the rule they name (measured 2026-11-22, macOS aarch64). <span class="evs"><a class="ev" href="https://alpibrusl.github.io/cancho/gate.html">the gate</a></span></li>
   </ul></div>
   <div class="v todo"><h3>Still being established</h3><ul>
-    <li>The compiler written in cancho refuses 256 of the 333 programs that must be refused, with the same rule as the Rust one. It is not the default. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/issues/491">epic #491</a></span></li>
+    <li>Release 0.1.0 writes code with LLVM only, for Linux (x86-64, aarch64) and macOS (Apple silicon); it was install-checked on macOS only, and has no Cranelift or WebAssembly output. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho#install">README</a></span></li>
     <li>Hash stability is not a contract yet: the canonical-AST document is “proposed”, and 39% of this repository’s own historical revisions do not type-check under today’s build. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/canonical-ast.md">canonical AST</a> <a class="ev" href="https://github.com/alpibrusl/cancho/blob/main/docs/hash-stability.md">hash stability</a></span></li>
     <li>A cancho program has one network bound shared by listening and connecting, so a proxy’s authority report cannot say which upstreams it reaches; cancho-gateway enforces its compiled-in list by exact match and tests it, but the compiler does not vouch for it. <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho-gateway">cancho-gateway</a></span></li>
     <li>The TLS stack is not independently reviewed (stated in cancho-fetch’s README). <span class="evs"><a class="ev" href="https://github.com/alpibrusl/cancho-fetch">cancho-fetch</a></span></li>
@@ -318,7 +318,7 @@ cancho test tests/*.cho --std</code></pre></div><p class="what">What an agent se
   <!-- eco:start -->
   <details class="note" id="map-fallback"><summary>The same map as a list</summary>
   <ul>
-  <li><a href="https://github.com/alpibrusl/cancho">cancho</a> · <a href="https://alpibrusl.github.io/cancho/">page</a> (built): The language and its Rust compiler. A second compiler, written in cancho, is being checked against it.</li>
+  <li><a href="https://github.com/alpibrusl/cancho">cancho</a> · <a href="https://alpibrusl.github.io/cancho/">page</a> (built): The language and its compiler, written in cancho and built from a committed seed with clang alone. Release 0.1.0. Pre-1.0.</li>
   <li><a href="https://github.com/alpibrusl/cancho-ui">cancho-ui</a> · <a href="https://alpibrusl.github.io/cancho-ui/">page</a> (built): A UI language whose compiler knows what each component is allowed to do. Builds JavaScript and DOM.</li>
   <li><a href="https://github.com/alpibrusl/cancho-hooks">cancho-hooks</a> · <a href="https://alpibrusl.github.io/cancho-hooks/">page</a> (alpha): Webhook delivery: on disk before the 202, signed, retried, dead-lettered and replayable.</li>
   <li><a href="https://github.com/alpibrusl/cancho-cache">cancho-cache</a> · <a href="https://alpibrusl.github.io/cancho-cache/">page</a> (alpha): Redis-compatible cache over RESP2 and RESP3: strings and hashes, expiry and LRU eviction, in a fixed arena.</li>
@@ -350,18 +350,18 @@ cancho test tests/*.cho --std</code></pre></div><p class="what">What an agent se
 
 <section id="proof">
   <p class="eyebrow">Proof, not promises</p>
-  <h2>The compiler is being written in cancho.</h2>
-  <p class="sub">A second compiler, about twenty thousand lines of cancho, reads a program and writes LLVM IR. The Rust compiler is the oracle until the cancho one refuses everything the language refuses. One square is one test.</p>
+  <h2>The compiler is written in cancho.</h2>
+  <p class="sub">The compiler is about seventy thousand lines of cancho, built from a committed seed of LLVM IR with clang alone; the one it builds reproduces itself byte for byte. One square is one test.</p>
   <div class="proof">
     <div class="card">
-      <b data-count="conformance"><span>0</span> <small>/ 704</small></b>
+      <b data-count="conformance"><span>0</span> <small>/ 130</small></b>
       <div id="w-conformance"></div>
-      <p>conformance tests pass when every build goes through the compiler written in cancho. The 7 amber outlines are known differences from the Rust compiler, each listed.</p>
+      <p>programs that must be accepted are built and run with the output their directives state.</p>
     </div>
     <div class="card">
-      <b data-count="refusals"><span>0</span> <small>/ 333</small></b>
+      <b data-count="refusals"><span>0</span> <small>/ 391</small></b>
       <div id="w-refusals"></div>
-      <p>programs that must be refused are refused with the same rule as the Rust compiler. The empty squares are what it does not check yet.</p>
+      <p>programs that must be refused are refused, each by the rule its file names.</p>
     </div>
     <div class="card">
       <b data-count="rules"><span>0</span> <small>named rules</small></b>
@@ -369,7 +369,7 @@ cancho test tests/*.cho --std</code></pre></div><p class="what">What an agent se
       <p>stable tags a program can match on, instead of sentences to parse.</p>
     </div>
   </div>
-  <p class="note">Measured <span id="proof-date"></span>. The first two figures are what the repository’s tests say and move as the work does (<a href="https://github.com/alpibrusl/cancho/issues/491">epic #491</a>). <a href="https://alpibrusl.github.io/cancho/bootstrap.html">Bootstrap and self-hosting</a> has the record.</p>
+  <p class="note">Measured <span id="proof-date"></span>. The first two figures are what the repository’s gate says and move as the work does. <a href="https://alpibrusl.github.io/cancho/gate.html">The gate</a> has the record.</p>
 </section>
 
 <div class="cairn" aria-hidden="true"></div>
@@ -521,7 +521,7 @@ opened it, closed it
   <h2>Status: pre-1.0</h2>
   <ul>
     <li>Alpha and early products are built with it (see the map), each with an authority report the compiler derives. Alpha means it runs and may change.</li>
-    <li>The compiler is still the Rust one. The cancho compiler builds real programs but does not yet refuse everything the language refuses, so it is not the default.</li>
+    <li>Release 0.1.0 is the first release of the compiler written in cancho. It writes code with LLVM, for Linux and macOS.</li>
     <li>Dependencies resolve end to end, and a real TLS handshake compiles and runs.</li>
     <li>There is no manifest-level version string: a hash is what you depend on.</li>
     <li>Claims that turn out wrong are corrected in place in the docs, not quietly edited.</li>
