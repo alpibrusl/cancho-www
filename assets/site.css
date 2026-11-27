@@ -445,6 +445,7 @@ nav { margin-left: auto; gap: 1.3rem; }
 /* evidence, paths, where next, the demo as text */
 .verif { display: grid; gap: 1.1rem; margin-top: 1.8rem; }
 @media (min-width: 64rem) { .verif { grid-template-columns: repeat(3, 1fr); align-items: start; } }
+@media (min-width: 64rem) { .verif.news { grid-template-columns: repeat(2, 1fr); } }
 .verif .v { background: var(--surface); border-radius: 16px; padding: 1.1rem 1.2rem 1.2rem; box-shadow: var(--shadow), 0 0 0 1px var(--ring); border-top: 4px solid var(--accent); }
 .verif .v.tests { border-top-color: var(--good); }
 .verif .v.todo { border-top-color: var(--warn-line); background: var(--warn-bg); }

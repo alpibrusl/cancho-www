@@ -194,7 +194,7 @@
       s.dataset.passed = f.passed;
     });
     var rules = $('#w-rules');
-    if (rules) { var s = waffle(rules, 16, 62, 62); s.dataset.passed = 62; }
+    if (rules) { var nr = fig.rules.value, s = waffle(rules, 16, nr, nr); s.dataset.passed = nr; }
     $('#proof-date').textContent = data.measured.date + ', ' + data.measured.platform;
     document.querySelectorAll('[data-count]').forEach(function (b) { b.dataset.target = fig[b.dataset.count].passed || fig[b.dataset.count].value; });
   }

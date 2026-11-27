@@ -19,7 +19,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"; cd "$ROOT"
 
-CANCHO_UI_REV="${CANCHO_UI_REV:-bdbe817f65061859a94d7fb1ffc47dc063794573}"
+CANCHO_UI_REV="${CANCHO_UI_REV:-8bd5a8b3802c99aa256c50240e8b9f236fcb6e50}"
 
 WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
 fail() { echo "build_site: $*" >&2; exit 1; }
