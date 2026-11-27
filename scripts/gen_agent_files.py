@@ -48,6 +48,16 @@ def verifies_md():
     return out
 
 
+def news_md():
+    out = []
+    for key, title in (("highlights", "What is new"), ("roadmap", "What is next")):
+        out += [f"## {title}", ""]
+        for it in data[key]:
+            out.append(f"- **{it['title']}** {it['text']} (" + ", ".join(f"[{l}]({u})" for l, u in it["evidence"]) + ")")
+        out.append("")
+    return out
+
+
 def agents_md():
     m = data["measured"]
     out = [
@@ -55,7 +65,7 @@ def agents_md():
         "",
         f"> {data['tagline']}",
         "",
-        f"Status: pre-1.0. As of {data['as_of']}. Alpha products are built with it; the compiler is written in cancho, release 0.1.0, built from a committed seed with clang alone; it writes code with LLVM for Linux and macOS.",
+        f"Status: pre-1.0. As of {data['as_of']}. Alpha products are built with it; the compiler is written in cancho, with no Rust, release 0.1.1, built from a committed seed with clang alone; it writes code with LLVM for Linux and macOS, and a backend of its own is started and generates no code yet. cancho-os, an operating system written in cancho with no Linux and no C, has booted one real Raspberry Pi 4.",
         "",
         "## The idea",
         "",
@@ -66,6 +76,7 @@ def agents_md():
         "- Every refusal has a stable rule tag (for example `linear-value-unconsumed`, `effect-not-declared`). Match on the tag, not the prose.",
         "- Dependencies pin to content hashes. There is no version string.",
         "",
+    ] + news_md() + [
         "## Commands",
         "",
         "```sh",
@@ -137,7 +148,7 @@ def llms_txt():
         "",
         f"> {data['tagline']}",
         "",
-        "Status: pre-1.0. Alpha products are built with it; the compiler is written in cancho, release 0.1.0, built from a committed seed with clang alone; it writes code with LLVM for Linux and macOS. See the roadmap for what is open.",
+        "Status: pre-1.0. Alpha products are built with it; the compiler is written in cancho, with no Rust, release 0.1.1, built from a committed seed with clang alone; it writes code with LLVM for Linux and macOS, and a backend of its own is started and generates no code yet. cancho-os, an operating system written in cancho with no Linux and no C, has booted one real Raspberry Pi 4. See the roadmap for what is open.",
         "",
         f"Manifesto (the idea behind it): {data['manifesto']}",
         "Source: https://github.com/alpibrusl/cancho",
@@ -224,6 +235,20 @@ def verifies_html():
     return "\n".join(out)
 
 
+def news_html():
+    cols = [("highlights", "What is new", "ok"), ("roadmap", "What is next", "tests")]
+    out = ['<div class="verif news reveal">']
+    for key, title, cls in cols:
+        out.append(f'  <div class="v {cls}"><h3>{title}</h3><ul>')
+        for it in data[key]:
+            ev = " ".join(f'<a class="ev" href="{html.escape(u)}">{html.escape(l)}</a>' for l, u in it["evidence"])
+            out.append(f"    <li><b>{md_code(it['title'])}</b> {md_code(it['text'])} <span class=\"evs\">{ev}</span></li>")
+        out.append("  </ul></div>")
+    out.append("</div>")
+    out.append(f'<p class="note">As of {html.escape(data["as_of"])}. “Built” here means built and checked as the linked document says; “next” is a direction, not a date.</p>')
+    return "\n".join(out)
+
+
 def paths_html():
     by_id = {p["id"]: p for p in projects}
     out = ['<div class="paths reveal">']
@@ -247,7 +272,7 @@ def demo_text_html():
             f'<pre class="code" tabindex="0">{html.escape(text)}</pre></details>')
 
 
-BLOCKS = {"eco": eco_list, "verifies": verifies_html, "paths": paths_html, "demo-text": demo_text_html}
+BLOCKS = {"eco": eco_list, "verifies": verifies_html, "news": news_html, "paths": paths_html, "demo-text": demo_text_html}
 
 
 def index_html():
